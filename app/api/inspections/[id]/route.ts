@@ -63,6 +63,7 @@ export async function PATCH(req:Request,{params}:{params:Promise<{id:string}>}) 
       sections:payload.sections,findings,
       score:scored,recommendation,
       testDrive:payload.testDrive,
+      photos:payload.photos,
       summary:payload.reviewerComments,
       generatedAt:new Date().toISOString()
     };
