@@ -1,0 +1,10 @@
+{
+  "name": "OM Car Inspection",
+  "short_name": "OM Inspection",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#0f172a",
+  "description": "Offline-first vehicle inspection operations platform.",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
