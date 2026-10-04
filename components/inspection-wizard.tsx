@@ -52,6 +52,7 @@ export function InspectionWizard() {
   const [online,setOnline] = useState(true);
   const [saving,setSaving] = useState(false);
   const [notice,setNotice] = useState("");
+  const [uploadingIndex,setUploadingIndex] = useState<number|null>(null);
   const [loading,setLoading] = useState(true);
   const signatureRef=useRef<HTMLCanvasElement>(null);
 
@@ -120,23 +121,45 @@ export function InspectionWizard() {
   function prev(){setStep(s=>Math.max(0,s-1));window.scrollTo({top:0,behavior:"smooth"});}
 
   async function capturePhoto(index:number,file:File) {
-    const url=URL.createObjectURL(file);
+    if (!file) return;
+    if (file.size > 15 * 1024 * 1024) {
+      setNotice("File is too large. Keep evidence under 15 MB.");
+      return;
+    }
+    setUploadingIndex(index);
+    const preview = file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined;
     const nextPhotos=[...draft.photos];
-    nextPhotos[index]={name:nextPhotos[index]?.name ?? `Evidence ${index+1}`,url};
+    nextPhotos[index]={name:nextPhotos[index]?.name ?? file.name || `Evidence ${index+1}`,url:preview};
     updateDraft({photos:nextPhotos});
-    if(supabase && orgId && inspectionId && online) {
-      try {
-        const ext=(file.name.split(".").pop()||"jpg").toLowerCase();
-        const path=`${orgId}/${inspectionId}/original/${crypto.randomUUID()}.${ext}`;
-        const {error}=await supabase.storage.from("inspection-media").upload(path,file,{contentType:file.type,upsert:false});
+    try {
+      let activeInspectionId=inspectionId;
+      if (!activeInspectionId && supabase) activeInspectionId=await ensureInspection();
+      if (supabase && orgId && activeInspectionId && online) {
+        const ext=(file.name.split(".").pop()||"bin").toLowerCase().replace(/[^a-z0-9]/g,"");
+        const path=`${orgId}/${activeInspectionId}/original/${crypto.randomUUID()}.${ext || "bin"}`;
+        const {error}=await supabase.storage.from("inspection-media").upload(path,file,{contentType:file.type || "application/octet-stream",cacheControl:"3600",upsert:false});
         if(error) throw error;
-        await supabase.from("inspection_media").insert({
-          organization_id:orgId,inspection_id:inspectionId,file_path:path,media_type:file.type.startsWith("video/")?"video":"image",
-          original_filename:file.name,mime_type:file.type,file_size:file.size,captured_at:new Date().toISOString()
+        const {error:rowError}=await supabase.from("inspection_media").insert({
+          organization_id:orgId,inspection_id:activeInspectionId,file_path:path,
+          media_type:file.type.startsWith("video/")?"video":file.type==="application/pdf"?"document":"image",
+          original_filename:file.name,mime_type:file.type || "application/octet-stream",
+          file_size:file.size,captured_at:new Date().toISOString()
         });
-        setNotice("Evidence uploaded and linked");
-      } catch { setNotice("Evidence queued locally; upload will retry when online"); }
-    } else setNotice("Evidence stored locally");
+        if(rowError) throw rowError;
+        setInspectionId(activeInspectionId);
+        setNotice("Evidence uploaded and linked to this inspection");
+        const saved=[...nextPhotos];
+        saved[index]={name:file.name,path,url:preview};
+        updateDraft({photos:saved});
+      } else {
+        setNotice(online ? "Evidence saved locally. Finish the inspection to sync it." : "Offline: evidence saved locally and will sync when online.");
+      }
+    } catch (error) {
+      const message=error instanceof Error ? error.message : "Upload failed";
+      setNotice(`Upload failed: ${message}`);
+    } finally {
+      setUploadingIndex(null);
+    }
   }
 
   async function aiSummary(){
@@ -254,7 +277,56 @@ function Faults({draft,updateDraft}:{draft:InspectionDraft;updateDraft:(p:Partia
 
 function Photos({draft,capturePhoto}:{draft:InspectionDraft;capturePhoto:(i:number,f:File)=>Promise<void>}) {
   const slots=["Front overview","Rear overview","Left side","Right side","Odometer","VIN / chassis","Front-left damage","Rear bumper damage","Engine bay","Tyre RR","Interior dashboard","Documents"];
-  return <div className="card"><div className="section-title"><div><h2 className="text-lg font-bold">Evidence & document capture</h2><p>Photos stay linked to the inspection; originals are retained in Storage.</p></div><span className="chip success">{draft.photos.filter(Boolean).length} / {slots.length} added</span></div><div className="photo-grid">{slots.map((name,i)=><div className={`photo-slot ${draft.photos[i]?"attached":""}`} key={name}><div className="thumb">{draft.photos[i]?.url?<img src={draft.photos[i].url} alt={name}/>:<Camera/>}</div><div><strong className="text-xs">{name}</strong><div className="label">{i<8?"Required":"Optional / conditional"}</div></div><label className="btn mt-2 text-center" htmlFor={`photo-${i}`}>{draft.photos[i]?"Retake":"Capture"}<input id={`photo-${i}`} type="file" className="hidden" accept="image/*,video/*,.pdf" capture="environment" onChange={e=>{const f=e.target.files?.[0];if(f)void capturePhoto(i,f)}}/></label></div>)}</div></div>;
+  const firstEmpty=draft.photos.findIndex((x)=>!x);
+  return <div className="grid gap-4">
+    <div className="card evidence-upload-hero">
+      <div className="evidence-upload-copy">
+        <div className="eyebrow">EVIDENCE CAPTURE</div>
+        <h2 className="text-xl font-black mt-1">Add inspection photos</h2>
+        <p>Use the camera for field capture or upload files from the device. Each file is linked to this inspection.</p>
+      </div>
+      <div className="evidence-actions">
+        <label className="btn gold">
+          <Camera size={16}/> Take photo
+          <input type="file" accept="image/*" capture="environment" className="hidden" onChange={e=>{const f=e.target.files?.[0];if(f){const i=firstEmpty>=0?firstEmpty:0;void capturePhoto(i,f)};e.currentTarget.value=""}}/>
+        </label>
+        <label className="btn primary">
+          <Upload size={16}/> Upload files
+          <input type="file" multiple accept="image/*,video/*,.pdf" className="hidden" onChange={e=>{
+            const files=Array.from(e.target.files??[]);
+            let index=draft.photos.findIndex((x)=>!x);
+            if(index<0) index=0;
+            void files.reduce((p,file)=>p.then(()=>{const target=Math.min(index,slots.length-1); index=Math.min(index+1,slots.length); return capturePhoto(target,file)}),Promise.resolve());
+            e.currentTarget.value="";
+          }}/>
+        </label>
+      </div>
+      <div className="upload-meta"><span><Check size={13}/> Max 15 MB/file</span><span><ShieldCheck size={13}/> Private inspection storage</span><span><Wifi size={13}/> Offline cache enabled</span></div>
+    </div>
+    <div className="card">
+      <div className="section-title">
+        <div><h2 className="text-lg font-bold">Evidence checklist</h2><p>Front-to-back capture order keeps reports consistent.</p></div>
+        <span className="chip info">{draft.photos.filter(Boolean).length} / {slots.length} added</span>
+      </div>
+      <div className="photo-grid">
+        {slots.map((name,i)=>(
+          <div className={`photo-slot ${draft.photos[i]?"attached":""}`} key={name}>
+            <div className="thumb">
+              {draft.photos[i]?.url ? <img src={draft.photos[i].url} alt={name}/> : draft.photos[i]?.path ? <FileText size={25}/> : <Camera/>}
+            </div>
+            <div className="mt-2">
+              <strong className="text-xs">{name}</strong>
+              <div className="label">{i<8?"Required":"Optional / conditional"}</div>
+            </div>
+            <label className={`btn mt-2 text-center ${uploadingIndex===i?"pointer-events-none opacity-70":""}`} htmlFor={`photo-${i}`}>
+              {uploadingIndex===i ? <><Loader2 size={14} className="animate-spin"/> Uploading…</> : draft.photos[i] ? "Replace" : "Capture / upload"}
+              <input id={`photo-${i}`} type="file" className="hidden" accept="image/*,video/*,.pdf" capture="environment" onChange={e=>{const f=e.target.files?.[0];if(f)void capturePhoto(i,f);e.currentTarget.value=""}}/>
+            </label>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>;
 }
 
 function Summary({draft,score,recommendation,aiSummary,signatureRef,startSignature,finalize}:{draft:InspectionDraft;score:number;recommendation:string;aiSummary:()=>Promise<void>;signatureRef:React.RefObject<HTMLCanvasElement|null>;startSignature:(e:React.PointerEvent<HTMLCanvasElement>)=>void;finalize:()=>Promise<void>}) {
