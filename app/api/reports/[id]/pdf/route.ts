@@ -48,6 +48,17 @@ export async function GET(_req:Request,{params}:{params:Promise<{id:string}>}){
  draw(`Vehicle: ${[snapshot?.vehicle?.make,snapshot?.vehicle?.model,snapshot?.vehicle?.variant].filter(Boolean).join(" ")||"—"}`,11,true);
  draw(`Registration: ${snapshot?.vehicle?.registration||"—"}    VIN: ${snapshot?.vehicle?.vin||"—"}`);
  draw(`Score: ${snapshot?.score?.overall??"—"}/100    Recommendation: ${snapshot?.recommendation??"—"}`,11,true);
+ const registry=snapshot?.vehicle?.registryDetails;
+ if(registry){
+   draw("Verified vehicle registry",13,true);
+   const registryRows=[
+     ["RC status",registry.rcStatus],["Registration date",registry.registrationDate],["Category",registry.category],["Body type",registry.bodyType],
+     ["Emission norm",registry.emissionNorm],["Fitness valid until",registry.fitnessValidUntil],["Insurance valid until",registry.insuranceValidUntil],
+     ["PUC valid until",registry.puccValidUntil],["Permit",registry.permitValidUntil],["Owner count",registry.ownerCount],["Financer",registry.financer],
+     ["Blacklist status",registry.blacklistStatus],["Registered owner",registry.ownerName]
+   ].filter((x:any)=>x[1]);
+   for(const [label,value] of registryRows)draw(`${label}: ${value}`,9);
+ }
  draw("Key findings",13,true);for(const f of snapshot?.findings??[]){draw(`• ${f.name} • ${f.severity}`);for(const l of lineWrap(f.default_description||""))draw(l)}
  draw("Summary",13,true);for(const l of lineWrap(snapshot?.summary||"No summary supplied."))draw(l);
  draw("Inspection disclaimer",13,true);for(const l of lineWrap("This report records observed condition at the time of inspection. It does not replace an independent specialist assessment where required."))draw(l);
