@@ -72,8 +72,9 @@ export function InspectionWizard() {
   const recommendation=recommendationForScore(score.overall,score.counts.Critical,score.counts.Major);
   const totalItems=useMemo(()=>Object.values(sectionItems).flat().length,[]);
   const reviewed=useMemo(()=>Object.values(draft.sections).flatMap(s=>Object.values(s)).filter(v=>v.status!=="Not tested").length,[draft.sections]);
-  const readinessRules=[{label:"Vehicle identity",done:Boolean(draft.vehicle.registration.trim())},{label:"Checklist reviewed",done:reviewed>=totalItems-1},{label:"Evidence uploaded",done:draft.photos.filter(p=>Boolean(p.path)).length>=4},{label:"Recommendation ready",done:Boolean(recommendation)},{label:"Reviewer sign-off",done:signed}];
-  const readiness=Math.round(readinessRules.filter(x=>x.done).length/readinessRules.length*100),canFinalize=readiness>=80&&Boolean(draft.vehicle.registration.trim());
+  const evidenceSynced=draft.photos.length>=1&&draft.photos.every(p=>Boolean(p.path));
+  const readinessRules=[{label:"Vehicle identity",done:Boolean(draft.vehicle.registration.trim())},{label:"Checklist reviewed",done:reviewed>=totalItems-1},{label:"Evidence captured",done:draft.photos.filter(p=>Boolean(p.path)).length>=4},{label:"All evidence synced",done:evidenceSynced},{label:"Recommendation ready",done:Boolean(recommendation)},{label:"Reviewer sign-off",done:signed}];
+  const readiness=Math.round(readinessRules.filter(x=>x.done).length/readinessRules.length*100),canFinalize=readiness>=80&&Boolean(draft.vehicle.registration.trim())&&evidenceSynced;
 
   function updateDraft(p:Partial<InspectionDraft>){setDraft(d=>({...d,...p,updatedAt:new Date().toISOString()}))}
   function updateVehicle(k:keyof InspectionDraft["vehicle"],v:string){setDraft(d=>({...d,vehicle:{...d.vehicle,[k]:v},updatedAt:new Date().toISOString()}))}
