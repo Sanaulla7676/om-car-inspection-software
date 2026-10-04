@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Camera, Check, ChevronLeft, ChevronRight, Cloud, CloudOff, FileText, Loader2, PenLine, Sparkles, Upload, Wifi, X } from "lucide-react";
+import { Camera, Check, ChevronLeft, ChevronRight, Cloud, CloudOff, FileText, Loader2, PenLine, Sparkles, ShieldCheck, Upload, Wifi, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { loadLocalDraft, saveLocalDraft } from "@/lib/offline";
 import { calculateScore, recommendationForScore } from "@/lib/scoring";
