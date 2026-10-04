@@ -129,7 +129,7 @@ export function InspectionWizard() {
     setUploadingIndex(index);
     const preview = file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined;
     const nextPhotos=[...draft.photos];
-    nextPhotos[index]={name:nextPhotos[index]?.name ?? file.name || `Evidence ${index+1}`,url:preview};
+    nextPhotos[index]={name:nextPhotos[index]?.name ?? (file.name || `Evidence ${index+1}`),url:preview};
     updateDraft({photos:nextPhotos});
     try {
       let activeInspectionId=inspectionId;
@@ -214,7 +214,7 @@ export function InspectionWizard() {
     {step===6 && <Tyres draft={draft} updateDraft={updateDraft}/>}
     {step===7 && <TestDrive draft={draft} updateDraft={updateDraft}/>}
     {step===8 && <Faults draft={draft} updateDraft={updateDraft}/>}
-    {step===9 && <Photos draft={draft} capturePhoto={capturePhoto}/>}
+    {step===9 && <Photos draft={draft} capturePhoto={capturePhoto} uploadingIndex={uploadingIndex}/>}
     {step===10 && <Summary draft={draft} score={score.overall} recommendation={recommendation} aiSummary={aiSummary} signatureRef={signatureRef} startSignature={startSignature} finalize={finalize}/>}    
 
     <div className="btn-row justify-between mt-5">
@@ -275,7 +275,7 @@ function Faults({draft,updateDraft}:{draft:InspectionDraft;updateDraft:(p:Partia
   return <div className="grid grid-2"><div className="card"><div className="section-title"><div><h2 className="text-lg font-bold">Fault library</h2><p>Tap predefined issues instead of typing them repeatedly.</p></div><button className="btn">＋ Custom</button></div><input value={q} onChange={e=>setQ(e.target.value)} placeholder="Search fault…"/><div className="grid grid-2 mt-3">{filtered.map(f=><button className="card text-left p-3 hover:bg-slate-50" key={f.name} onClick={()=>add(f)}><strong>{f.name}</strong><div className="label">{f.system} • {f.severity}</div></button>)}</div></div><div className="card"><div className="section-title"><div><h2 className="text-lg font-bold">Selected faults</h2><p>Descriptions are structured for consistent reporting.</p></div></div>{draft.findings.length===0?<div className="empty">No faults selected yet.</div>:draft.findings.map((f,i)=><div className="card p-3 mb-2" key={f.name+i}><div className="flex justify-between gap-3"><div><strong>{f.name}</strong><div className="label">{f.system}</div></div><span className={`chip ${f.severity==="Major"||f.severity==="Critical"?"danger":f.severity==="Moderate"?"warn":""}`}>{f.severity}</span></div><div className="text-sm mt-2">{f.default_description}</div><button className="btn mt-2" onClick={()=>updateDraft({findings:draft.findings.filter((_,j)=>j!==i)})}><X size={14}/> Remove</button></div>)}</div></div>;
 }
 
-function Photos({draft,capturePhoto}:{draft:InspectionDraft;capturePhoto:(i:number,f:File)=>Promise<void>}) {
+function Photos({draft,capturePhoto,uploadingIndex}:{draft:InspectionDraft;capturePhoto:(i:number,f:File)=>Promise<void>;uploadingIndex:number|null}) {
   const slots=["Front overview","Rear overview","Left side","Right side","Odometer","VIN / chassis","Front-left damage","Rear bumper damage","Engine bay","Tyre RR","Interior dashboard","Documents"];
   const firstEmpty=draft.photos.findIndex((x)=>!x);
   return <div className="grid gap-4">
