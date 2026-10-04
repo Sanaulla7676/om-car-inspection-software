@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties, MouseEvent, PointerEvent as ReactPointerEvent, RefObject } from "react";
-import { ArrowLeft, ArrowRight, Camera, Check, CheckCircle2, Cloud, CloudOff, FileText, ImagePlus, Loader2, MapPin, Paperclip, PenLine, ScanLine, ShieldCheck, Sparkles, Wifi, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Camera, Check, CheckCircle2, Cloud, CloudOff, FileText, ImagePlus, Loader2, MapPin, Paperclip, PenLine, ScanLine, ShieldCheck, Sparkles, Upload, Wifi, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { loadLocalDraft, saveLocalDraft } from "@/lib/offline";
 import { calculateScore, recommendationForScore } from "@/lib/scoring";
@@ -175,7 +175,7 @@ function Evidence({draft,upload,uploading,selected,setSelected,tool,setTool,anno
   </div>
 }
 
-function Review({draft,score,counts,recommendation,readiness,rules,signatureRef,draw,clear,signed,aiSummary,finalize,canFinalize}:{draft:InspectionDraft;score:number;counts:Record<string,number>;recommendation:string;readiness:number;rules:{label:string;done:boolean}[];signatureRef:RefObject<HTMLCanvasElement|null>;draw:(e:ReactPointerEvent<HTMLCanvasElement>)=>void;clear:()=>void;signed:boolean;aiSummary:()=>void;updateDraft:(p:Partial<InspectionDraft>)=>void;finalize:()=>void;canFinalize:boolean}) {
+function Review({draft,score,counts,recommendation,readiness,rules,signatureRef,draw,clear,signed,aiSummary,updateDraft,finalize,canFinalize}:{draft:InspectionDraft;score:number;counts:Record<string,number>;recommendation:string;readiness:number;rules:{label:string;done:boolean}[];signatureRef:RefObject<HTMLCanvasElement|null>;draw:(e:ReactPointerEvent<HTMLCanvasElement>)=>void;clear:()=>void;signed:boolean;aiSummary:()=>void;updateDraft:(p:Partial<InspectionDraft>)=>void;finalize:()=>void;canFinalize:boolean}) {
   return <div className="om-review"><div className="om-stage"><div className="om-stage-head"><div><h2>Final preflight</h2><p className="sub">One control surface before a client-facing record is published.</p></div><span className="om-chip">Versioned</span></div>
     <div className="om-preflight">{rules.map(r=><div className={`om-preflight-row ${r.done?"done":"todo"}`} key={r.label}>{r.done?<CheckCircle2 size={13}/>:<X size={13}/>}<span>{r.label}</span><span style={{marginLeft:"auto"}}>{r.done?"Ready":"Needs action"}</span></div>)}</div>
     <div className="om-ready" style={{"--ready":`${readiness}%`} as CSSProperties}><div className="om-ready-ring"><span>{readiness}%</span></div><div><b>Inspection readiness</b><small>{canFinalize?"Ready for report generation.":"Resolve the remaining preflight items."}</small></div></div>
