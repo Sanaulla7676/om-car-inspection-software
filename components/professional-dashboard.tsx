@@ -50,3 +50,13 @@ function InspectorDashboard({rows}:{rows:InspectionRow[]}){
   <div className="ref-dash-grid ref-dash-grid-bottom"><section className="ref-card-large"><CardHead title="My Inspections" sub="Recent work, ordered by attention"/><div className="ref-list">{rows.slice(0,7).map(r=><button className="ref-list-row" key={r.id} onClick={()=>router.push("/inspections")}><span className="ref-mini-avatar">{(r.vehicles?.make||"V").slice(0,1).toUpperCase()}</span><span><b>{r.inspection_number||"Inspection"}</b><small>{(r.vehicles?.make||"")+" "+(r.vehicles?.model||"")+" • "+(r.vehicles?.registration_number||"Registration pending")}</small></span><em className={r.status==="COMPLETED"?"good":r.status==="IN_REVIEW"?"warn":""}>{(r.status||"DRAFT").replaceAll("_"," ")}</em><ArrowRight size={13}/></button>)}{!rows.length&&<div className="ref-empty">No inspections yet.</div>}</div></section><section className="ref-card"><CardHead title="Field Tools" sub="Built for the person beside the car"/><div className="ref-action-grid"><Action icon={<Camera/>} title="Capture evidence" sub="Photos and documents" onClick={()=>router.push("/inspections/new")}/><Action icon={<RefreshCw/>} title="Re-inspection" sub="Carry forward findings" onClick={()=>router.push("/reinspections")}/><Action icon={<FileText/>} title="Reports" sub="Open and share" onClick={()=>router.push("/reports")}/><Action icon={<Gauge/>} title="Vehicle history" sub="Timeline and scores" onClick={()=>router.push("/vehicles")}/></div><div className="ref-sync-line"><Cloud size={14}/><span>Offline queue</span><b>Ready</b></div></section></div>
  </div>
 }
+
+function CardHead({title,sub,action,onAction}:{title:string;sub:string;action?:string;onAction?:()=>void}){
+ return <div className="ref-card-head"><div><h3>{title}</h3><p>{sub}</p></div>{action&&<button onClick={onAction}>{action}<ArrowRight size={12}/></button>}</div>
+}
+function Metric({title,value,note,icon,primary=false,trend}:{title:string;value:string;note:string;icon:ReactNode;primary?:boolean;trend?:string}){
+ return <div className={"ref-metric"+(primary?" primary":"")}><div className="ref-metric-top"><span>{title}</span>{icon}</div><strong>{value}</strong><small><em className={trend==="↑"?"up":trend==="Watch"?"watch":""}>{trend||"•"}</em>{note}</small></div>
+}
+function Action({icon,title,sub,onClick}:{icon:ReactNode;title:string;sub:string;onClick:()=>void}){
+ return <button className="ref-action" onClick={onClick}>{icon}<span><b>{title}</b><small>{sub}</small></span><ArrowRight size={12}/></button>
+}
