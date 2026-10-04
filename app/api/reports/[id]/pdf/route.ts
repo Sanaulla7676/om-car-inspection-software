@@ -29,7 +29,7 @@ export async function GET(_req:Request,{params}:{params:Promise<{id:string}>}){
        const bytes=await response.arrayBuffer();const type=(m.mime_type||"").toLowerCase();
        const image=type.includes("png")?await pdf.embedPng(bytes):type.includes("jpeg")||type.includes("jpg")?await pdf.embedJpg(bytes):null;
        if(!image)continue;
-       if(col===0&&row===0){page=pdf.addPage([595,842]);y=790;draw("Evidence photos",14,true)}
+       if(row>=2){row=0;col=0;page=pdf.addPage([595,842]);y=790;draw("Evidence photos",14,true)}
        const x=42+col*265, top=730-row*270;
        const maxW=240,maxH=205,scale=Math.min(maxW/image.width,maxH/image.height);
        const w=image.width*scale,h=image.height*scale;
