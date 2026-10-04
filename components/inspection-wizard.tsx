@@ -66,7 +66,7 @@ export function InspectionWizard() {
   const recommendation=recommendationForScore(score.overall,score.counts.Critical,score.counts.Major);
   const totalItems=useMemo(()=>Object.values(sectionItems).flat().length,[]);
   const reviewed=useMemo(()=>Object.values(draft.sections).flatMap(s=>Object.values(s)).filter(v=>v.status!=="Not tested").length,[draft.sections]);
-  const readinessRules=[{label:"Vehicle identity",done:Boolean(draft.vehicle.registration.trim())},{label:"Checklist reviewed",done:reviewed>=totalItems-1},{label:"Evidence captured",done:draft.photos.length>=4},{label:"Recommendation ready",done:Boolean(recommendation)},{label:"Reviewer sign-off",done:signed}];
+  const readinessRules=[{label:"Vehicle identity",done:Boolean(draft.vehicle.registration.trim())},{label:"Checklist reviewed",done:reviewed>=totalItems-1},{label:"Evidence uploaded",done:draft.photos.filter(p=>Boolean(p.path)).length>=4},{label:"Recommendation ready",done:Boolean(recommendation)},{label:"Reviewer sign-off",done:signed}];
   const readiness=Math.round(readinessRules.filter(x=>x.done).length/readinessRules.length*100),canFinalize=readiness>=80&&Boolean(draft.vehicle.registration.trim());
 
   function updateDraft(p:Partial<InspectionDraft>){setDraft(d=>({...d,...p,updatedAt:new Date().toISOString()}))}
@@ -85,16 +85,27 @@ export function InspectionWizard() {
   }
   async function next(){try{if(stage===0)await ensureInspection();setStage(s=>Math.min(6,s+1));scrollTo({top:0,behavior:"smooth"})}catch(e){setNotice(e instanceof Error?e.message:"Could not continue.")}}
   async function jumpToStage(target:number){try{if(target===stage)return;if(target>0)await ensureInspection();setStage(Math.max(0,Math.min(6,target)));scrollTo({top:0,behavior:"smooth"})}catch(e){setNotice(e instanceof Error?e.message:"Enter the vehicle registration or chassis number first.")}}
-  async function uploadEvidence(file:File,label:string){
-    if(file.size>15*1024*1024){setNotice("Keep each evidence file under 15 MB.");return} setUploading(label);
-    const id=await ensureInspection().catch(e=>{setNotice(e instanceof Error?e.message:"Could not create inspection.");return null}); if(!id){setUploading("");return}
-    const preview=file.type.startsWith("image/")?URL.createObjectURL(file):undefined;
-    const localPhoto={name:label,url:preview};setDraft(d=>({...d,photos:[...d.photos,localPhoto],updatedAt:new Date().toISOString()}));
+  async function prepareEvidenceFile(file:File){
+    if(!file.type.startsWith("image/")||typeof createImageBitmap!=="function")return file;
     try{
+      const bitmap=await createImageBitmap(file);const max=2400;const scale=Math.min(1,max/Math.max(bitmap.width,bitmap.height));
+      const canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));
+      const ctx=canvas.getContext("2d");if(!ctx) return file;ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close();
+      const blob=await new Promise<Blob|null>(resolve=>canvas.toBlob(resolve,"image/jpeg",.86));if(!blob)return file;
+      const base=file.name.replace(/\.[^.]+$/,"");return new File([blob],`${base}.jpg`,{type:"image/jpeg",lastModified:file.lastModified});
+    }catch{return file}
+  }
+  async function uploadEvidence(file:File,label:string){
+    if(file.size>30*1024*1024){setNotice("Keep each evidence file under 30 MB.");return} setUploading(label);
+    const id=await ensureInspection().catch(e=>{setNotice(e instanceof Error?e.message:"Could not create inspection.");return null}); if(!id){setUploading("");return}
+    try{
+      const prepared=await prepareEvidenceFile(file);
+      const preview=prepared.type.startsWith("image/")?URL.createObjectURL(prepared):undefined;
+      const localPhoto={name:label,url:preview};setDraft(d=>({...d,photos:[...d.photos,localPhoto],updatedAt:new Date().toISOString()}));
       if(supabase&&orgId&&online&&id!==draft.inspectionNumber){
-        const ext=(file.name.split(".").pop()||"bin").replace(/[^a-z0-9]/gi,"")||"bin";const path=`${orgId}/${id}/original/${crypto.randomUUID()}.${ext}`;
-        const {error}=await supabase.storage.from("inspection-media").upload(path,file,{contentType:file.type||"application/octet-stream",cacheControl:"3600",upsert:false});if(error)throw error;
-        const {error:row}=await supabase.from("inspection_media").insert({organization_id:orgId,inspection_id:id,section_name:label.includes(" • ")?label.split(" • ")[0]:label,file_path:path,media_type:file.type.startsWith("video/")?"video":file.type==="application/pdf"?"document":"image",original_filename:file.name,mime_type:file.type||"application/octet-stream",file_size:file.size,captured_at:new Date().toISOString()});if(row)throw row;
+        const ext=(prepared.name.split(".").pop()||"bin").replace(/[^a-z0-9]/gi,"")||"bin";const path=`${orgId}/${id}/original/${crypto.randomUUID()}.${ext}`;
+        const {error}=await supabase.storage.from("inspection-media").upload(path,prepared,{contentType:prepared.type||"application/octet-stream",cacheControl:"3600",upsert:false});if(error)throw error;
+        const {error:row}=await supabase.from("inspection_media").insert({organization_id:orgId,inspection_id:id,section_name:label.includes(" • ")?label.split(" • ")[0]:label,file_path:path,media_type:prepared.type.startsWith("video/")?"video":prepared.type==="application/pdf"?"document":"image",original_filename:file.name,mime_type:prepared.type||"application/octet-stream",file_size:prepared.size,captured_at:new Date().toISOString()});if(row)throw row;
         setDraft(d=>({...d,photos:[...d.photos.slice(0,-1),{name:label,path,url:preview}],updatedAt:new Date().toISOString()}));setNotice("Evidence uploaded and linked");
       }else setNotice(online?"Evidence saved locally":"Offline evidence saved locally");
     }catch(e){setNotice(`Upload failed: ${e instanceof Error?e.message:"unknown error"}`)}finally{setUploading("")}
