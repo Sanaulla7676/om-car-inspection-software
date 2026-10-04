@@ -64,6 +64,8 @@ export async function POST(req:Request){
   const purpose="Vehicle inspection and report preparation using customer-provided chassis number.";
   let payload:LookupData={reference_id:referenceId,consent:true,purpose,id:chassis};
 
+  if(provider!=="decentro"&&provider!=="surepass")payload={chassis_number:chassis,...(engineNumber?{engine_number:engineNumber}:{})};
+
   if(provider==="surepass"){
     endpoint=process.env.VEHICLE_LOOKUP_URL||"https://kyc-api.surepass.app/api/v1/rc/chassis-engine-to-rc";
     if(!engineNumber)return NextResponse.json({error:"This Surepass adapter requires the engine number too. Configure the chassis-only provider or enter the engine number."},{status:400});
