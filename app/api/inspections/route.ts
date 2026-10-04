@@ -31,6 +31,7 @@ export async function POST(req:Request) {
     organization_id:organizationId,
     registration_number:d.vehicle.registration.trim().toUpperCase(),
     vin:d.vehicle.vin||null,
+    chassis_number:d.vehicle.vin||null,
     make:d.vehicle.make||null, model:d.vehicle.model||null, variant:d.vehicle.variant||null,
     manufacturing_year:d.vehicle.year?Number(d.vehicle.year):null,
     fuel_type:d.vehicle.fuel||null, transmission:d.vehicle.transmission||null,
