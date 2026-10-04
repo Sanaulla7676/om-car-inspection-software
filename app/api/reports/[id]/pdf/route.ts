@@ -10,6 +10,7 @@ export async function GET(_req:Request,{params}:{params:Promise<{id:string}>}){
  const {data:{user}}=await supabase.auth.getUser();if(!user)return new NextResponse("Unauthorized",{status:401});
  const {data:m}=await supabase.from("memberships").select("organization_id").eq("user_id",user.id).eq("status","active").order("created_at").limit(1).maybeSingle();
  if(!m?.organization_id)return new NextResponse("No organization",{status:409});
+ const storageClient=supabase;
  const {data:report}=await supabase.from("reports").select("id,inspection_id,current_version,report_versions(snapshot_json)").eq("id",id).eq("organization_id",m.organization_id).single();
  if(!report)return new NextResponse("Report not found",{status:404});
  const versions:any=(report as any).report_versions;const snapshot=Array.isArray(versions)?versions[0]?.snapshot_json:versions?.snapshot_json;
@@ -22,7 +23,7 @@ export async function GET(_req:Request,{params}:{params:Promise<{id:string}>}){
    draw(`${media.length} image${media.length===1?"":"s"} attached to this inspection.`,9);
    let col=0,row=0;
    for(const m of media){
-     const signed=await supabase.storage.from("inspection-media").createSignedUrl(m.file_path,300);
+     const signed=await storageClient.storage.from("inspection-media").createSignedUrl(m.file_path,300);
      if(signed.error||!signed.data?.signedUrl)continue;
      try{
        const response=await fetch(signed.data.signedUrl,{cache:"no-store"});if(!response.ok)continue;
