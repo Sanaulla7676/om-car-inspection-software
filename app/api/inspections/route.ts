@@ -57,7 +57,7 @@ export async function POST(req:Request) {
   }).select("id,inspection_number").single();
   if(error||!inspection) return NextResponse.json({error:error?.message??"Inspection could not be created"},{status:500});
 
-  await supabase.from("inspection_drafts").upsert({inspection_id:inspection.id,version:1,payload:d,updated_by:userId,updated_at:new Date().toISOString()},{onConflict:"inspection_id"});
+  await supabase.from("inspection_drafts").upsert({organization_id:organizationId,inspection_id:inspection.id,version:1,payload:d,updated_by:userId,updated_at:new Date().toISOString()},{onConflict:"inspection_id"});
   await supabase.from("audit_logs").insert({organization_id:organizationId,actor_id:userId,action:"created inspection",entity_type:"inspection",entity_id:inspection.id,after_data:{inspection_number:inspectionNumber}});
   return NextResponse.json({id:inspection.id,inspectionNumber:inspection.inspection_number});
 }
