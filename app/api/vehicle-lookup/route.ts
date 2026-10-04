@@ -59,7 +59,7 @@ export async function POST(req:Request){
   if(chassis.length<6||chassis.length>32)return NextResponse.json({error:"Enter a valid chassis/VIN number."},{status:400});
 
   const provider=(process.env.VEHICLE_LOOKUP_PROVIDER||"decentro").toLowerCase();
-  let endpoint=process.env.VEHICLE_LOOKUP_URL||"https://in.decentro.tech/v2/bytes/converter/chassis/rc";
+  let endpoint=process.env.VEHICLE_LOOKUP_URL||process.env.VEHICLE_PROVIDER_URL||"https://in.decentro.tech/v2/bytes/converter/chassis/rc";
   const referenceId=`OM-${Date.now()}-${crypto.randomUUID().slice(0,8)}`;
   const purpose="Vehicle inspection and report preparation using customer-provided chassis number.";
   let payload:LookupData={reference_id:referenceId,consent:true,purpose,id:chassis};
@@ -73,7 +73,7 @@ export async function POST(req:Request){
   const headers:Record<string,string>={"content-type":"application/json"};
   if(provider==="decentro"){headers.client_id=process.env.DECENTRO_CLIENT_ID||"";headers.client_secret=process.env.DECENTRO_CLIENT_SECRET||""}
   else if(provider==="surepass")headers.authorization=`Bearer ${process.env.SUREPASS_API_KEY||""}`;
-  else if(process.env.VEHICLE_LOOKUP_API_KEY)headers.authorization=`Bearer ${process.env.VEHICLE_LOOKUP_API_KEY}`;
+  else if(process.env.VEHICLE_LOOKUP_API_KEY||process.env.VEHICLE_PROVIDER_TOKEN)headers.authorization=`Bearer ${process.env.VEHICLE_LOOKUP_API_KEY||process.env.VEHICLE_PROVIDER_TOKEN}`;
 
   if(Object.values(headers).some(v=>!v))return NextResponse.json({error:"Vehicle lookup provider credentials are not configured. Add the provider credentials in Vercel environment variables."},{status:503});
 
@@ -93,7 +93,7 @@ export async function POST(req:Request){
   const normalized=normalizeResponse(result);
   const vehiclePayload={
     organization_id:organizationId,
-    registration_number:(normalized.registration||`UNKNOWN-${chassis.slice(-8)}`).toUpperCase(),
+    registration_number:normalized.registration.toUpperCase(),
     vin:normalized.vin||chassis,
     chassis_number:normalized.vin||chassis,
     engine_number:normalized.engineNumber||engineNumber||null,
@@ -104,8 +104,16 @@ export async function POST(req:Request){
   };
 
   let vehicleId:string|null=null;
-  const {data:vehicle}=await supabase.from("vehicles").upsert(vehiclePayload,{onConflict:"organization_id,registration_number"}).select("id").maybeSingle();
-  vehicleId=vehicle?.id??null;
+  if(normalized.registration){
+    const {data:byVin}=await supabase.from("vehicles").select("id").eq("organization_id",organizationId).eq("vin",normalized.vin||chassis).maybeSingle();
+    if(byVin){
+      const {data:updated}=await supabase.from("vehicles").update(vehiclePayload).eq("id",byVin.id).select("id").single();
+      vehicleId=updated?.id??byVin.id;
+    }else{
+      const {data:vehicle}=await supabase.from("vehicles").upsert(vehiclePayload,{onConflict:"organization_id,registration_number"}).select("id").maybeSingle();
+      vehicleId=vehicle?.id??null;
+    }
+  }
 
   await supabase.from("vehicle_lookup_logs").insert({organization_id:organizationId,vehicle_id:vehicleId,provider,request:{chassis_number:chassis,has_engine_number:Boolean(engineNumber)},response_summary:{registration:normalized.registration,vin:normalized.vin,make:normalized.make,model:normalized.model,variant:normalized.variant,year:normalized.year,fuel:normalized.fuel,insurance_valid_until:normalized.insuranceValidUntil,pucc_valid_until:normalized.puccValidUntil,fitness_valid_until:normalized.fitnessValidUntil,rc_status:normalized.rcStatus,blacklist_status:normalized.blacklistStatus},status:"SUCCESS",requested_by:userId});
 
