@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties, MouseEvent, PointerEvent as ReactPointerEvent, RefObject } from "react";
-import { ArrowLeft, ArrowRight, Camera, Check, CheckCircle2, Cloud, CloudOff, FileText, ImagePlus, Loader2, MapPin, Paperclip, PenLine, ScanLine, ShieldCheck, Sparkles, Upload, Wifi, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Camera, Check, CheckCircle2, Cloud, CloudOff, Download as DownloadIcon, FileText, ImagePlus, Search as SearchIcon, Loader2, MapPin, Merge as MergeIcon, Paperclip, PenLine, ScanLine, ShieldCheck, Sparkles, Upload, Wifi, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { loadLocalDraft, saveLocalDraft } from "@/lib/offline";
 import { calculateScore, recommendationForScore } from "@/lib/scoring";
@@ -48,6 +48,7 @@ export function InspectionWizard() {
   const [role,setRole]=useState<string|null>(null),[online,setOnline]=useState(true),[saving,setSaving]=useState(false),[notice,setNotice]=useState(""),[loading,setLoading]=useState(true);
   const [mechTab,setMechTab]=useState<"Mechanical"|"Electrical"|"Tyres">("Mechanical"),[uploading,setUploading]=useState(""),[selected,setSelected]=useState<number|null>(null),[annotationTool,setAnnotationTool]=useState<string|null>(null),[annotations,setAnnotations]=useState<Record<number,{x:number;y:number;type:string}[]>>({});
   const [signed,setSigned]=useState(false); const signatureRef=useRef<HTMLCanvasElement>(null);
+  const [lookupBusy,setLookupBusy]=useState(false),[lookupMessage,setLookupMessage]=useState(""),[lookupSource,setLookupSource]=useState(""),[publishedReportId,setPublishedReportId]=useState<string>(),[packageOpen,setPackageOpen]=useState(false),[packageBusy,setPackageBusy]=useState(false),[attachmentFile,setAttachmentFile]=useState<File|null>(null);
 
   useEffect(()=>{
     const on=()=>setOnline(true),off=()=>setOnline(false); setOnline(navigator.onLine); addEventListener("online",on); addEventListener("offline",off);
@@ -83,6 +84,7 @@ export function InspectionWizard() {
     const r=await fetch("/api/inspections",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({draft,organizationId:orgId})});const j=await r.json();if(!r.ok)throw new Error(j.error||"Could not create inspection.");setInspectionId(j.id);localStorage.setItem("om-active-inspection",j.id);return j.id;
   }
   async function next(){try{if(stage===0)await ensureInspection();setStage(s=>Math.min(6,s+1));scrollTo({top:0,behavior:"smooth"})}catch(e){setNotice(e instanceof Error?e.message:"Could not continue.")}}
+  async function jumpToStage(target:number){try{if(target===stage)return;if(target>0)await ensureInspection();setStage(Math.max(0,Math.min(6,target)));scrollTo({top:0,behavior:"smooth"})}catch(e){setNotice(e instanceof Error?e.message:"Enter the vehicle registration or chassis number first.")}}
   async function uploadEvidence(file:File,label:string){
     if(file.size>15*1024*1024){setNotice("Keep each evidence file under 15 MB.");return} setUploading(label);
     const id=await ensureInspection().catch(e=>{setNotice(e instanceof Error?e.message:"Could not create inspection.");return null}); if(!id){setUploading("");return}
@@ -92,13 +94,56 @@ export function InspectionWizard() {
       if(supabase&&orgId&&online&&id!==draft.inspectionNumber){
         const ext=(file.name.split(".").pop()||"bin").replace(/[^a-z0-9]/gi,"")||"bin";const path=`${orgId}/${id}/original/${crypto.randomUUID()}.${ext}`;
         const {error}=await supabase.storage.from("inspection-media").upload(path,file,{contentType:file.type||"application/octet-stream",cacheControl:"3600",upsert:false});if(error)throw error;
-        const {error:row}=await supabase.from("inspection_media").insert({organization_id:orgId,inspection_id:id,file_path:path,media_type:file.type.startsWith("video/")?"video":file.type==="application/pdf"?"document":"image",original_filename:file.name,mime_type:file.type||"application/octet-stream",file_size:file.size,captured_at:new Date().toISOString()});if(row)throw row;
+        const {error:row}=await supabase.from("inspection_media").insert({organization_id:orgId,inspection_id:id,section_name:label.includes(" • ")?label.split(" • ")[0]:label,file_path:path,media_type:file.type.startsWith("video/")?"video":file.type==="application/pdf"?"document":"image",original_filename:file.name,mime_type:file.type||"application/octet-stream",file_size:file.size,captured_at:new Date().toISOString()});if(row)throw row;
         setDraft(d=>({...d,photos:[...d.photos.slice(0,-1),{name:label,path,url:preview}],updatedAt:new Date().toISOString()}));setNotice("Evidence uploaded and linked");
       }else setNotice(online?"Evidence saved locally":"Offline evidence saved locally");
     }catch(e){setNotice(`Upload failed: ${e instanceof Error?e.message:"unknown error"}`)}finally{setUploading("")}
   }
+  async function lookupVehicle(){
+  const chassis=draft.vehicle.vin.trim().toUpperCase().replace(/\\s+/g,"");
+  const engine=draft.vehicle.engineNumber.trim().toUpperCase().replace(/\\s+/g,"");
+  if(!chassis){setLookupMessage("Enter the chassis / VIN first.");return}
+  setLookupBusy(true);setLookupMessage("Verifying vehicle…");setLookupSource("");
+  try{
+    const r=await fetch("/api/vehicle-lookup",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({chassis_number:chassis,engine_number:engine})});
+    const j=await r.json();
+    if(!r.ok)throw new Error(j.error||"Vehicle lookup failed.");
+    const d=j.data||{};
+    setDraft(prev=>({...prev,vehicle:{...prev.vehicle,registration:d.registration||prev.vehicle.registration,vin:d.vin||prev.vehicle.vin,engineNumber:d.engineNumber||prev.vehicle.engineNumber,make:d.make||prev.vehicle.make,model:d.model||prev.vehicle.model,variant:d.variant||prev.vehicle.variant,year:d.year||prev.vehicle.year,fuel:d.fuel?capitalize(d.fuel):prev.vehicle.fuel,transmission:d.transmission?capitalize(d.transmission):prev.vehicle.transmission,color:d.color||prev.vehicle.color},updatedAt:new Date().toISOString()}));
+    setLookupSource(j.provider||"Verified registry");setLookupMessage("Vehicle details attached to this inspection.");
+  }catch(e){setLookupMessage(e instanceof Error?e.message:"Could not verify vehicle.")}finally{setLookupBusy(false)}
+}
+function capitalize(v:string){return v? v.charAt(0).toUpperCase()+v.slice(1).toLowerCase() : v}
+
   async function aiSummary(){setSaving(true);try{const r=await fetch("/api/ai/summary",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({findings:draft.findings,vehicle:draft.vehicle,score:score.overall})});const j=await r.json();updateDraft({reviewerComments:j.summary??""});setNotice(j.source==="ai"?"AI summary drafted from supplied facts":"Deterministic summary drafted")}catch{setNotice("Could not generate summary")}finally{setSaving(false)}}
-  async function finalize(){if(!canFinalize){setNotice("Complete the remaining preflight checks before publishing.");return}try{const id=await ensureInspection();setSaving(true);const payload={...draft,recommendation,signatureDataUrl:signatureRef.current?.toDataURL("image/png"),photos:draft.photos.map((p,i)=>({...p,annotation:annotations[i]??[]}))};const r=await fetch(`/api/inspections/${id}`,{method:"PATCH",headers:{"content-type":"application/json"},body:JSON.stringify({action:"finalize",payload})});const j=await r.json();if(!r.ok)throw new Error(j.error||"Finalization failed.");localStorage.removeItem("om-active-inspection");window.location.href=`/reports?inspection=${id}`;}catch(e){setNotice(e instanceof Error?e.message:"Finalization failed.")}finally{setSaving(false)}}
+  async function finalize(){
+  if(!canFinalize){setNotice("Complete the remaining preflight checks before publishing.");return}
+  try{
+    const id=await ensureInspection();setSaving(true);
+    const payload={...draft,recommendation,signatureDataUrl:signatureRef.current?.toDataURL("image/png"),photos:draft.photos.map((p,i)=>({...p,annotation:annotations[i]??[]}))};
+    const r=await fetch(`/api/inspections/${id}`,{method:"PATCH",headers:{"content-type":"application/json"},body:JSON.stringify({action:"finalize",payload})});
+    const j=await r.json();if(!r.ok)throw new Error(j.error||"Finalization failed.");
+    localStorage.removeItem("om-active-inspection");setPublishedReportId(j.reportId);setPackageOpen(true);setNotice("Report generated. Choose how to package the PDF.");
+  }catch(e){setNotice(e instanceof Error?e.message:"Finalization failed.")}finally{setSaving(false)}
+}
+async function getReportPdf(){
+  if(!publishedReportId)throw new Error("Report is not ready.");
+  const r=await fetch(`/api/reports/${publishedReportId}/pdf`,{cache:"no-store"});if(!r.ok)throw new Error(await r.text()||"Could not create PDF.");
+  return await r.blob();
+}
+function downloadBlob(blob:Blob,name:string){const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+async function downloadReportPdf(){
+  setPackageBusy(true);try{const blob=await getReportPdf();downloadBlob(blob,`${draft.inspectionNumber}.pdf`);setNotice("PDF downloaded with the inspection evidence.");setPackageOpen(false)}catch(e){setNotice(e instanceof Error?e.message:"PDF download failed.")}finally{setPackageBusy(false)}
+}
+async function mergeReportPdf(){
+  if(!attachmentFile){setNotice("Choose the supporting PDF first.");return}
+  setPackageBusy(true);try{
+    const base=await getReportPdf();const form=new FormData();form.append("basePdf",new File([base],`${draft.inspectionNumber}.pdf`,{type:"application/pdf"}));form.append("attachment",attachmentFile);
+    const r=await fetch(`/api/reports/${publishedReportId}/merge-pdf`,{method:"POST",body:form});if(!r.ok)throw new Error(await r.text()||"Could not merge PDFs.");
+    const blob=await r.blob();downloadBlob(blob,`${draft.inspectionNumber}-complete-package.pdf`);setNotice("Combined client package downloaded.");setPackageOpen(false);
+  }catch(e){setNotice(e instanceof Error?e.message:"PDF merge failed.")}finally{setPackageBusy(false)}
+}
+
   function draw(e:React.PointerEvent<HTMLCanvasElement>){const c=signatureRef.current,ctx=c?.getContext("2d");if(!c||!ctx)return;const r=c.getBoundingClientRect();ctx.lineWidth=2.5;ctx.lineCap="round";ctx.strokeStyle="#243b63";ctx.beginPath();ctx.moveTo(e.clientX-r.left,e.clientY-r.top);setSigned(true);const move=(ev:globalThis.PointerEvent)=>{ctx.lineTo(ev.clientX-r.left,ev.clientY-r.top);ctx.stroke()};const stop=()=>{removeEventListener("pointermove",move);removeEventListener("pointerup",stop)};addEventListener("pointermove",move);addEventListener("pointerup",stop)}
   function clearSignature(){const c=signatureRef.current;c?.getContext("2d")?.clearRect(0,0,c.width,c.height);setSigned(false)}
   function annotate(e:React.MouseEvent<HTMLDivElement>,i:number){if(!annotationTool)return;const r=e.currentTarget.getBoundingClientRect();const x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100;setAnnotations(a=>({...a,[i]:[...(a[i]??[]),{x,y,type:annotationTool}]}));setAnnotationTool(null)}
@@ -109,10 +154,10 @@ export function InspectionWizard() {
 
   return <div className="om-wiz">
     <header className="om-wiz-head"><div><span>0{stage+1} / 07 • {role||"INSPECTOR"}</span><h1>{titles[name]}</h1><p>{name==="Vehicle"?"Enter identity once. Everything else stays attached.":"Tap the normal state. Exceptions reveal the detail controls."}</p></div><div className="om-wiz-pills"><span className={online?"online":""}>{online?<Wifi size={13}/>:<CloudOff size={13}/>} {online?"Online":"Offline"}</span><span><Cloud size={13}/> {saving?"Syncing":"Autosave"}</span></div></header>
-    <nav className="om-wiz-steps">{stages.map((s,i)=><button className={i===stage?"active":i<stage?"done":""} key={s} disabled={i>stage} onClick={()=>setStage(i)}><b>{i<stage?<Check size={12}/>:i+1}</b><span>{s}</span></button>)}</nav>
+    <nav className="om-wiz-steps">{stages.map((s,i)=><button className={i===stage?"active":i<stage?"done":""} key={s} onClick={()=>void jumpToStage(i)}><b>{i<stage?<Check size={12}/>:i+1}</b><span>{s}</span></button>)}</nav>
 
     <div className="om-wiz-grid"><main>
-      {name==="Vehicle"&&<VehicleStage draft={draft} updateVehicle={updateVehicle} updateDraft={updateDraft} upload={uploadEvidence}/>}
+      {name==="Vehicle"&&<VehicleStage draft={draft} updateVehicle={updateVehicle} updateDraft={updateDraft} upload={uploadEvidence} lookup={lookupVehicle} lookupBusy={lookupBusy} lookupMessage={lookupMessage} lookupSource={lookupSource}/>}
       {(name==="Exterior"||name==="Interior")&&<Checklist section={name} draft={draft} updateItem={updateItem} upload={uploadEvidence}/>}
       {name==="Mechanical"&&<Mechanical tab={mechTab} setTab={setMechTab} draft={draft} updateItem={updateItem} upload={uploadEvidence}/>}
       {name==="Road Test"&&<RoadTest draft={draft} updateDraft={updateDraft}/>}
@@ -124,8 +169,20 @@ export function InspectionWizard() {
       <div className="om-aside-box"><b><ShieldCheck size={14}/> Data protection</b><p>Local cache first. Protected organization sync when connected.</p><span className="om-sync"><i className={online?"live":""}/>{online?"Connected to sync":"Working offline"}</span></div>
     </aside></div>
 
-    <footer className="om-wiz-footer"><button onClick={()=>setStage(s=>Math.max(0,s-1))} disabled={stage===0}><ArrowLeft size={15}/> Back</button><span>{notice&&<><CheckCircle2 size={13}/>{notice}</>}</span>{stage<6?<button className="primary" onClick={next}>{stage===0?"Start field inspection":stage===5?"Review inspection":`Continue ${stages[stage+1]}`}<ArrowRight size={15}/></button>:<button className="primary" onClick={finalize} disabled={!canFinalize||saving}>{saving?<Loader2 className="spin"/>:<FileText size={15}/>} {saving?"Generating…":"Generate final report"}</button>}</footer>
+    <footer className="om-wiz-footer"><button onClick={()=>setStage(s=>Math.max(0,s-1))} disabled={stage===0}><ArrowLeft size={15}/> Back</button><span>{notice&&<><CheckCircle2 size={13}/>{notice}</>}</span>{stage<6?<button className="primary" onClick={next}>{stage===0?"Start field inspection":stage===5?"Review inspection":`Continue ${stages[stage+1]}`}<ArrowRight size={15}/></button>:<button className="primary" onClick={finalize} disabled={!canFinalize||saving}>{saving?<Loader2 className="spin"/>:<FileText size={15}/>} {saving?"Preparing PDF…":"Print PDF"}</button>}</footer>
 
+    {packageOpen&&<div className="om-package-backdrop" onClick={()=>!packageBusy&&setPackageOpen(false)}>
+      <div className="om-package" onClick={e=>e.stopPropagation()}>
+        <div className="om-package-head"><div><span>CLIENT DOCUMENT PACKAGE</span><h2>Print PDF</h2><p>Your report contains the imported inspection images. Add another PDF only when needed.</p></div><button onClick={()=>setPackageOpen(false)} disabled={packageBusy}><X size={15}/></button></div>
+        <div className="om-package-preview"><FileText size={19}/><div><b>{draft.inspectionNumber}.pdf</b><small>Generated inspection report • photos included</small></div><span className="om-chip">Ready</span></div>
+        <div className="om-package-question"><b>Do you want to merge another PDF?</b><span>RC, insurance, PUC, service history or any other supporting document.</span></div>
+        <div className="om-package-actions">
+          <button className="om-tool" onClick={downloadReportPdf} disabled={packageBusy}>{packageBusy?<Loader2 className="spin"/>:<DownloadIcon/>} No — download report</button>
+          <label className="om-tool"><Upload size={14}/><div>{attachmentFile?attachmentFile.name:"Yes — attach supporting PDF"}<small>{attachmentFile?"Click to replace":"PDF only • max 25 MB"}</small></div><input className="hidden" type="file" accept="application/pdf,.pdf" onChange={e=>setAttachmentFile(e.target.files?.[0]||null)}/></label>
+        </div>
+        {attachmentFile&&<button className="om-primary-action om-tool" onClick={mergeReportPdf} disabled={packageBusy}><MergeIcon/> Merge & Download Complete PDF</button>}
+      </div>
+    </div>}
     <style jsx global>{`
       .om-wiz{min-height:100%;padding:24px 24px 96px;background:linear-gradient(180deg,#f7fafc,#f1f5f9);color:#20304a}.om-wiz-loading{min-height:60vh;display:grid;place-items:center;color:#77879a}.spin{animation:omSpin 1s linear infinite}@keyframes omSpin{to{transform:rotate(360deg)}}
       .om-wiz-head{display:flex;justify-content:space-between;gap:16px;margin-bottom:16px}.om-wiz-head>div:first-child span{font-size:9px;font-weight:900;letter-spacing:.16em;color:#8290a2}.om-wiz-head h1{margin:6px 0 5px;font-size:27px;letter-spacing:-.04em}.om-wiz-head p{margin:0;color:#8290a2;font-size:12px}.om-wiz-pills{display:flex;gap:7px}.om-wiz-pills span{display:flex;align-items:center;gap:5px;padding:8px 10px;border:1px solid #e0e7ef;background:#fff;border-radius:999px;color:#718095;font-size:10px}.om-wiz-pills span.online{color:#0d876a;background:#f0fbf7;border-color:#ccecdf}
@@ -142,19 +199,22 @@ export function InspectionWizard() {
   </div>
 }
 
-function VehicleStage({draft,updateVehicle,updateDraft,upload}:{draft:InspectionDraft;updateVehicle:(k:keyof InspectionDraft["vehicle"],v:string)=>void;updateDraft:(p:Partial<InspectionDraft>)=>void;upload:(f:File,l:string)=>Promise<void>}) {
-  return <div className="om-stage"><div className="om-stage-head"><div><h2>Vehicle identity</h2><p className="sub">Only identity fields here. The rest comes after the vehicle is locked.</p></div><span className="om-chip">Prefill ready</span></div>
-    <div className="om-fields"><div className="om-field full"><label>Registration number *</label><input value={draft.vehicle.registration} onChange={e=>updateVehicle("registration",e.target.value.toUpperCase())} placeholder="KA01AB1234"/></div>
-      {([["vin","VIN / chassis"],["make","Make"],["model","Model"],["variant","Variant"],["year","Year"],["fuel","Fuel"],["transmission","Transmission"],["color","Color"],["odometer","Odometer"],["engineNumber","Engine number"],["ownership","Ownership"]] as const).map(([k,l])=><div className="om-field" key={k}><label>{l}</label>{["fuel","transmission","ownership"].includes(k)?<select value={draft.vehicle[k]} onChange={e=>updateVehicle(k,e.target.value)}>{(k==="fuel"?["Petrol","Diesel","EV","Hybrid"]:k==="transmission"?["Manual","Automatic","CVT","DCT"]:["1st owner","2nd owner","3+ owners"]).map(o=><option key={o}>{o}</option>)}</select>:<input value={draft.vehicle[k]} onChange={e=>updateVehicle(k,e.target.value)}/>}</div>)}
+function VehicleStage({draft,updateVehicle,updateDraft,upload,lookup,lookupBusy,lookupMessage,lookupSource}:{draft:InspectionDraft;updateVehicle:(k:keyof InspectionDraft["vehicle"],v:string)=>void;updateDraft:(p:Partial<InspectionDraft>)=>void;upload:(f:File,l:string)=>Promise<void>;lookup:()=>Promise<void>;lookupBusy:boolean;lookupMessage:string;lookupSource:string}) {
+  return <div className="om-stage">
+    <div className="om-stage-head"><div><h2>Vehicle identity</h2><p className="sub">Start with the physical vehicle. Chassis lookup can attach the available registry data automatically.</p></div><span className="om-chip">{lookupSource?"Verified":"Lookup ready"}</span></div>
+    <div className="om-lookup-card"><div className="om-lookup-main"><ScanLine size={19}/><div><b>Automatic India vehicle lookup</b><span>Enter the chassis / VIN. The registry connector can return registration, make, model, fuel, colour and compliance information in seconds.</span></div></div><button className="om-lookup-btn" type="button" onClick={()=>void lookup()} disabled={lookupBusy}>{lookupBusy?<Loader2 className="spin" size={14}/>:<SearchIcon size={14}/>} {lookupBusy?"Verifying…":"Lookup vehicle"}</button></div>
+    {lookupMessage&&<div className={lookupSource?"om-lookup-success":"om-lookup-message"}><ShieldCheck size={13}/><span>{lookupMessage}</span></div>}
+    <div className="om-fields">
+      <div className="om-field full"><label>Chassis / VIN *</label><input value={draft.vehicle.vin} onChange={e=>updateVehicle("vin",e.target.value.toUpperCase())} placeholder="17-character VIN / chassis number"/></div>
+      <div className="om-field full"><label>Registration number <span className="om-optional">auto-filled when available</span></label><input value={draft.vehicle.registration} onChange={e=>updateVehicle("registration",e.target.value.toUpperCase())} placeholder="KA01AB1234"/></div>
+      {([["engineNumber","Engine number"],["make","Make"],["model","Model"],["variant","Variant"],["year","Year"],["fuel","Fuel"],["transmission","Transmission"],["color","Color"],["odometer","Odometer"],["ownership","Ownership"]] as const).map(([k,l])=><div className="om-field" key={k}><label>{l}</label>{["fuel","transmission","ownership"].includes(k)?<select value={draft.vehicle[k]} onChange={e=>updateVehicle(k,e.target.value)}>{(k==="fuel"?["Petrol","Diesel","EV","Hybrid"]:k==="transmission"?["Manual","Automatic","CVT","DCT"]:["1st owner","2nd owner","3+ owners"]).map(o=><option key={o}>{o}</option>)}</select>:<input value={draft.vehicle[k]} onChange={e=>updateVehicle(k,e.target.value)}/>}</div>)}
     </div>
     <div className="om-tool-row"><label className="om-tool"><ScanLine size={16}/><div>Scan VIN<small>Camera capture slot</small></div><input type="file" accept="image/*" capture="environment" className="hidden"/></label>
-      <button className="om-tool" type="button" onClick={()=>updateDraft({reviewerComments:"Registration lookup requested."})}><MapPin size={16}/><div>Registration lookup<small>Provider slot, no fake data</small></div></button>
       <label className="om-tool"><Paperclip size={16}/><div>Vehicle document<small>RC / insurance / PUC</small></div><input type="file" accept=".pdf,image/*" className="hidden" onChange={e=>{const f=e.target.files?.[0];if(f)void upload(f,"Vehicle document")}}/></label>
     </div>
-    <div className="om-callout"><ShieldCheck size={14}/><span>Identity, checklist and evidence remain linked to this inspection. No image-based guessing.</span></div>
+    <div className="om-callout"><ShieldCheck size={14}/><span>Verified registry data is attached to the vehicle record. Manual edits remain available for observations such as odometer and ownership.</span></div>
   </div>
 }
-
 function Checklist({section,draft,updateItem,upload}:{section:"Exterior"|"Interior";draft:InspectionDraft;updateItem:(s:string,i:string,k:"status"|"severity"|"notes",v:string)=>void;upload:(f:File,l:string)=>Promise<void>}) {
   const items=sectionItems[section];const good=items.filter(i=>!isIssue(draft.sections[section]?.[i]?.status||"Good")).length;
   return <div className="om-stage"><div className="om-stage-head"><div><h2>{section}</h2><p className="sub">Good is one tap. Exceptions reveal severity, notes and evidence.</p></div><span className="om-chip">{good}/{items.length} good</span></div><div className="om-checklist">{items.map(item=>{const v=draft.sections[section]?.[item]??{status:"Good",severity:"Minor" as Severity,notes:""};const issue=isIssue(v.status);return <div className={`om-item ${issue?"issue":""}`} key={item}><div className="om-item-top"><div><div className="om-item-name">{item}</div><div className="om-item-meta">{issue?"Attention needed":"Tap Good and continue"}</div></div><select value={v.status} onChange={e=>updateItem(section,item,"status",e.target.value)}>{statuses.map(s=><option key={s}>{s}</option>)}</select></div>{issue&&<div className="om-item-detail"><select value={v.severity} onChange={e=>updateItem(section,item,"severity",e.target.value)}>{severities.map(s=><option key={s}>{s}</option>)}</select><textarea value={v.notes} onChange={e=>updateItem(section,item,"notes",e.target.value)} placeholder="Exact observation…"/><label className="om-photo"><Camera size={12}/> Add evidence<input type="file" accept="image/*,video/*,.pdf" onChange={e=>{const f=e.target.files?.[0];if(f)void upload(f,`${section} • ${item}`)}}/></label></div>}</div>})}</div></div>
