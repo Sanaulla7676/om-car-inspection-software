@@ -1,9 +1,15 @@
 import { NextResponse } from "next/server";
 import { PDFDocument } from "pdf-lib";
+import { createClient } from "@/lib/supabase/server";
 
 const MAX_PDF_BYTES=25*1024*1024;
 
 export async function POST(req:Request){
+  const supabase=await createClient();
+  if(!supabase)return NextResponse.json({error:"PDF merge is not configured."},{status:503});
+  const {data:{user}}=await supabase.auth.getUser();
+  if(!user)return NextResponse.json({error:"Unauthorized"},{status:401});
+
   const form=await req.formData();
   const base=form.get("basePdf"),attachment=form.get("attachment");
   if(!(base instanceof File)||!(attachment instanceof File))return NextResponse.json({error:"basePdf and attachment are required."},{status:400});
