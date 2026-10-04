@@ -1,2 +1,10 @@
 import { AppShell } from "@/components/app-shell";
-export default function DashboardPage() { return <AppShell module="dashboard" />; }
+import { ProfessionalDashboard } from "@/components/professional-dashboard";
+
+export default function DashboardPage() {
+  return (
+    <AppShell module="dashboard">
+      <ProfessionalDashboard />
+    </AppShell>
+  );
+}
