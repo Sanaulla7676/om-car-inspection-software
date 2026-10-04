@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useState } from "react";
 import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, ShieldCheck, UserRound, Wrench } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -18,7 +18,7 @@ export function AuthExperience({ mode }: { mode: AuthMode }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const copy = useMemo(() => mode === "login"
+  const copy = mode === "login"
     ? {
         title: "Sign In",
         eyebrow: "WELCOME BACK",
@@ -36,7 +36,7 @@ export function AuthExperience({ mode }: { mode: AuthMode }) {
         switchHref: "/login",
         switchPrefix: "Already have an account?",
         button: "Sign Up",
-      }, [mode]);
+      };
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -129,7 +129,7 @@ export function AuthExperience({ mode }: { mode: AuthMode }) {
 
           <div className="om-auth-switch">
             <span>{copy.switchPrefix}</span>
-            <button type="button" onClick={() => router.push(copy.switchHref)}>{copy.switchLabel}</button>
+            <button type="button" onClick={() => router.push(copy.switchHref as "/login" | "/signup")}>{copy.switchLabel}</button>
           </div>
         </div>
       </section>
