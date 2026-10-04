@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname,useRouter } from "next/navigation";
 import { useEffect,useState } from "react";
-import { BarChart3,Bell,CarFront,ClipboardList,FileText,Gauge,History,LayoutDashboard,LogOut,Menu,Plus,RefreshCcw,Search,Settings,ShieldCheck,SlidersHorizontal,Users,Wrench,X,Download } from "lucide-react";
+import { ArrowRight, BarChart3,Bell,CarFront,ClipboardList,FileText,Gauge,History,LayoutDashboard,LogOut,Menu,Plus,RefreshCcw,Search,Settings,ShieldCheck,SlidersHorizontal,Users,Wrench,X,Download } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { demoCustomers,demoInspections,demoInspectors,demoVehicles,faultLibrary } from "@/lib/demo-data";
 
