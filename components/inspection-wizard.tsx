@@ -48,7 +48,7 @@ export function InspectionWizard() {
   const [role,setRole]=useState<string|null>(null),[online,setOnline]=useState(true),[saving,setSaving]=useState(false),[notice,setNotice]=useState(""),[loading,setLoading]=useState(true);
   const [mechTab,setMechTab]=useState<"Mechanical"|"Electrical"|"Tyres">("Mechanical"),[uploading,setUploading]=useState(""),[selected,setSelected]=useState<number|null>(null),[annotationTool,setAnnotationTool]=useState<string|null>(null),[annotations,setAnnotations]=useState<Record<number,{x:number;y:number;type:string}[]>>({});
   const [signed,setSigned]=useState(false); const signatureRef=useRef<HTMLCanvasElement>(null);
-  const [lookupBusy,setLookupBusy]=useState(false),[lookupMessage,setLookupMessage]=useState(""),[lookupSource,setLookupSource]=useState(""),[publishedReportId,setPublishedReportId]=useState<string>(),[packageOpen,setPackageOpen]=useState(false),[packageBusy,setPackageBusy]=useState(false),[attachmentFile,setAttachmentFile]=useState<File|null>(null);
+  const [lookupBusy,setLookupBusy]=useState(false),[lookupMessage,setLookupMessage]=useState(""),[lookupSource,setLookupSource]=useState(""),[publishedReportId,setPublishedReportId]=useState<string>(),[packageOpen,setPackageOpen]=useState(false),[packageBusy,setPackageBusy]=useState(false),[attachmentFile,setAttachmentFile]=useState<File|null>(null); const lastLookupRef=useRef("");
 
   useEffect(()=>{
     const on=()=>setOnline(true),off=()=>setOnline(false); setOnline(navigator.onLine); addEventListener("online",on); addEventListener("offline",off);
@@ -57,6 +57,12 @@ export function InspectionWizard() {
     return()=>{removeEventListener("online",on);removeEventListener("offline",off)}
   },[]);
 
+  useEffect(()=>{
+    const chassis=draft.vehicle.vin.trim().replace(/\\s+/g,"");
+    if(loading||!online||lookupBusy||chassis.length<12||lastLookupRef.current===chassis)return;
+    const timer=setTimeout(()=>{lastLookupRef.current=chassis;void lookupVehicle()},700);
+    return()=>clearTimeout(timer);
+  },[draft.vehicle.vin,loading,online,lookupBusy]);
   useEffect(()=>{
     if(loading)return; const t=setTimeout(async()=>{const payload={...draft,updatedAt:new Date().toISOString()};await saveLocalDraft(inspectionId??draft.inspectionNumber,payload);
       if(online&&inspectionId){setSaving(true);try{const r=await fetch(`/api/inspections/${inspectionId}`,{method:"PATCH",headers:{"content-type":"application/json"},body:JSON.stringify({action:"draft",payload})});if(!r.ok)throw 0;setNotice("All changes synced")}catch{setNotice("Saved offline • will sync automatically")}finally{setSaving(false)}}else setNotice(online?"Saved locally":"Offline • saved locally")},650);return()=>clearTimeout(t);
