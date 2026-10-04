@@ -91,7 +91,12 @@ export function InspectionWizard() {
     const r=await fetch("/api/inspections",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({draft,organizationId:orgId})});const j=await r.json();if(!r.ok)throw new Error(j.error||"Could not create inspection.");setInspectionId(j.id);localStorage.setItem("om-active-inspection",j.id);return j.id;
   }
   async function next(){try{if(stage===0)await ensureInspection();setStage(s=>Math.min(6,s+1));scrollTo({top:0,behavior:"smooth"})}catch(e){setNotice(e instanceof Error?e.message:"Could not continue.")}}
-  async function jumpToStage(target:number){try{if(target===stage)return;if(target>0)await ensureInspection();setStage(Math.max(0,Math.min(6,target)));scrollTo({top:0,behavior:"smooth"})}catch(e){setNotice(e instanceof Error?e.message:"Enter the vehicle registration or chassis number first.")}}
+  function jumpToStage(target:number){
+    if(target===stage)return;
+    setStage(Math.max(0,Math.min(6,target)));
+    setNotice("");
+    scrollTo({top:0,behavior:"smooth"});
+  }
   async function prepareEvidenceFile(file:File){
     if(!file.type.startsWith("image/")||typeof createImageBitmap!=="function")return file;
     try{
