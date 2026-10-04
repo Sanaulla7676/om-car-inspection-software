@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect,useMemo,useState } from "react";
+import { useEffect,useState } from "react";
+import type { ReactNode } from "react";
 import { ArrowRight,Camera,CheckCircle2,ClipboardList,Cloud,FileText,Gauge,Plus,RefreshCw,ShieldCheck,TriangleAlert,Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { InspectionStatus } from "@/lib/types";
