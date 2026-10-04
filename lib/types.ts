@@ -23,6 +23,12 @@ export type InspectionDraft = {
     registration: string; vin: string; make: string; model: string; variant: string;
     year: string; fuel: string; transmission: string; color: string; odometer: string;
     engineNumber: string; ownership: string;
+    registryDetails?: {
+      registrationDate?: string; category?: string; bodyType?: string; emissionNorm?: string;
+      fitnessValidUntil?: string; insuranceValidUntil?: string; puccValidUntil?: string; permitValidUntil?: string;
+      rcStatus?: string; blacklistStatus?: string; financer?: string; ownerName?: string; ownerCount?: string;
+      provider?: string; fetchedAt?: string;
+    };
   };
   sections: Record<string, Record<string, { status: string; severity: Severity; notes: string }>>;
   findings: Fault[];

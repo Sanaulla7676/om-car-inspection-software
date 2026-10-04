@@ -31,6 +31,7 @@ export async function POST(req:Request) {
     organization_id:organizationId,
     registration_number:d.vehicle.registration.trim().toUpperCase(),
     vin:d.vehicle.vin||null,
+    chassis_number:d.vehicle.vin||null,
     make:d.vehicle.make||null, model:d.vehicle.model||null, variant:d.vehicle.variant||null,
     manufacturing_year:d.vehicle.year?Number(d.vehicle.year):null,
     fuel_type:d.vehicle.fuel||null, transmission:d.vehicle.transmission||null,
@@ -56,7 +57,7 @@ export async function POST(req:Request) {
   }).select("id,inspection_number").single();
   if(error||!inspection) return NextResponse.json({error:error?.message??"Inspection could not be created"},{status:500});
 
-  await supabase.from("inspection_drafts").upsert({inspection_id:inspection.id,version:1,payload:d,updated_by:userId,updated_at:new Date().toISOString()},{onConflict:"inspection_id"});
+  await supabase.from("inspection_drafts").upsert({organization_id:organizationId,inspection_id:inspection.id,version:1,payload:d,updated_by:userId,updated_at:new Date().toISOString()},{onConflict:"inspection_id"});
   await supabase.from("audit_logs").insert({organization_id:organizationId,actor_id:userId,action:"created inspection",entity_type:"inspection",entity_id:inspection.id,after_data:{inspection_number:inspectionNumber}});
   return NextResponse.json({id:inspection.id,inspectionNumber:inspection.inspection_number});
 }

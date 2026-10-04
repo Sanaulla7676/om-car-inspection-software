@@ -41,6 +41,10 @@ Do not apply this migration to an existing Supabase project that contains unrela
 
 Optional integrations:
 `OPENAI_API_KEY`, `OPENAI_MODEL`
+`VEHICLE_LOOKUP_PROVIDER`
+`DECENTRO_CLIENT_ID`, `DECENTRO_CLIENT_SECRET`
+`VEHICLE_LOOKUP_URL`
+`SUREPASS_API_KEY`
 `VEHICLE_PROVIDER_URL`, `VEHICLE_PROVIDER_TOKEN`
 `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`
 `RESEND_API_KEY`, `EMAIL_FROM`
@@ -48,7 +52,13 @@ Optional integrations:
 
 ## Production path
 
-Login → organization → dashboard → assigned inspection → offline-capable 11-step inspection → evidence → deterministic scoring → reviewer controls → immutable report version → secure PDF → QR verification → customer sharing.
+Login → organization → dashboard → vehicle identity → chassis/VIN lookup → automatic vehicle prefill → 7-stage inspection → evidence → deterministic scoring → reviewer controls → immutable report version → Print PDF → optional supporting-PDF merge → QR verification → customer sharing.
+
+### India vehicle lookup
+
+The vehicle identity stage supports a server-side chassis/VIN lookup adapter. The default integration uses a chassis-to-RC provider contract and keeps credentials on the server. The UI automatically attempts lookup after a sufficiently complete chassis number is entered, while still allowing manual lookup and manual correction.
+
+For providers that require consent, the inspection flow should be used only for an authorized business/verification purpose. Current provider documentation shows chassis-to-RC/vehicle verification services and, for Decentro's chassis endpoint, an explicit consent and purpose in the request.
 
 ## AI rule
 
