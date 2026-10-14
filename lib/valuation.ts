@@ -38,8 +38,8 @@ const blankDamage=(part:string):DamageRow=>({part,quantity:"",damageType:"",dama
 export function createDefaultValuation():ValuationDraft{return{
 header:{poName:"",enquiryDate:"",valuationDate:"",number:""},source:{sourceType:"",branchType:"",name:""},customerType:"Individual",customer:{name:"",address:"",office:"",home:"",mobile:"",email:"",contactPerson:"",phone:"",companyName:""},
 assessment:{currentCar:"",purchaseDate:"",usage:[],usageOther:"",sellingReason:"",replacementType:"",newCarDetails:"",enquiryNumber:""},
-vehicle:{registration:"",manufacturer:"",modelSuffix:"",monthYear:"",color:"",kmRun:"",owners:"",chassis:"",engine:"",fuel:""},
-documents:{rcBookType:"",registrationDate:"",reRegistered:"",duplicateRC:"",copy:"",vinPlateAvailable:"",serviceHistoryAvailable:"",hpEntry:"",roadTaxPaid:"",originalInvoiceAvailable:"",bankNameBranch:""},
+vehicle:{registration:"",manufacturer:"",modelSuffix:"",monthYear:"",color:"",kmRun:"",owners:"",chassis:"",engine:"",fuel:"",transmission:""},
+documents:{rcBookType:"",registrationDate:"",reRegistered:"",duplicateRC:"",copy:"",vinPlateAvailable:"",serviceHistoryAvailable:"",hpEntry:"",nocAvailable:"",roadTaxPaid:"",originalInvoiceAvailable:"",bankNameBranch:""},
 insurance:{type:"",companyName:"",premium:"",expiryDate:"",idvValue:"",ncbDetails:""},
 refurbishmentRows:[{item:"Periodic Service",cost:""},{item:"Carpet and upholstery cleaning",cost:""},{item:"Rubbing and polishing",cost:""},{item:"Spare Keys",cost:""},{item:"Other",cost:""}],accessoriesRows:Array.from({length:5},()=>({item:"",value:""})),
 correctionRows:[{item:"Insurance Cost (if expired)",value:""},{item:"Mileage (+ or -)",value:""},{item:"City Registration/Documents",value:""},{item:"Accessories (in case of repair)",value:""}],
@@ -49,7 +49,7 @@ interiorRows:Array.from({length:5},(_,i)=>blankDamage("Interior defect "+(i+1)))
 interiorDamage:Object.fromEntries(["Carpet Damage","3rd Seat Damage","Back Door Trim Damage"].map(k=>[k,{level:0 as 0|1|2|3,rfCost:""}])),
 functionItems:functionDefaults(),frameItems:frameDefaults(),weldedExterior:Object.fromEntries(["RH Rear Fender Panel","LH Rear Fender Panel","RH Rocker Panel","LH Rocker Panel","End Panel","Roof Panel"].map(k=>[k,{repaired:false,replaced:false,rfCost:""}])),
 replacedPanels:Object.fromEntries(["Front Fender","Front Door","Rear Door","Bonnet Hood","Trunk Hood"].map(k=>[k,{left:false,right:false}])),frameRows:Array.from({length:4},(_,i)=>({part:"Frame defect "+(i+1),rfCost:""})),
-followUps:Array.from({length:6},()=>({date:"",status:"" as ""|"P"|"H"|"S"|"D",details:"",tlComment:"",nextActionDate:""})),dropReason:""}}
+followUps:Array.from({length:12},()=>({date:"",status:"" as ""|"P"|"H"|"S"|"D",details:"",tlComment:"",nextActionDate:""})),dropReason:""}}
 export function money(value:unknown):number{const n=Number(String(value??"").replace(/[,₹\s]/g,""));return Number.isFinite(n)?n:0}
 function sum(rows:{cost?:string;value?:string;rfCost?:string}[]):number{return rows.reduce((s,r)=>s+money(r.cost??r.value??r.rfCost),0)}
 function extRating(p:number,m:number):number{return p>=21?1:p>=16?2:p>=8?3:p>=4?4:m<=1?5:m<=2?4:3}
@@ -61,10 +61,11 @@ const exteriorRating=extRating(exteriorPoints,exteriorMax);
 const interiorPoints=Object.entries(v.interiorOverall).reduce((s,[k,yes])=>s+(yes?(INTERIOR_CLEANING_POINTS[k]||0):0),0)+v.interiorRows.reduce((s,r)=>s+r.damageLevel*Math.max(1,money(r.quantity)),0)+Object.values(v.interiorDamage).reduce((s,r)=>s+r.level,0);
 const interiorMax=Math.max(0,...v.interiorRows.map(r=>r.damageLevel),...Object.values(v.interiorDamage).map(r=>r.level));
 const interiorRating=intRating(interiorPoints,interiorMax);
-const functionPoints=Object.values(v.functionItems).reduce((s,r)=>s+(r.severity==="Small"?r.s:r.severity==="Large"?r.l:0),0);
-const functionRating=functionPoints>=7?1:functionPoints>=5?2:functionPoints>=3?3:functionPoints===2?4:5;
-const framePoints=Object.entries(v.frameItems).reduce((s,[part,r])=>{const c=FRAME_CATALOGUE.find(x=>x.part===part);const pts=r.replaced?(c?.replaced||0):r.size==="Small"?(c?.small||1):r.size==="Medium"?(c?.medium||1):r.size==="Large"?(c?.large||1):0;return s+((r.dent||r.repair||r.replaced)?pts:0)},0)+Object.entries(v.weldedExterior).reduce((s,[part,r])=>s+(r.replaced?(part==="Roof Panel"?3:1):0),0);
-const frameMax=Math.max(0,...Object.values(v.frameItems).map(r=>r.replaced?3:r.size==="Large"?3:r.size==="Medium"?2:r.size==="Small"?1:0),...Object.entries(v.weldedExterior).map(([p,r])=>r.replaced&&p==="Roof Panel"?3:r.replaced?1:0));
+const functionRows=Object.values(v.functionItems).map(r=>r.severity==="Small"?r.s:r.severity==="Large"?r.l:0);
+ const functionPoints=functionRows.reduce((s,p)=>s+p,0),functionMax=Math.max(0,...functionRows);
+ const functionRating=functionPoints>=7?1:functionPoints>=5?2:functionPoints>=3?(functionMax<=2?3:2):functionPoints===2?(functionMax<=1?4:3):5;
+ const framePoints=Object.entries(v.frameItems).reduce((s,[part,r])=>{const c=FRAME_CATALOGUE.find(x=>x.part===part);const pts=r.replaced?(c?.replaced||0):r.size==="Small"?(c?.small||1):r.size==="Medium"?(c?.medium||1):r.size==="Large"?(c?.large||1):0;return s+((r.dent||r.repair||r.replaced)?pts:0)},0)+Object.entries(v.weldedExterior).reduce((s,[part,r])=>s+(r.replaced?(part==="Roof Panel"?3:1):0),0);
+const frameMax=Math.max(0,...Object.entries(v.frameItems).map(([part,r])=>{const c=FRAME_CATALOGUE.find(x=>x.part===part);return r.replaced?(c?.replaced||0):r.size==="Large"?(c?.large||0):r.size==="Medium"?(c?.medium||0):r.size==="Small"?(c?.small||0):0}),...Object.entries(v.weldedExterior).map(([p,r])=>r.replaced&&p==="Roof Panel"?3:r.replaced?1:0));
 const frameFactor=frameMax===0&&framePoints===0?1:frameMax<=1?.9:frameMax===2?.8:.7;
 const exteriorRf=sum(v.exteriorRows)+sum(Object.values(v.exteriorOtherDamage)),interiorRf=sum(v.interiorRows)+sum(Object.values(v.interiorDamage)),functionRf=sum(Object.values(v.functionItems)),frameRf=sum(v.frameRows)+sum(Object.values(v.frameItems))+sum(Object.values(v.weldedExterior));
 const standardRf=sum(v.refurbishmentRows),accessoryValue=sum(v.accessoriesRows),otherCorrection=sum(v.correctionRows),gridBuyingPrice=money(v.pricing.gridBuyingPrice),refurbishmentCost=money(v.pricing.refurbishmentCost),netBuyingPrice=gridBuyingPrice+accessoryValue-standardRf-refurbishmentCost-otherCorrection,totalRf=exteriorRf+interiorRf+functionRf+frameRf;
