@@ -243,7 +243,7 @@ async function mergeReportPdf(){
       {(name==="Exterior"||name==="Interior")&&<Checklist section={name} draft={draft} updateItem={updateItem} upload={uploadEvidence}/>}
       {name==="Mechanical"&&<Mechanical tab={mechTab} setTab={setMechTab} draft={draft} updateItem={updateItem} upload={uploadEvidence}/>}
       {name==="Road Test"&&<RoadTest draft={draft} updateDraft={updateDraft}/>}
-      {name==="Valuation"&&<ValuationSheet value={draft.valuation??createDefaultValuation()} onChange={valuation=>updateDraft({valuation})}/>
+      {name==="Valuation"&&<ValuationSheet value={draft.valuation??createDefaultValuation()} onChange={valuation=>updateDraft({valuation})}/>}
       {name==="Evidence"&&<Evidence draft={draft} upload={uploadEvidence} uploading={uploading} selected={selected} setSelected={setSelected} tool={annotationTool} setTool={setAnnotationTool} annotations={annotations} annotate={annotate}/>}
       {name==="Review"&&<Review draft={draft} score={score.overall} counts={score.counts} recommendation={recommendation} readiness={readiness} rules={readinessRules} signatureRef={signatureRef} draw={draw} clear={clearSignature} signed={signed} aiSummary={aiSummary} updateDraft={updateDraft} finalize={finalize} canFinalize={canFinalize}/>}
     </main><aside className="om-wiz-aside">
