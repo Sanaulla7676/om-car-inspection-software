@@ -10,7 +10,7 @@ import { conditionOptionsFor, isIssueCode, normalizeConditionCode, normalizeRoad
 import type { InspectionDraft, Severity } from "@/lib/types";
 import { createDefaultValuation } from "@/lib/valuation";
 import { ValuationSheet } from "@/components/valuation-sheet";
-import { VehicleModelViewer } from "@/components/vehicle-model-viewer";
+import { VehicleModelViewer, type VehiclePartPick } from "@/components/vehicle-model-viewer";
 
 type Stage = "Vehicle" | "Exterior" | "Interior" | "Mechanical" | "Road Test" | "Valuation" | "Evidence" | "Review";
 const stages: Stage[] = ["Vehicle","Exterior","Interior","Mechanical","Road Test","Valuation","Evidence","Review"];
@@ -61,7 +61,7 @@ export function InspectionWizard() {
   const [role,setRole]=useState<string|null>(null),[online,setOnline]=useState(true),[saving,setSaving]=useState(false),[notice,setNotice]=useState(""),[loading,setLoading]=useState(true);
   const [mechTab,setMechTab]=useState<"Mechanical"|"Electrical"|"Tyres">("Mechanical"),[uploading,setUploading]=useState(""),[selected,setSelected]=useState<number|null>(null),[annotationTool,setAnnotationTool]=useState<string|null>(null),[annotations,setAnnotations]=useState<Record<number,{x:number;y:number;type:string}[]>>({});
   const [signed,setSigned]=useState(false); const signatureRef=useRef<HTMLCanvasElement>(null);
-  const [lookupBusy,setLookupBusy]=useState(false),[lookupMessage,setLookupMessage]=useState(""),[lookupSource,setLookupSource]=useState(""),[publishedReportId,setPublishedReportId]=useState<string>(),[packageOpen,setPackageOpen]=useState(false),[packageBusy,setPackageBusy]=useState(false),[attachmentFile,setAttachmentFile]=useState<File|null>(null); const lastLookupRef=useRef("");
+  const [lookupBusy,setLookupBusy]=useState(false),[lookupMessage,setLookupMessage]=useState(""),[lookupSource,setLookupSource]=useState(""),[publishedReportId,setPublishedReportId]=useState<string>(),[packageOpen,setPackageOpen]=useState(false),[packageBusy,setPackageBusy]=useState(false),[attachmentFiles,setAttachmentFiles]=useState<File[]>([]); const lastLookupRef=useRef("");
 
   useEffect(()=>{
     const on=()=>setOnline(true),off=()=>setOnline(false); setOnline(navigator.onLine); addEventListener("online",on); addEventListener("offline",off);
@@ -100,6 +100,28 @@ export function InspectionWizard() {
       return {...d,vehicle,valuation:syncValuationVehicle(vehicle,d.valuation),updatedAt:new Date().toISOString()};
     });
   }
+  function applyDiagramSelection(part:VehiclePartPick,status:string){
+    if(part.section==="Frame"){
+      const valuation=draft.valuation??createDefaultValuation();
+      const current=valuation.frameItems[part.item];
+      if(current){
+        const next=status==="D0"||status==="NT"||status==="NA"?{...current,dent:false,repair:false,replaced:false,size:"" as const}
+          :status==="R"?{...current,dent:false,repair:false,replaced:true,size:"" as const}
+          :{...current,dent:true,replaced:false,size:(status==="S"?"Small":status==="M"?"Medium":"Large") as "Small"|"Medium"|"Large"};
+        updateDraft({valuation:{...valuation,frameItems:{...valuation.frameItems,[part.item]:next}}});
+      }else if(valuation.weldedExterior[part.item]){
+        const currentWeld=valuation.weldedExterior[part.item];
+        const next=status==="D0"||status==="NT"||status==="NA"?{...currentWeld,repaired:false,replaced:false}
+          :status==="R"?{...currentWeld,replaced:true,repaired:false}:{...currentWeld,repaired:true,replaced:false};
+        updateDraft({valuation:{...valuation,weldedExterior:{...valuation.weldedExterior,[part.item]:next}}});
+      }
+      setNotice(part.label+" recorded in Frame Accident Inspection [Z].");
+      return;
+    }
+    updateItem(part.section,part.item,"status",status);
+    setNotice(part.label+" marked with code "+status+".");
+  }
+
   function updateItem(section:string,item:string,key:"status"|"severity"|"notes",value:string){
     setDraft(prev=>{
       const cur=prev.sections[section]?.[item]??{status:"0",severity:"Minor" as Severity,notes:""}; const sev=key==="status"&&isIssue(value)?severityFor(value):key==="severity"?value as Severity:cur.severity;
@@ -238,12 +260,32 @@ function downloadBlob(blob:Blob,name:string){const url=URL.createObjectURL(blob)
 async function downloadReportPdf(){
   setPackageBusy(true);try{const blob=await getReportPdf();downloadBlob(blob,`${draft.inspectionNumber}.pdf`);setNotice("PDF downloaded with the inspection evidence.");setPackageOpen(false)}catch(e){setNotice(e instanceof Error?e.message:"PDF download failed.")}finally{setPackageBusy(false)}
 }
+async function previewReportPdf(){
+  setPackageBusy(true);try{const blob=await getReportPdf();const url=URL.createObjectURL(blob);const tab=window.open(url,"_blank","noopener,noreferrer");if(!tab)throw new Error("Allow pop-ups to preview the generated PDF.");setTimeout(()=>URL.revokeObjectURL(url),60000)}catch(e){setNotice(e instanceof Error?e.message:"PDF preview failed.")}finally{setPackageBusy(false)}
+}
+async function previewAttachment(file:File){
+  const url=URL.createObjectURL(file);const tab=window.open(url,"_blank","noopener,noreferrer");if(!tab){URL.revokeObjectURL(url);setNotice("Allow pop-ups to preview the selected PDF.");return}setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+function addAttachmentFiles(fileList:FileList|null){
+  const files=Array.from(fileList??[]);if(!files.length)return;
+  const valid:File[]=[];const rejected:string[]=[];
+  for(const file of files){
+    if(file.type!=="application/pdf"&&!file.name.toLowerCase().endsWith(".pdf")){rejected.push(file.name+" is not a PDF");continue}
+    if(file.size>25*1024*1024){rejected.push(file.name+" exceeds 25 MB");continue}
+    valid.push(file);
+  }
+  setAttachmentFiles(current=>{const combined=[...current];for(const file of valid){if(!combined.some(x=>x.name===file.name&&x.size===file.size&&x.lastModified===file.lastModified))combined.push(file)}return combined});
+  setNotice(rejected.length?rejected.join(". "):valid.length?"PDF attachments added.":"");
+}
 async function mergeReportPdf(){
-  if(!attachmentFile){setNotice("Choose the supporting PDF first.");return}
+  if(!attachmentFiles.length){setNotice("Choose at least one supporting PDF.");return}
+  if(attachmentFiles.length>10){setNotice("Attach up to 10 supporting PDFs at a time.");return}
   setPackageBusy(true);try{
-    const base=await getReportPdf();const form=new FormData();form.append("basePdf",new File([base],`${draft.inspectionNumber}.pdf`,{type:"application/pdf"}));form.append("attachment",attachmentFile);
-    const r=await fetch(`/api/reports/${publishedReportId}/merge-pdf`,{method:"POST",body:form});if(!r.ok)throw new Error(await r.text()||"Could not merge PDFs.");
-    const blob=await r.blob();downloadBlob(blob,`${draft.inspectionNumber}-complete-package.pdf`);setNotice("Combined client package downloaded.");setPackageOpen(false);
+    const base=await getReportPdf();const form=new FormData();form.append("basePdf",new File([base],draft.inspectionNumber+".pdf",{type:"application/pdf"}));
+    attachmentFiles.forEach(file=>form.append("attachments",file,file.name));
+    const r=await fetch("/api/reports/"+publishedReportId+"/merge-pdf",{method:"POST",body:form});
+    if(!r.ok){let message="Could not merge PDFs.";try{const j=await r.json();message=j.error||message}catch{}throw new Error(message)}
+    const blob=await r.blob();downloadBlob(blob,draft.inspectionNumber+"-complete-package.pdf");setNotice("Combined report and "+attachmentFiles.length+" supporting PDF(s) downloaded.");setPackageOpen(false);setAttachmentFiles([]);
   }catch(e){setNotice(e instanceof Error?e.message:"PDF merge failed.")}finally{setPackageBusy(false)}
 }
 
@@ -260,7 +302,7 @@ async function mergeReportPdf(){
     <nav className="om-wiz-steps">{stages.map((s,i)=><button className={i===stage?"active":i<stage?"done":""} key={s} onClick={()=>void jumpToStage(i)}><b>{i<stage?<Check size={12}/>:i+1}</b><span>{s}</span></button>)}</nav>
 
     <div className="om-wiz-grid"><main>
-      <VehicleModelViewer onApply={(part,status)=>updateItem(part.section,part.item,"status",status)}/>
+      <VehicleModelViewer section={name} onApply={applyDiagramSelection}/>
       {name==="Vehicle"&&<VehicleStage draft={draft} updateVehicle={updateVehicle} updateDraft={updateDraft} upload={uploadEvidence} lookup={lookupVehicle} lookupBusy={lookupBusy} lookupMessage={lookupMessage} lookupSource={lookupSource}/>}
       {(name==="Exterior"||name==="Interior")&&<Checklist section={name} draft={draft} updateItem={updateItem} upload={uploadEvidence}/>}
       {name==="Mechanical"&&<Mechanical tab={mechTab} setTab={setMechTab} draft={draft} updateItem={updateItem} upload={uploadEvidence}/>}
@@ -279,19 +321,21 @@ async function mergeReportPdf(){
     {packageOpen&&<div className="om-package-backdrop" onClick={()=>!packageBusy&&setPackageOpen(false)}>
       <div className="om-package" onClick={e=>e.stopPropagation()}>
         <div className="om-package-head"><div><span>CLIENT DOCUMENT PACKAGE</span><h2>Print PDF</h2><p>Your report contains the imported inspection images. Add another PDF only when needed.</p></div><button onClick={()=>setPackageOpen(false)} disabled={packageBusy}><X size={15}/></button></div>
-        <div className="om-package-preview"><FileText size={19}/><div><b>{draft.inspectionNumber}.pdf</b><small>Generated inspection report • photos included</small></div><span className="om-chip">Ready</span></div>
-        <div className="om-package-question"><b>Do you want to merge another PDF?</b><span>RC, insurance, PUC, service history or any other supporting document.</span></div>
+        <div className="om-package-preview"><FileText size={19}/><div><b>{draft.inspectionNumber}.pdf</b><small>Generated inspection report • uploaded evidence included</small></div><span className="om-chip">Ready</span></div>
         <div className="om-package-actions">
-          <button className="om-tool" onClick={downloadReportPdf} disabled={packageBusy}>{packageBusy?<Loader2 className="spin"/>:<DownloadIcon/>} No — download report</button>
-          <label className="om-tool"><Upload size={14}/><div>{attachmentFile?attachmentFile.name:"Yes — attach supporting PDF"}<small>{attachmentFile?"Click to replace":"PDF only • max 25 MB"}</small></div><input className="hidden" type="file" accept="application/pdf,.pdf" onChange={e=>setAttachmentFile(e.target.files?.[0]||null)}/></label>
+          <button className="om-tool" onClick={previewReportPdf} disabled={packageBusy}><FileText size={14}/><div>Preview generated report<small>Review before merging attachments</small></div></button>
+          <button className="om-tool" onClick={downloadReportPdf} disabled={packageBusy}>{packageBusy?<Loader2 className="spin"/>:<DownloadIcon/>}<div>Download report only<small>Single inspection PDF</small></div></button>
         </div>
-        {attachmentFile&&<button className="om-primary-action om-tool" onClick={mergeReportPdf} disabled={packageBusy}><MergeIcon/> Merge & Download Complete PDF</button>}
+        <div className="om-package-question"><b>Add supporting PDFs to the reviewed report</b><span>Select RC, insurance, PUC, service history or any other PDFs. They will be appended in the order shown and downloaded as one file.</span></div>
+        <label className="om-tool om-package-add"><Upload size={14}/><div>Add one or more PDFs<small>Up to 10 PDFs · max 25 MB each</small></div><input className="hidden" type="file" multiple accept="application/pdf,.pdf" onChange={e=>{addAttachmentFiles(e.currentTarget.files);e.currentTarget.value="";}}/></label>
+        {attachmentFiles.length>0&&<div className="om-attachment-list">{attachmentFiles.map((file,i)=><div className="om-attachment-row" key={file.name+"-"+file.size+"-"+i}><FileText size={14}/><div><b>{file.name}</b><small>{(file.size/1024/1024).toFixed(2)} MB · PDF {i+1}</small></div><button type="button" onClick={()=>void previewAttachment(file)} disabled={packageBusy}>Preview</button><button type="button" aria-label={"Remove "+file.name} onClick={()=>setAttachmentFiles(current=>current.filter((_,n)=>n!==i))} disabled={packageBusy}><X size={13}/></button></div>)}</div>}
+        {attachmentFiles.length>0&&<button className="om-primary-action om-tool" onClick={mergeReportPdf} disabled={packageBusy}>{packageBusy?<Loader2 className="spin"/>:<MergeIcon/>} Merge report + {attachmentFiles.length} PDF{attachmentFiles.length===1?"":"s"} & Download</button>}
       </div>
     </div>}
     <style jsx global>{`
       .om-wiz{min-height:100%;padding:24px 24px 96px;background:linear-gradient(180deg,#f7fafc,#f1f5f9);color:#20304a}.om-wiz-loading{min-height:60vh;display:grid;place-items:center;color:#77879a}.spin{animation:omSpin 1s linear infinite}@keyframes omSpin{to{transform:rotate(360deg)}}
       .om-wiz-head{display:flex;justify-content:space-between;gap:16px;margin-bottom:16px}.om-wiz-head>div:first-child span{font-size:9px;font-weight:900;letter-spacing:.16em;color:#8290a2}.om-wiz-head h1{margin:6px 0 5px;font-size:27px;letter-spacing:-.04em}.om-wiz-head p{margin:0;color:#8290a2;font-size:12px}.om-wiz-pills{display:flex;gap:7px}.om-wiz-pills span{display:flex;align-items:center;gap:5px;padding:8px 10px;border:1px solid #e0e7ef;background:#fff;border-radius:999px;color:#718095;font-size:10px}.om-wiz-pills span.online{color:#0d876a;background:#f0fbf7;border-color:#ccecdf}
-      .om-wiz-steps{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:15px}.om-wiz-steps button{border:1px solid #e0e7ef;background:#fff;border-radius:13px;padding:9px 7px;display:flex;align-items:center;justify-content:center;gap:6px;color:#78879a;font-size:10px;font-weight:800}.om-wiz-steps button b{width:21px;height:21px;border-radius:50%;display:grid;place-items:center;background:#f0f4f8;color:#8996a6;font-size:9px}.om-wiz-steps button.active{background:#213b63;color:#fff;border-color:#213b63}.om-wiz-steps button.active b{background:#22bfd0;color:#06343b}.om-wiz-steps button.done{color:#147966;background:#effaf6;border-color:#c9e9df}.om-wiz-steps button.done b{background:#ddf4eb;color:#148269}
+      .om-wiz-steps{display:flex;gap:7px;margin-bottom:15px;overflow-x:auto;padding-bottom:3px;scrollbar-width:thin}.om-wiz-steps button{flex:1 0 92px;min-width:92px;{border:1px solid #e0e7ef;background:#fff;border-radius:13px;padding:9px 7px;display:flex;align-items:center;justify-content:center;gap:6px;color:#78879a;font-size:10px;font-weight:800}.om-wiz-steps button b{width:21px;height:21px;border-radius:50%;display:grid;place-items:center;background:#f0f4f8;color:#8996a6;font-size:9px}.om-wiz-steps button.active{background:#213b63;color:#fff;border-color:#213b63}.om-wiz-steps button.active b{background:#22bfd0;color:#06343b}.om-wiz-steps button.done{color:#147966;background:#effaf6;border-color:#c9e9df}.om-wiz-steps button.done b{background:#ddf4eb;color:#148269}
       .om-wiz-grid{display:grid;grid-template-columns:minmax(0,1fr) 285px;gap:14px}.om-wiz-aside{position:sticky;top:88px;align-self:start;display:grid;gap:10px}.om-aside-dark,.om-aside-box{padding:14px;border-radius:16px;border:1px solid #e0e7ef;background:#fff;box-shadow:0 9px 22px rgba(31,56,91,.05)}.om-aside-dark{background:linear-gradient(145deg,#213b63,#2c4e77);border-color:#213b63;color:#fff}.om-aside-dark small{font-size:8px;letter-spacing:.15em;color:#b9cadc;font-weight:900}.om-aside-dark strong{display:block;font-size:18px;margin:7px 0}.om-aside-dark p,.om-aside-box p{font-size:10px;line-height:1.55;color:#d3deea;margin:0}.om-aside-readiness{display:flex;justify-content:space-between;font-size:10px;color:#d9e3ed;margin-top:12px}.om-mini{height:5px;background:rgba(255,255,255,.12);border-radius:99px;margin-top:6px;overflow:hidden}.om-mini i{display:block;height:100%;background:#22bfd0}.om-aside-box>b{display:flex;align-items:center;gap:6px;font-size:11px}.om-score{font-size:36px;font-weight:900;margin-top:14px;letter-spacing:-.05em}.om-aside-box small{color:#7e8ea0;font-size:9px}.om-mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:12px}.om-mini-stats span{background:#f7f9fb;border-radius:9px;padding:8px;text-align:center;font-size:14px;font-weight:900}.om-mini-stats i{display:block;font-style:normal;font-size:8px;color:#8b98a6;font-weight:600;margin-top:2px}.om-sync{display:flex;align-items:center;gap:7px;color:#65768a;font-size:9px;margin-top:10px}.om-sync i{width:7px;height:7px;border-radius:50%;background:#cbd4dd}.om-sync i.live{background:#22b39d;box-shadow:0 0 0 4px rgba(34,179,157,.12)}
       .om-stage{background:#fff;border:1px solid #e0e7ef;border-radius:17px;padding:17px;box-shadow:0 9px 22px rgba(31,56,91,.05)}.om-stage-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:14px}.om-stage h2{margin:0;font-size:16px;letter-spacing:-.03em}.om-stage .sub{color:#8593a3;font-size:10px;margin-top:3px;line-height:1.55}.om-fields{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.om-field{display:grid;gap:5px}.om-field.full{grid-column:1/-1}.om-field label{font-size:9px;font-weight:800;color:#748297}.om-field input,.om-field select,.om-field textarea{width:100%;box-sizing:border-box;border:1px solid #dfe6ee;border-radius:9px;background:#fbfcfe;padding:9px 10px;font-size:11px;color:#25364e;outline:0}.om-field textarea{min-height:90px;resize:vertical}.om-field input:focus,.om-field select:focus,.om-field textarea:focus{border-color:#8fcbd3;box-shadow:0 0 0 3px rgba(34,191,208,.08);background:#fff}.om-tool-row{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:13px}.om-registry-panel{margin:11px 0 0;border:1px solid #cfe8ec;background:#f8fdfe;border-radius:13px;padding:11px}.om-registry-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.om-registry-head b{display:block;font-size:10px;color:#29445d}.om-registry-head small{display:block;font-size:7px;color:#8d9aa7;margin-top:2px}.om-registry-head span{font-size:7px;font-weight:900;color:#17816d;padding:5px 7px;border-radius:999px;background:#e8f8f2}.om-registry-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}.om-registry-grid div{padding:7px;border:1px solid #e2ecef;background:#fff;border-radius:8px}.om-registry-grid span,.om-registry-owner span{display:block;font-size:7px;color:#8d99a5}.om-registry-grid b{display:block;margin-top:2px;font-size:8px;color:#3a5066;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.om-registry-owner{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 0 0;margin-top:8px;border-top:1px dashed #dce7ea;font-size:8px}.om-registry-owner b{font-size:8px;color:#3a5066}@media(max-width:820px){.om-registry-grid{grid-template-columns:repeat(2,1fr)}}.om-lookup-card{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 13px;margin-bottom:10px;border:1px solid #cfe8ec;background:linear-gradient(135deg,#f2fcfd,#fbfeff);border-radius:13px}.om-lookup-main{display:flex;align-items:flex-start;gap:9px}.om-lookup-main>svg{color:#20aabd;flex:0 0 auto;margin-top:2px}.om-lookup-main b{display:block;font-size:10px;color:#28445e}.om-lookup-main span{display:block;color:#81909f;font-size:8px;line-height:1.5;margin-top:2px}.om-lookup-btn{border:0;border-radius:9px;background:#244b78;color:#fff;padding:9px 11px;font-size:9px;font-weight:900;display:flex;align-items:center;gap:5px;white-space:nowrap}.om-lookup-btn:disabled{opacity:.6}.om-lookup-consent{display:flex;align-items:center;gap:5px;color:#74879a;font-size:7px;margin:-4px 0 10px}.om-lookup-message,.om-lookup-success{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:9px;font-size:8px;margin-bottom:10px}.om-lookup-message{color:#ad761c;background:#fff8ea;border:1px solid #efdcb8}.om-lookup-success{color:#157e68;background:#eefaf5;border:1px solid #ccebe0}.om-lookup-success svg{color:#15936f}.om-optional{color:#a0aab5;font-weight:500;margin-left:4px}.om-package-backdrop{position:fixed;inset:0;z-index:120;background:rgba(15,28,44,.35);backdrop-filter:blur(6px);display:grid;place-items:center;padding:18px;animation:omFade .16s ease-out}.om-package{width:min(520px,100%);background:#fff;border:1px solid #dde6ed;border-radius:18px;box-shadow:0 30px 80px rgba(18,35,54,.22);padding:16px;animation:omPackageIn .22s ease-out}.om-package-head{display:flex;justify-content:space-between;gap:12px}.om-package-head>div>span{font-size:7px;font-weight:900;letter-spacing:.17em;color:#96a3b0}.om-package-head h2{margin:4px 0 3px;font-size:18px}.om-package-head p{margin:0;color:#8996a4;font-size:9px;line-height:1.5}.om-package-head>button{border:0;background:#f5f7f9;border-radius:8px;width:28px;height:28px;display:grid;place-items:center;color:#7e8c9b}.om-package-preview{display:flex;align-items:center;gap:9px;margin-top:13px;padding:10px;border:1px solid #e1e7ed;background:#fafcfd;border-radius:11px}.om-package-preview>svg{color:#22aabd}.om-package-preview div{flex:1;min-width:0}.om-package-preview b{display:block;font-size:9px}.om-package-preview small{display:block;color:#96a0ad;font-size:7px;margin-top:2px}.om-package-question{padding:11px 2px 8px}.om-package-question b{display:block;font-size:10px}.om-package-question span{display:block;color:#8c99a8;font-size:8px;margin-top:3px}.om-package-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}.om-package-actions .om-tool{min-height:58px;cursor:pointer}.om-package .om-primary-action{margin-top:7px;width:100%;justify-content:center;background:#244b78!important;color:#fff!important;border-color:#244b78!important}.om-package .om-tool:disabled{opacity:.55}.om-package-preview .om-chip{margin-left:auto}@keyframes omFade{from{opacity:0}to{opacity:1}}@keyframes omPackageIn{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}.om-tool{display:flex;align-items:center;gap:8px;border:1px solid #e0e7ef;background:#fbfcfe;border-radius:12px;padding:11px;text-align:left;font-size:10px;font-weight:800}.om-tool svg{color:#22aabd}.om-tool small{display:block;color:#8b98a7;font-size:8px;font-weight:500;margin-top:2px}.om-callout{margin-top:12px;padding:10px;border:1px solid #d9eef1;background:#f4fdfe;border-radius:11px;font-size:9px;color:#67798d;display:flex;gap:7px;line-height:1.55}.om-checklist{display:grid;gap:8px}.om-item{border:1px solid #e0e7ef;border-radius:12px;padding:11px}.om-item.issue{background:#fffdf8;border-color:#efdcb7}.om-item-top{display:grid;grid-template-columns:1fr 150px;gap:9px;align-items:center}.om-item-name{font-size:11px;font-weight:850}.om-item-meta{color:#8c99a8;font-size:8px;margin-top:3px}.om-item select,.om-item textarea{border:1px solid #dfe6ee;border-radius:8px;background:#fbfcfe;padding:8px;font-size:9px}.om-item-detail{display:grid;grid-template-columns:120px 1fr 115px;gap:7px;margin-top:8px;padding-top:8px;border-top:1px dashed #e6ebef}.om-item textarea{min-height:50px;resize:vertical}.om-photo{display:flex;align-items:center;justify-content:center;gap:5px;border:1px solid #cfe8ec;background:#f1fcfd;border-radius:8px;color:#167383;font-size:9px;font-weight:850;padding:8px}.om-photo input{display:none}
       .om-tabs{display:flex;gap:5px;padding-bottom:9px;border-bottom:1px solid #edf1f5;margin-bottom:12px}.om-tabs button{border:0;background:transparent;border-radius:8px;padding:7px 9px;font-size:9px;font-weight:850;color:#8391a1}.om-tabs button.active{background:#eafbfd;color:#1d7885}
