@@ -80,7 +80,16 @@ export function InspectionWizard() {
   const readiness=Math.round(readinessRules.filter(x=>x.done).length/readinessRules.length*100),canFinalize=readiness>=80&&Boolean(draft.vehicle.registration.trim())&&evidenceSynced;
 
   function updateDraft(p:Partial<InspectionDraft>){setDraft(d=>({...d,...p,updatedAt:new Date().toISOString()}))}
-  function updateVehicle(k:keyof InspectionDraft["vehicle"],v:string){setDraft(d=>({...d,vehicle:{...d.vehicle,[k]:v},updatedAt:new Date().toISOString()}))}
+  function syncValuationVehicle(vehicle:InspectionDraft["vehicle"],current:InspectionDraft["valuation"]){
+    const valuation=current??createDefaultValuation();
+    return {...valuation,vehicle:{...valuation.vehicle,registration:vehicle.registration,chassis:vehicle.vin,engine:vehicle.engineNumber,manufacturer:vehicle.make,modelSuffix:[vehicle.model,vehicle.variant].filter(Boolean).join(" "),monthYear:vehicle.year,color:vehicle.color,kmRun:vehicle.odometer,owners:vehicle.ownership,fuel:vehicle.fuel}};
+  }
+  function updateVehicle(k:keyof InspectionDraft["vehicle"],v:string){
+    setDraft(d=>{
+      const vehicle={...d.vehicle,[k]:v};
+      return {...d,vehicle,valuation:syncValuationVehicle(vehicle,d.valuation),updatedAt:new Date().toISOString()};
+    });
+  }
   function updateItem(section:string,item:string,key:"status"|"severity"|"notes",value:string){
     setDraft(prev=>{
       const cur=prev.sections[section]?.[item]??{status:"Good",severity:"Minor" as Severity,notes:""}; const sev=key==="status"&&isIssue(value)?severityFor(value):key==="severity"?value as Severity:cur.severity;
@@ -190,7 +199,10 @@ export function InspectionWizard() {
     const j=await r.json();
     if(!r.ok)throw new Error(j.error||"Vehicle lookup failed.");
     const d=j.data||{};
-    setDraft(prev=>({...prev,vehicle:{...prev.vehicle,registration:d.registration||prev.vehicle.registration,vin:d.vin||prev.vehicle.vin,engineNumber:d.engineNumber||prev.vehicle.engineNumber,make:d.make||prev.vehicle.make,model:d.model||prev.vehicle.model,variant:d.variant||prev.vehicle.variant,year:d.year||prev.vehicle.year,fuel:d.fuel?capitalize(d.fuel):prev.vehicle.fuel,transmission:d.transmission?capitalize(d.transmission):prev.vehicle.transmission,color:d.color||prev.vehicle.color,registryDetails:{registrationDate:d.registrationDate,category:d.category,bodyType:d.bodyType,emissionNorm:d.emissionNorm,fitnessValidUntil:d.fitnessValidUntil,insuranceValidUntil:d.insuranceValidUntil,puccValidUntil:d.puccValidUntil,permitValidUntil:d.permitValidUntil,rcStatus:d.rcStatus,blacklistStatus:d.blacklistStatus,financer:d.financer,ownerName:d.ownerName,ownerCount:d.ownerCount,provider:j.provider,fetchedAt:new Date().toISOString()}},updatedAt:new Date().toISOString()}));
+    setDraft(prev=>{
+      const vehicle={...prev.vehicle,registration:d.registration||prev.vehicle.registration,vin:d.vin||prev.vehicle.vin,engineNumber:d.engineNumber||prev.vehicle.engineNumber,make:d.make||prev.vehicle.make,model:d.model||prev.vehicle.model,variant:d.variant||prev.vehicle.variant,year:d.year||prev.vehicle.year,fuel:d.fuel?capitalize(d.fuel):prev.vehicle.fuel,transmission:d.transmission?capitalize(d.transmission):prev.vehicle.transmission,color:d.color||prev.vehicle.color,registryDetails:{registrationDate:d.registrationDate,category:d.category,bodyType:d.bodyType,emissionNorm:d.emissionNorm,fitnessValidUntil:d.fitnessValidUntil,insuranceValidUntil:d.insuranceValidUntil,puccValidUntil:d.puccValidUntil,permitValidUntil:d.permitValidUntil,rcStatus:d.rcStatus,blacklistStatus:d.blacklistStatus,financer:d.financer,ownerName:d.ownerName,ownerCount:d.ownerCount,provider:j.provider,fetchedAt:new Date().toISOString()}};
+      return {...prev,vehicle,valuation:syncValuationVehicle(vehicle,prev.valuation),updatedAt:new Date().toISOString()};
+    });
     setLookupSource(j.provider||"Verified registry");setLookupMessage("Vehicle details attached to this inspection.");
   }catch(e){setLookupMessage(e instanceof Error?e.message:"Could not verify vehicle.")}finally{setLookupBusy(false)}
 }
