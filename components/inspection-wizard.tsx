@@ -65,7 +65,25 @@ export function InspectionWizard() {
 
   useEffect(()=>{
     const on=()=>setOnline(true),off=()=>setOnline(false); setOnline(navigator.onLine); addEventListener("online",on); addEventListener("offline",off);
-    const id=localStorage.getItem("om-active-inspection"); if(id){setInspectionId(id);loadLocalDraft(id).then(r=>r?.payload&&setDraft(normalizeDraftCodes({...freshDraft(),...r.payload}))).catch(()=>{});}
+    const id=localStorage.getItem("om-active-inspection"); if(id){
+      setInspectionId(id);
+      loadLocalDraft(id).then(async r=>{
+        if(!r?.payload)return;
+        const loaded=normalizeDraftCodes({...freshDraft(),...r.payload});
+        setDraft(loaded);
+        if(supabase&&navigator.onLine&&loaded.photos.some(photo=>photo.path)){
+          const refreshed=await Promise.all(loaded.photos.map(async photo=>{
+            if(!photo.path)return photo;
+            const {data}=await supabase.storage.from("inspection-media").createSignedUrl(photo.path,3600);
+            return data?.signedUrl?{...photo,url:data.signedUrl}:photo;
+          }));
+          setDraft(current=>({...current,photos:current.photos.map(photo=>{
+            const next=refreshed.find(item=>item.path&&item.path===photo.path);
+            return next?{...photo,url:next.url??photo.url}:photo;
+          })}));
+        }
+      }).catch(()=>{});
+    }
     fetch("/api/me").then(r=>r.ok?r.json():null).then(x=>{setOrgId(x?.organization?.id);setRole(x?.role??null);if(x?.user?.name)setDraft(d=>({...d,inspectorName:x.user.name}));}).catch(()=>{}).finally(()=>setLoading(false));
     return()=>{removeEventListener("online",on);removeEventListener("offline",off)}
   },[]);
@@ -192,7 +210,7 @@ export function InspectionWizard() {
     let storedPath:string|undefined;
     try{
       const prepared=await prepareEvidenceFile(file);
-      preview=prepared.type.startsWith("image/")?URL.createObjectURL(prepared):undefined;
+      preview=prepared.type.startsWith("image/")||prepared.type.startsWith("video/")||prepared.type==="application/pdf"?URL.createObjectURL(prepared):undefined;
 
       if(supabase&&orgId&&online&&id!==draft.inspectionNumber){
         const ext=(prepared.name.split(".").pop()||"bin").replace(/[^a-z0-9]/gi,"")||"bin";
@@ -220,11 +238,15 @@ export function InspectionWizard() {
 
         // Append only after both Storage and the metadata row succeed. This avoids
         // leaving failed files in the evidence grid or replacing another upload.
-        setDraft(d=>({...d,photos:[...d.photos,{name:label,path,url:preview}],updatedAt:new Date().toISOString()}));
-        setNotice("Photo uploaded and linked successfully.");
+        const mediaType: "image"|"video"|"document"=prepared.type.startsWith("video/")?"video":prepared.type==="application/pdf"?"document":"image";
+        let displayUrl=preview;
+        const {data:signedPreview}=await supabase.storage.from("inspection-media").createSignedUrl(path,3600);
+        if(signedPreview?.signedUrl){displayUrl=signedPreview.signedUrl;if(preview){URL.revokeObjectURL(preview);preview=undefined;}}
+        setDraft(d=>({...d,photos:[...d.photos,{name:label,originalName:file.name,path,url:displayUrl,mediaType}],updatedAt:new Date().toISOString()}));
+        setNotice("Evidence uploaded and linked successfully.");
       }else{
         // Preserve offline/demo capture, but make it explicit that this copy is local.
-        setDraft(d=>({...d,photos:[...d.photos,{name:label,url:preview}],updatedAt:new Date().toISOString()}));
+        setDraft(d=>({...d,photos:[...d.photos,{name:label,originalName:file.name,url:preview,mediaType:prepared.type.startsWith("video/")?"video":prepared.type==="application/pdf"?"document":"image"}],updatedAt:new Date().toISOString()}));
         setNotice(online
           ?"Photo saved on this device only. Reconnect the workspace and upload it again before publishing."
           :"Photo saved on this device only. Reconnect and upload it again before publishing.");
