@@ -462,25 +462,32 @@ body .om-auth .om-auth-message { font-size: 13px !important; line-height: 1.5; }
 .om-model-panel{border:1px solid #1e3853;border-radius:15px;overflow:hidden;background:#0c1828;color:#f7fbff;margin:0 0 16px;box-shadow:0 14px 32px rgba(16,32,50,.12)}.om-model-top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 15px;background:#14263d;border-bottom:1px solid rgba(255,255,255,.09)}.om-model-title{display:flex;align-items:center;gap:10px}.om-model-icon{display:grid;place-items:center;width:34px;height:34px;background:#1f3b59;border-radius:10px;color:#72e0e7}.om-model-title b{display:block;font-size:13px}.om-model-title small{display:block;color:#c1d0de;font-size:10px;margin-top:3px}.om-model-badge{white-space:nowrap;border:1px solid #47617a;background:#182d43;border-radius:99px;padding:6px 9px;font-size:9px;font-weight:900;color:#d2f3f3}.om-model-shortcuts{display:flex;gap:6px;padding:9px 12px;background:#102137;overflow:auto}.om-model-shortcuts button,.om-model-actions button{white-space:nowrap;border:1px solid #496079;border-radius:7px;padding:8px 9px;background:#1a3048;color:#f3f8fc;font-size:10px;font-weight:800;display:inline-flex;align-items:center;gap:5px;cursor:pointer}.om-model-shortcuts button:hover,.om-model-actions button:hover{border-color:#54c7d3}.om-model-viewport{height:clamp(230px,30vh,355px);position:relative;background:radial-gradient(ellipse at 52% 32%,#223d58,#0a1524 78%);overflow:hidden}.om-model-canvas{position:absolute;inset:0}.om-model-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:12px;background:rgba(7,18,31,.8);color:#e6eef7;padding:20px;font-size:11px;z-index:2}.om-model-error{color:#ffe4bc;line-height:1.6}.om-loader{width:26px;height:26px;border:2px solid #506a83;border-top-color:#57d0db;border-radius:50%;animation:om-model-spin .8s linear infinite}@keyframes om-model-spin{to{transform:rotate(360deg)}}.om-model-hint{position:absolute;left:10px;bottom:8px;padding:6px 8px;background:rgba(5,16,29,.8);border:1px solid rgba(255,255,255,.2);border-radius:6px;color:#edf5fc;font-size:9px;pointer-events:none}.om-model-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 12px;background:#13253a;border-top:1px solid rgba(255,255,255,.1)}.om-model-selection{display:flex;align-items:center;gap:8px;min-width:180px}.om-model-status-dot{width:8px;height:8px;flex:0 0 auto;border-radius:50%;background:#5dd4db;box-shadow:0 0 0 4px rgba(93,212,219,.12)}.om-model-selection b{display:block;font-size:11px}.om-model-selection small{display:block;max-width:330px;color:#c9d6e3;font-size:9px;line-height:1.5;margin-top:3px}.om-model-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.om-model-actions button:disabled{opacity:.4;cursor:not-allowed}.om-model-actions select{max-width:130px;border:1px solid #52677d;border-radius:7px;background:#0d1d30;color:#f6faff;padding:8px 9px;font-size:10px;min-height:32px}.om-model-actions .om-model-apply{background:#116d83;border-color:#268da3;color:white}.om-model-disclaimer{padding:8px 12px;background:#0e1e30;color:#ccd7e2;font-size:9px;line-height:1.5;border-top:1px solid rgba(255,255,255,.1)}@media(max-width:760px){.om-model-bottom{align-items:flex-start;flex-direction:column}.om-model-actions{justify-content:flex-start;width:100%}.om-model-top{align-items:flex-start}.om-model-title small{line-height:1.5}.om-model-selection small{max-width:100%}}
 
 
-/* Fortuner-specific interactive showroom and alphabet-coded part map */
-.om-fortuner-viewport{height:clamp(350px,58vh,610px);background:#111b27}
-.om-fortuner-frame{position:absolute;inset:0;width:100%;height:100%;border:0;background:#111b27}
-.om-fortuner-launch{align-items:center;flex-wrap:wrap;justify-content:space-between}
-.om-fortuner-launch a{display:inline-flex;align-items:center;gap:7px;border:1px solid #48617b;border-radius:8px;padding:9px 11px;background:#1a3048;color:#f3f8fc;text-decoration:none;font-size:10px;font-weight:850}
-.om-fortuner-launch a:hover{border-color:#54c7d3;background:#203c57}
-.om-fortuner-launch span{color:#c9d6e3;font-size:9px;line-height:1.5}
-.om-fortuner-parts{padding:12px;background:#0f1f31;border-top:1px solid rgba(255,255,255,.1)}
-.om-fortuner-parts-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
-.om-fortuner-parts-heading b{display:block;font-size:12px;color:#f7fbff}
-.om-fortuner-parts-heading small{display:block;margin-top:4px;font-size:9px;line-height:1.5;color:#c9d6e3}
-.om-fortuner-parts-heading>span{border:1px solid #45637c;border-radius:100px;padding:6px 9px;color:#d0f6f7;font-size:9px;font-weight:900}
-.om-fortuner-group{margin-top:10px;border-top:1px solid rgba(255,255,255,.08);padding-top:10px}
-.om-fortuner-group-title{display:flex;align-items:center;gap:7px;color:#98dbe3;font-size:10px;font-weight:900;margin-bottom:7px}
-.om-fortuner-part-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
-.om-fortuner-part-grid button{min-width:0;border:1px solid #334c65;border-radius:7px;background:#172a40;color:#e3edf7;padding:8px 7px;text-align:left;font-size:9px;line-height:1.4;cursor:pointer}
-.om-fortuner-part-grid button:hover,.om-fortuner-part-grid button.active{border-color:#5bd5de;background:#194457;color:#fff;box-shadow:inset 0 0 0 1px rgba(91,213,222,.1)}
+
+/* Compact 2D reference maps and document package preview */
+.om-diagram-panel{margin-bottom:14px}
+.om-diagram-tabs{display:flex;gap:6px;overflow-x:auto;padding:9px 10px;background:#102137;scrollbar-width:thin}
+.om-diagram-tabs button{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;border:1px solid #496079;border-radius:8px;padding:8px 10px;background:#1a3048;color:#f3f8fc;font-size:10px;font-weight:800;white-space:nowrap;cursor:pointer}
+.om-diagram-tabs button.active,.om-diagram-tabs button[aria-selected="true"]{border-color:#5bd5de;background:#1b5965;color:#fff}
+.om-diagram-visual{height:clamp(225px,30vh,320px);padding:8px 12px;background:#f8fbfe;overflow:hidden}
+.om-diagram-svg{display:block;width:100%;height:100%;object-fit:contain}
+.om-diagram-help{display:flex;align-items:flex-start;gap:10px;padding:9px 13px;background:#f0f7fc;border-top:1px solid #dce8f1;border-bottom:1px solid #dce8f1;color:#38536a;font-size:9px;line-height:1.55}
+.om-diagram-help b{flex:0 0 125px;color:#1c3d58;font-size:10px}
+.om-diagram-help span{flex:1}
+.om-diagram-parts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:10px 12px;background:#0f1f31;max-height:138px;overflow:auto;align-content:start;scrollbar-width:thin}
+.om-diagram-parts button{min-width:0;border:1px solid #334c65;border-radius:7px;background:#172a40;color:#e3edf7;padding:7px 8px;text-align:left;font-size:9px;line-height:1.4;cursor:pointer}
+.om-diagram-parts button:hover,.om-diagram-parts button.active,.om-diagram-parts button[aria-pressed="true"]{border-color:#5bd5de;background:#194457;color:#fff;box-shadow:inset 0 0 0 1px rgba(91,213,222,.1)}
 .om-fortuner-code-label{display:flex;flex-direction:column;gap:4px;color:#c9d6e3;font-size:9px;font-weight:800}
 .om-fortuner-code-label select{max-width:min(350px,72vw);min-height:35px;border:1px solid #52677d;border-radius:7px;background:#0d1d30;color:#f6faff;padding:8px 9px;font-size:10px}
-.om-wiz .om-item-meta{overflow-wrap:anywhere}
-@media(max-width:900px){.om-fortuner-part-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.om-fortuner-viewport{height:clamp(320px,52vh,520px)}}
-@media(max-width:560px){.om-fortuner-part-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.om-fortuner-launch{align-items:flex-start;flex-direction:column}.om-fortuner-code-label,.om-fortuner-code-label select{width:100%;max-width:100%}.om-fortuner-parts{padding:10px}.om-fortuner-viewport{height:390px}}
+.om-package{max-height:calc(100dvh - 30px);overflow:auto}
+.om-package-actions .om-tool{cursor:pointer;min-height:64px}
+.om-package-add{cursor:pointer;margin-top:7px}
+.om-attachment-list{display:grid;gap:6px;margin-top:8px;max-height:190px;overflow:auto}
+.om-attachment-row{display:grid;grid-template-columns:20px minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:8px;border:1px solid #e1e7ed;border-radius:9px;background:#fbfdff}
+.om-attachment-row>svg{color:#22aabd}
+.om-attachment-row>div{min-width:0}
+.om-attachment-row b{display:block;font-size:9px;overflow-wrap:anywhere;color:#2f4358}
+.om-attachment-row small{display:block;font-size:8px;color:#8997a5;margin-top:2px}
+.om-attachment-row button{display:inline-flex;align-items:center;justify-content:center;gap:4px;border:1px solid #dce5ed;background:#fff;border-radius:7px;padding:6px 8px;color:#52667b;font-size:8px;font-weight:800;cursor:pointer}
+.om-attachment-row button:disabled{opacity:.5}
+@media(max-width:850px){.om-diagram-parts{grid-template-columns:repeat(3,minmax(0,1fr))}.om-diagram-visual{height:clamp(220px,30vh,300px)}}
+@media(max-width:560px){.om-diagram-parts{grid-template-columns:repeat(2,minmax(0,1fr));padding:8px;max-height:155px}.om-diagram-visual{height:225px;padding:5px}.om-diagram-help{flex-direction:column;gap:3px}.om-diagram-help b{flex:0 0 auto}.om-fortuner-code-label,.om-fortuner-code-label select{width:100%;max-width:100%}.om-model-bottom{align-items:flex-start;flex-direction:column}.om-model-actions{justify-content:flex-start;width:100%}.om-attachment-row{grid-template-columns:18px minmax(0,1fr) auto auto;gap:5px;padding:6px}.om-attachment-row button{padding:6px;font-size:7px}}
