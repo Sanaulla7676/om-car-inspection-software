@@ -118,7 +118,13 @@ export function VehicleModelViewer({ onApply }: Props) {
         <a href={FORTUNER_360_URL} target="_blank" rel="noreferrer">
           <ExternalLink size={13} /> Open the full Fortuner 360 viewer
         </a>
-        <span>Use the viewer's own controls to rotate the vehicle, switch exterior / interior and open / close doors.</span>
+        <a href="https://www.autocarindia.com/cars/toyota/fortuner/images/front-view" target="_blank" rel="noreferrer">
+          <ExternalLink size={13} /> Open-bonnet / engine-bay photo reference
+        </a>
+        <a href="https://www.toyotabharat.com/documents/brochures/fortuner-mmc/combined-specsheet.pdf" target="_blank" rel="noreferrer">
+          <ExternalLink size={13} /> Fortuner chassis / suspension specifications
+        </a>
+        <span>Use the 360 viewer's own controls to rotate the car, switch exterior / interior and open / close doors. Bonnet and chassis references open separately.</span>
       </div>
 
       <div className="om-model-disclaimer">
