@@ -108,19 +108,74 @@ export function InspectionWizard() {
     }catch{return file}
   }
   async function uploadEvidence(file:File,label:string){
-    if(file.size>30*1024*1024){setNotice("Keep each evidence file under 30 MB.");return} setUploading(label);
-    const id=await ensureInspection().catch(e=>{setNotice(e instanceof Error?e.message:"Could not create inspection.");return null}); if(!id){setUploading("");return}
+    if(!file)return;
+    if(file.size>30*1024*1024){setNotice("Keep each evidence file under 30 MB.");return}
+    if(!file.type.startsWith("image/")&&!file.type.startsWith("video/")&&file.type!=="application/pdf"){
+      setNotice("Choose an image, video, or PDF file.");return;
+    }
+
+    setUploading(label);
+    setNotice("");
+    const id=await ensureInspection().catch(e=>{
+      setNotice(e instanceof Error?e.message:"Could not create inspection.");
+      return null;
+    });
+    if(!id){setUploading("");return}
+
+    let preview:string|undefined;
+    let storedPath:string|undefined;
     try{
       const prepared=await prepareEvidenceFile(file);
-      const preview=prepared.type.startsWith("image/")?URL.createObjectURL(prepared):undefined;
-      const localPhoto={name:label,url:preview};setDraft(d=>({...d,photos:[...d.photos,localPhoto],updatedAt:new Date().toISOString()}));
+      preview=prepared.type.startsWith("image/")?URL.createObjectURL(prepared):undefined;
+
       if(supabase&&orgId&&online&&id!==draft.inspectionNumber){
-        const ext=(prepared.name.split(".").pop()||"bin").replace(/[^a-z0-9]/gi,"")||"bin";const path=`${orgId}/${id}/original/${crypto.randomUUID()}.${ext}`;
-        const {error}=await supabase.storage.from("inspection-media").upload(path,prepared,{contentType:prepared.type||"application/octet-stream",cacheControl:"3600",upsert:false});if(error)throw error;
-        const {error:row}=await supabase.from("inspection_media").insert({organization_id:orgId,inspection_id:id,section_name:label.includes(" • ")?label.split(" • ")[0]:label,file_path:path,media_type:prepared.type.startsWith("video/")?"video":prepared.type==="application/pdf"?"document":"image",original_filename:file.name,mime_type:prepared.type||"application/octet-stream",file_size:prepared.size,captured_at:new Date().toISOString()});if(row)throw row;
-        setDraft(d=>({...d,photos:[...d.photos.slice(0,-1),{name:label,path,url:preview}],updatedAt:new Date().toISOString()}));setNotice("Evidence uploaded and linked");
-      }else setNotice(online?"Evidence saved locally":"Offline evidence saved locally");
-    }catch(e){setNotice(`Upload failed: ${e instanceof Error?e.message:"unknown error"}`)}finally{setUploading("")}
+        const ext=(prepared.name.split(".").pop()||"bin").replace(/[^a-z0-9]/gi,"")||"bin";
+        const path=`${orgId}/${id}/original/${crypto.randomUUID()}.${ext}`;
+        const {error:uploadError}=await supabase.storage.from("inspection-media").upload(path,prepared,{
+          contentType:prepared.type||"application/octet-stream",
+          cacheControl:"3600",
+          upsert:false
+        });
+        if(uploadError)throw new Error(`Storage upload failed: ${uploadError.message}`);
+        storedPath=path;
+
+        const {error:rowError}=await supabase.from("inspection_media").insert({
+          organization_id:orgId,
+          inspection_id:id,
+          section_name:label.includes(" • ")?label.split(" • ")[0]:label,
+          file_path:path,
+          media_type:prepared.type.startsWith("video/")?"video":prepared.type==="application/pdf"?"document":"image",
+          original_filename:file.name,
+          mime_type:prepared.type||"application/octet-stream",
+          file_size:prepared.size,
+          captured_at:new Date().toISOString()
+        });
+        if(rowError)throw new Error(`Photo record could not be saved: ${rowError.message}`);
+
+        // Append only after both Storage and the metadata row succeed. This avoids
+        // leaving failed files in the evidence grid or replacing another upload.
+        setDraft(d=>({...d,photos:[...d.photos,{name:label,path,url:preview}],updatedAt:new Date().toISOString()}));
+        setNotice("Photo uploaded and linked successfully.");
+      }else{
+        // Preserve offline/demo capture, but make it explicit that this copy is local.
+        setDraft(d=>({...d,photos:[...d.photos,{name:label,url:preview}],updatedAt:new Date().toISOString()}));
+        setNotice(online
+          ?"Photo saved on this device only. Reconnect the workspace and upload it again before publishing."
+          :"Photo saved on this device only. Reconnect and upload it again before publishing.");
+      }
+    }catch(e){
+      // If Storage succeeded but metadata failed, remove the orphaned object when possible.
+      if(storedPath&&supabase){
+        const {error:cleanupError}=await supabase.storage.from("inspection-media").remove([storedPath]);
+        if(cleanupError)console.warn("Could not clean up failed inspection upload",cleanupError.message);
+      }
+      if(preview)URL.revokeObjectURL(preview);
+      const detail=e instanceof Error?e.message:
+        typeof e==="object"&&e!==null&&"message" in e?String((e as {message:unknown}).message):"Unknown error";
+      setNotice(`Photo upload failed: ${detail}. Please retry.`);
+    }finally{
+      setUploading("");
+    }
   }
   async function lookupVehicle(){
   const chassis=draft.vehicle.vin.trim().toUpperCase().replace(/\\s+/g,"");
@@ -192,7 +247,7 @@ async function mergeReportPdf(){
       <div className="om-aside-box"><b><ShieldCheck size={14}/> Data protection</b><p>Local cache first. Protected organization sync when connected.</p><span className="om-sync"><i className={online?"live":""}/>{online?"Connected to sync":"Working offline"}</span></div>
     </aside></div>
 
-    <footer className="om-wiz-footer"><button onClick={()=>setStage(s=>Math.max(0,s-1))} disabled={stage===0}><ArrowLeft size={15}/> Back</button><span>{notice&&<><CheckCircle2 size={13}/>{notice}</>}</span>{stage<6?<button className="primary" onClick={next}>{stage===0?"Start field inspection":stage===5?"Review inspection":`Continue ${stages[stage+1]}`}<ArrowRight size={15}/></button>:<button className="primary" onClick={finalize} disabled={!canFinalize||saving}>{saving?<Loader2 className="spin"/>:<FileText size={15}/>} {saving?"Preparing PDF…":"Print PDF"}</button>}</footer>
+    <footer className="om-wiz-footer"><button onClick={()=>setStage(s=>Math.max(0,s-1))} disabled={stage===0}><ArrowLeft size={15}/> Back</button><span role={notice.startsWith("Photo upload failed:")?"alert":"status"} aria-live="polite">{notice&&<>{notice.startsWith("Photo upload failed:")?<X size={13}/>:<CheckCircle2 size={13}/>}<span>{notice}</span></>}</span>{stage<6?<button className="primary" onClick={next}>{stage===0?"Start field inspection":stage===5?"Review inspection":`Continue ${stages[stage+1]}`}<ArrowRight size={15}/></button>:<button className="primary" onClick={finalize} disabled={!canFinalize||saving}>{saving?<Loader2 className="spin"/>:<FileText size={15}/>} {saving?"Preparing PDF…":"Print PDF"}</button>}</footer>
 
     {packageOpen&&<div className="om-package-backdrop" onClick={()=>!packageBusy&&setPackageOpen(false)}>
       <div className="om-package" onClick={e=>e.stopPropagation()}>
@@ -246,7 +301,7 @@ function VehicleStage({draft,updateVehicle,updateDraft,upload,lookup,lookupBusy,
       </div>
       {draft.vehicle.registryDetails.ownerName&&<div className="om-registry-owner"><span>Registered owner</span><b>{draft.vehicle.registryDetails.ownerName}</b></div>}
     </div>}
-    <div className="om-tool-row"><label className="om-tool"><ScanLine size={16}/><div>Scan VIN<small>Camera capture slot</small></div><input type="file" accept="image/*" capture="environment" className="hidden"/></label>
+    <div className="om-tool-row"><label className="om-tool"><ScanLine size={16}/><div>Scan VIN<small>Choose or capture a VIN photo</small></div><input type="file" accept="image/*" capture="environment" className="hidden" onChange={e=>{const file=e.currentTarget.files?.[0];e.currentTarget.value="";if(file)void upload(file,"VIN scan")}}/></label>
       <label className="om-tool"><Paperclip size={16}/><div>Vehicle document<small>RC / insurance / PUC</small></div><input type="file" accept=".pdf,image/*" className="hidden" onChange={e=>{const f=e.target.files?.[0];if(f)void upload(f,"Vehicle document")}}/></label>
     </div>
     <div className="om-callout"><ShieldCheck size={14}/><span>Verified registry data is attached to the vehicle record. Manual edits remain available for observations such as odometer and ownership.</span></div>
@@ -266,7 +321,7 @@ function RoadTest({draft,updateDraft}:{draft:InspectionDraft;updateDraft:(p:Part
 }
 
 function Evidence({draft,upload,uploading,selected,setSelected,tool,setTool,annotations,annotate}:{draft:InspectionDraft;upload:(f:File,l:string)=>Promise<void>;uploading:string;selected:number|null;setSelected:(n:number|null)=>void;tool:string|null;setTool:(s:string|null)=>void;annotations:Record<number,{x:number;y:number;type:string}[]>;annotate:(e:MouseEvent<HTMLDivElement>,i:number)=>void}) {
-  return <div className="om-stage"><div className="om-evidence-hero"><div><h2>Evidence center</h2><p>{draft.photos.length} captured • recommended minimum 4</p></div><label className="om-evidence-add"><ImagePlus size={14}/> Add files<input className="hidden" type="file" accept="image/*,video/*,.pdf" multiple onChange={e=>Array.from(e.target.files||[]).forEach(f=>void upload(f,f.name))}/></label></div>
+  return <div className="om-stage"><div className="om-evidence-hero"><div><h2>Evidence center</h2><p>{draft.photos.length} captured • recommended minimum 4</p></div><label className="om-evidence-add"><ImagePlus size={14}/> Add files<input className="hidden" type="file" accept="image/*,video/*,.pdf" multiple onChange={e=>{const files=Array.from(e.currentTarget.files||[]);e.currentTarget.value="";void (async()=>{for(const file of files)await upload(file,file.name)})()}}/></label></div>
     <div className="om-evidence-grid">{evidenceSlots.map(([label,system])=>{const p=draft.photos.find(x=>x.name===label);const i=p?draft.photos.indexOf(p):-1;return <div className="om-evidence-card" key={label}><button className="om-evidence-thumb" onClick={()=>i>=0&&setSelected(i)}>{p?.url?<img src={p.url} alt={label}/>:<Camera size={22}/>} {i>=0&&(annotations[i]||[]).map((m,j)=><span className="om-evidence-marker" key={j} style={{left:`${m.x}%`,top:`${m.y}%`}}/>)}</button><b>{label}</b><div className="om-evidence-meta"><span>{system}</span><span>{p?"Captured":"Missing"}</span></div><div className="om-evidence-actions"><label><Upload size={10}/><input type="file" accept="image/*" onChange={e=>{const f=e.target.files?.[0];if(f)void upload(f,label)}}/></label><button disabled={i<0} onClick={()=>i>=0&&setSelected(i)}>Annotate</button>{uploading===label&&<Loader2 className="spin" size={11}/>}</div></div>})}</div>
     {selected!==null&&draft.photos[selected]?.url&&<div className="om-annotate"><div style={{display:"flex",justifyContent:"space-between",gap:8,alignItems:"center"}}><b style={{fontSize:10}}>Damage annotation</b><div className="om-annotate-tools">{["circle","arrow","note"].map(t=><button className={tool===t?"active":""} key={t} onClick={()=>setTool(t)}>{t}</button>)}<button onClick={()=>setSelected(null)}><X size={10}/></button></div></div><div className="om-annotate-canvas" onClick={e=>annotate(e,selected)}><img src={draft.photos[selected].url} alt="selected evidence"/>{(annotations[selected]||[]).map((m,j)=><span className="om-marker-note" key={j} style={{left:`${m.x}%`,top:`${m.y}%`}}>{m.type==="circle"?"○":m.type==="arrow"?"↗":"N"}</span>)}</div><small style={{fontSize:8,color:"#8b98a6"}}>Choose a tool, then tap the image.</small></div>}
   </div>
