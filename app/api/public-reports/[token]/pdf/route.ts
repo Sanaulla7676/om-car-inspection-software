@@ -89,7 +89,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
     for(const [label,checked] of Object.entries(val.interiorOverall||{}))if(checked)add("Interior overall / "+label,8);
     for(const row of val.interiorRows||[])if(row.part||row.damageType||row.rfCost)add("X / "+(row.part||"Interior part")+" · Qty "+(row.quantity||"—")+" · "+(row.damageType||"—")+" · Level "+row.damageLevel+" · RF INR "+(row.rfCost||"0"),8);
     add("Function Defect Details [Y]",10,true);
-    for(const [label,row] of Object.entries(val.functionItems||{}) as [string,any][])if(row.severity||row.details||row.rfCost)add("Y / "+label+" · "+(row.severity||"—")+" · "+(row.details||"No details")+" · RF INR "+(row.rfCost||"0"),8);
+    for(const [label,row] of Object.entries(val.functionItems||{}) as [string,any][])if(row.severity||row.details||row.rfCost)add("Y / "+label+" · "+(row.severity==="Small"?"S":row.severity==="Large"?"L":"—")+" · "+(row.details||"No details")+" · RF INR "+(row.rfCost||"0"),8);
     add("Frame Defect Details [Z]",10,true);
     for(const [label,row] of Object.entries(val.frameItems||{}) as [string,any][])if(row.dent||row.repair||row.replaced||row.size||row.rfCost)add("Z / "+label+" · Dent "+(row.dent?"Yes":"No")+" · Repair "+(row.repair?"Yes":"No")+" · Replaced "+(row.replaced?"Yes":"No")+" · "+(row.size||"—")+" · RF INR "+(row.rfCost||"0"),8);
     add("Exterior rating [A]: "+String(vt?.exteriorRating??"—")+"/5 · Interior [B]: "+String(vt?.interiorRating??"—")+"/5 · Function [C]: "+String(vt?.functionRating??"—")+"/5 · Frame [D]: "+String(vt?.frameFactor??"—"),9,true);
