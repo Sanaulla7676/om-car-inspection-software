@@ -66,5 +66,11 @@ WCAG AA generally requires 4.5:1 for normal text and 3:1 for large text. Meaning
 - [x] Focus-visible state is explicit and consistent.
 - [x] Common controls have larger interaction targets.
 - [x] Mobile layouts received targeted spacing and overflow adjustments.
-- [ ] Run the repository typecheck/build and inspect the resulting production deployment.
-- [ ] Validate the authenticated flows with keyboard-only navigation and screen-reader testing.
+- [x] Repository CI `npm run typecheck` passed.
+- [x] Repository CI `npm run build` passed after adding the required Suspense boundary to `/reports/merge`.
+- [x] Vercel production deployment for the verified `main` commit reached `READY`.
+- [ ] Validate authenticated inspection, upload and report flows with keyboard-only navigation and screen-reader testing.
+
+## Build verification follow-up
+
+The first CI run passed TypeScript but failed production prerendering because `/reports/merge` used `useSearchParams()` without a Suspense boundary. A follow-up change wrapped the PDF Studio client content in a `Suspense` fallback. The subsequent GitHub Actions run passed install, typecheck and build; the matching Vercel production deployment reached `READY`. This build fix does not change report merge behavior.
