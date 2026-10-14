@@ -73,7 +73,33 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
     for (const line of wrap(finding.default_description || "")) add(line);
   }
 
-  add("Summary", 13, true);
+
+  const val = snapshot?.valuation, vt = snapshot?.valuationTotals;
+  if(val){
+    add("Valuation sheet and legacy inspection details",14,true);
+    add("PO name: "+(val.header?.poName||"—")+" · Enquiry date: "+(val.header?.enquiryDate||"—")+" · Valuation date: "+(val.header?.valuationDate||"—"),9);
+    add("Source: "+(val.source?.sourceType||"—")+" · Branch: "+(val.source?.branchType||"—")+" · Customer: "+(val.customer?.name||"—")+" · Phone: "+(val.customer?.mobile||val.customer?.phone||"—"),9);
+    add("Registration: "+(val.vehicle?.registration||"—")+" · Make: "+(val.vehicle?.manufacturer||"—")+" · Model: "+(val.vehicle?.modelSuffix||"—")+" · Chassis/VIN: "+(val.vehicle?.chassis||"—"),9);
+    add("Engine: "+(val.vehicle?.engine||"—")+" · Year: "+(val.vehicle?.monthYear||"—")+" · Colour: "+(val.vehicle?.color||"—")+" · KM run: "+(val.vehicle?.kmRun||"—"),9);
+    add("RC book: "+(val.documents?.rcBookType||"—")+" · Insurance: "+(val.insurance?.type||"—")+" · Expiry: "+(val.insurance?.expiryDate||"—")+" · IDV: "+(val.insurance?.idvValue||"—"),9);
+    add("Exterior Defect Details [W]",10,true);
+    for(const row of val.exteriorRows||[])if(row.part||row.damageType||row.rfCost)add("W / "+(row.part||"Exterior part")+" · Qty "+(row.quantity||"—")+" · "+(row.damageType||"—")+" · Level "+row.damageLevel+" · RF INR "+(row.rfCost||"0"),8);
+    for(const [part,row] of Object.entries(val.exteriorOtherDamage||{}) as [string,any][])if(row.left||row.right||row.rfCost)add(part+" · L "+row.left+" · R "+row.right+" · RF INR "+(row.rfCost||"0"),8);
+    add("Interior Defect Details [X]",10,true);
+    for(const [label,checked] of Object.entries(val.interiorOverall||{}))if(checked)add("Interior overall / "+label,8);
+    for(const row of val.interiorRows||[])if(row.part||row.damageType||row.rfCost)add("X / "+(row.part||"Interior part")+" · Qty "+(row.quantity||"—")+" · "+(row.damageType||"—")+" · Level "+row.damageLevel+" · RF INR "+(row.rfCost||"0"),8);
+    add("Function Defect Details [Y]",10,true);
+    for(const [label,row] of Object.entries(val.functionItems||{}) as [string,any][])if(row.severity||row.details||row.rfCost)add("Y / "+label+" · "+(row.severity||"—")+" · "+(row.details||"No details")+" · RF INR "+(row.rfCost||"0"),8);
+    add("Frame Defect Details [Z]",10,true);
+    for(const [label,row] of Object.entries(val.frameItems||{}) as [string,any][])if(row.dent||row.repair||row.replaced||row.size||row.rfCost)add("Z / "+label+" · Dent "+(row.dent?"Yes":"No")+" · Repair "+(row.repair?"Yes":"No")+" · Replaced "+(row.replaced?"Yes":"No")+" · "+(row.size||"—")+" · RF INR "+(row.rfCost||"0"),8);
+    add("Exterior rating [A]: "+String(vt?.exteriorRating??"—")+"/5 · Interior [B]: "+String(vt?.interiorRating??"—")+"/5 · Function [C]: "+String(vt?.functionRating??"—")+"/5 · Frame [D]: "+String(vt?.frameFactor??"—"),9,true);
+    add("Total RF cost [W+X+Y+Z]: INR "+String(vt?.totalRf??0)+" · Final score: "+String(vt?.finalScore??"—")+" · Level: "+String(vt?.finalLevel??"—"),10,true);
+    add("Net Buying Price = A + B − C − D − E: INR "+String(vt?.netBuyingPrice??0),10,true);
+    for(const row of val.followUps||[])if(row.date||row.status||row.details||row.nextActionDate)add("Follow-up · "+(row.date||"—")+" · "+(row.status||"—")+" · "+(row.details||"")+" · TL: "+(row.tlComment||"")+" · Next: "+(row.nextActionDate||"—"),8);
+    if(val.dropReason)add("Drop reason: "+val.dropReason,9);
+  }
+
+    add("Summary", 13, true);
   for (const line of wrap(snapshot?.summary || "No summary supplied.")) add(line);
 
   const bytes = await pdf.save();

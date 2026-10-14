@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createHash } from "crypto";
 import { createClient } from "@/lib/supabase/server";
 import { calculateScore, recommendationForScore } from "@/lib/scoring";
+import { calculateValuation } from "@/lib/valuation";
 import type { Severity } from "@/lib/types";
 
 function tokenHash(token:string){return createHash("sha256").update(token).digest("hex");}
@@ -61,6 +62,8 @@ export async function PATCH(req:Request,{params}:{params:Promise<{id:string}>}) 
       inspection:{id,number:inspection.inspection_number,type:inspection.inspection_type},
       vehicle:payload.vehicle,customer:payload.customer,
       sections:payload.sections,findings,
+      valuation:payload.valuation??null,
+      valuationTotals:payload.valuation?calculateValuation(payload.valuation):null,
       score:scored,recommendation,
       testDrive:payload.testDrive,
       photos:payload.photos,

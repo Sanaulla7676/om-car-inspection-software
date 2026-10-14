@@ -7,14 +7,17 @@ import { createClient } from "@/lib/supabase/client";
 import { loadLocalDraft, saveLocalDraft } from "@/lib/offline";
 import { calculateScore, recommendationForScore } from "@/lib/scoring";
 import type { InspectionDraft, Severity } from "@/lib/types";
+import { createDefaultValuation } from "@/lib/valuation";
+import { ValuationSheet } from "@/components/valuation-sheet";
+import { VehicleModelViewer } from "@/components/vehicle-model-viewer";
 
-type Stage = "Vehicle" | "Exterior" | "Interior" | "Mechanical" | "Road Test" | "Evidence" | "Review";
-const stages: Stage[] = ["Vehicle","Exterior","Interior","Mechanical","Road Test","Evidence","Review"];
+type Stage = "Vehicle" | "Exterior" | "Interior" | "Mechanical" | "Road Test" | "Valuation" | "Evidence" | "Review";
+const stages: Stage[] = ["Vehicle","Exterior","Interior","Mechanical","Road Test","Valuation","Evidence","Review"];
 const sectionItems: Record<string,string[]> = {
-  Exterior:["Headlights","Fog lamps","Windshield","ORVM left","ORVM right","Front bumper","Rear bumper","Tail lamps","Number plates","Parking sensors","Reverse camera","Panel gaps"],
-  Interior:["Instrument cluster","Warning lights","Infotainment","AC controls","Steering controls","Horn","Airbag indicator","USB / charging ports","Speakers","Driver seat","Passenger seat","Rear seats","Seat belts","Upholstery","Door trims","Dashboard","Center console","Boot interior"],
-  Mechanical:["Cold start","Engine noise","Oil leakage","Coolant leakage","Smoke","Mounting","Belts","Hoses","Battery","Fluid levels","Gear shifting","Clutch operation","Automatic transmission behavior","Abnormal noise","Front suspension","Rear suspension","Shock absorbers","Bushes","Ball joints","Steering response","Steering play","Alignment","Brake pedal","Brake response","Brake noise","Disc condition","ABS"],
-  Electrical:["Headlights","Tail lamps","Indicators","Fog lamps","Brake lights","Reverse lights","Interior lights","Battery","Alternator","Power windows","Central locking","ORVM","Sunroof","Infotainment","Parking sensors","Cameras","ADAS"],
+  Exterior:["Front Spoiler","Front Bumper","Grille","Bonnet Hood","Front Fender L","Front Fender R","Rear Fender L","Rear Fender R","Roof","Door FL","Door FR","Door RL","Door RR","Rocker Panel L","Rocker Panel R","Quarter Panel L","Quarter Panel R","Trunk Hood","Hood","End Panel","Rear Bumper","Rear Spoiler","Mud Flap L","Mud Flap R","Windshield","Rear Windshield","Side Window L","Side Window R","Door Handle L","Door Handle R","Side Mirror L","Side Mirror R","Headlights","Fog lamps","Tail lamps","Number plates","Parking sensors","Reverse camera","Panel gaps","ORVM left","ORVM right"],
+  Interior:["Instrument cluster","Warning lights","Infotainment","AC controls","Steering controls","Horn","Airbag indicator","USB / charging ports","Speakers","Driver seat","Passenger seat","Rear seats","Seat belts","Upholstery","Door trims","Dashboard","Instrument Panel","Steering Wheel","Front Left Seat","Front Right Seat","Rear Seat","Third Seat","Front Left Door Trim","Front Right Door Trim","Rear Left Door Trim","Rear Right Door Trim","Carpet","Roof Lining","Back Door Trim","Center Console","Boot Trim","Center console","Boot interior"],
+  Mechanical:["Cold start","Engine noise","Oil leakage","Coolant leakage","Smoke","Mounting","Belts","Hoses","Battery","Fluid levels","Gear shifting","Clutch operation","Automatic transmission behavior","Abnormal noise","Front suspension","Rear suspension","Shock absorbers","Bushes","Ball joints","Steering response","Steering play","Alignment","Brake pedal","Brake response","Brake noise","Disc condition","ABS","Engine Oil Leakage","Coolant Leakage","Radiator Damage","Bent Suspension Rod Arm","Shock Absorber Defect","Brake Disk Damage","Brake Defect","Pedal Handling Defect","Clutch Defect","Transmission Oil Leak","Shift Shock Time Lag","Gear Shifting","Gear Box Noise","Drive Shaft Defect","Differential Noise","Wheel Bearings Defect","Steering Oil Leak","Steering Shaft Boots Cut","Jammed Steering","Steering Noise","Defective Telescopic Tilt","Defective A/C"],
+  Electrical:["Headlights","Tail lamps","Indicators","Fog lamps","Brake lights","Reverse lights","Interior lights","Battery","Alternator","Power windows","Central locking","ORVM","Sunroof","Infotainment","Parking sensors","Cameras","ADAS","Defective Meters","Warning Lamp","Horn Defect","Power Window Defect","Keyless or Cylinder Defect","Audio Defect","Antenna Defect","Electronic Mirror Defect","Wiper Operation Defect","Head Lamp Defect","Battery Defect","Defective Seatbelts","Door Lock Defect"],
   Tyres:["Front Left","Front Right","Rear Left","Rear Right","Spare"]
 };
 const statuses=["Good","Fair","Damaged","Not working","Partial","N/A","Not tested"];
@@ -35,7 +38,7 @@ function freshDraft(): InspectionDraft {
     inspectionType:"Used Car", inspectorName:"Current inspector",
     customer:{name:"",phone:"",email:"",type:"Buyer"},
     vehicle:{registration:"",vin:"",make:"",model:"",variant:"",year:"",fuel:"Petrol",transmission:"Automatic",color:"",odometer:"",engineNumber:"",ownership:"1st owner"},
-    sections:buildSections(),findings:[],photos:[],recommendation:"Suitable",reviewerComments:"",
+    sections:buildSections(),findings:[],photos:[],valuation:createDefaultValuation(),recommendation:"Suitable",reviewerComments:"",
     testDrive:{distance:"",road:"Mixed city + highway",result:"Passed",notes:""},updatedAt:new Date().toISOString()
   };
 }
@@ -52,7 +55,7 @@ export function InspectionWizard() {
 
   useEffect(()=>{
     const on=()=>setOnline(true),off=()=>setOnline(false); setOnline(navigator.onLine); addEventListener("online",on); addEventListener("offline",off);
-    const id=localStorage.getItem("om-active-inspection"); if(id){setInspectionId(id);loadLocalDraft(id).then(r=>r?.payload&&setDraft(r.payload)).catch(()=>{});}
+    const id=localStorage.getItem("om-active-inspection"); if(id){setInspectionId(id);loadLocalDraft(id).then(r=>r?.payload&&setDraft({...freshDraft(),...r.payload,valuation:r.payload.valuation??createDefaultValuation()})).catch(()=>{});}
     fetch("/api/me").then(r=>r.ok?r.json():null).then(x=>{setOrgId(x?.organization?.id);setRole(x?.role??null);if(x?.user?.name)setDraft(d=>({...d,inspectorName:x.user.name}));}).catch(()=>{}).finally(()=>setLoading(false));
     return()=>{removeEventListener("online",on);removeEventListener("offline",off)}
   },[]);
@@ -90,10 +93,10 @@ export function InspectionWizard() {
     if(inspectionId)return inspectionId;if(!draft.vehicle.registration.trim())throw new Error("Enter registration number first.");if(!supabase)return draft.inspectionNumber;if(!orgId)throw new Error("Create your organization from onboarding first.");
     const r=await fetch("/api/inspections",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({draft,organizationId:orgId})});const j=await r.json();if(!r.ok)throw new Error(j.error||"Could not create inspection.");setInspectionId(j.id);localStorage.setItem("om-active-inspection",j.id);return j.id;
   }
-  async function next(){try{if(stage===0)await ensureInspection();setStage(s=>Math.min(6,s+1));scrollTo({top:0,behavior:"smooth"})}catch(e){setNotice(e instanceof Error?e.message:"Could not continue.")}}
+  async function next(){try{if(stage===0)await ensureInspection();setStage(s=>Math.min(7,s+1));scrollTo({top:0,behavior:"smooth"})}catch(e){setNotice(e instanceof Error?e.message:"Could not continue.")}}
   function jumpToStage(target:number){
     if(target===stage)return;
-    setStage(Math.max(0,Math.min(6,target)));
+    setStage(Math.max(0,Math.min(7,target)));
     setNotice("");
     scrollTo({top:0,behavior:"smooth"});
   }
@@ -228,26 +231,28 @@ async function mergeReportPdf(){
 
   if(loading)return <div className="om-wiz"><div className="om-wiz-loading"><Loader2 className="spin" size={22}/> Loading workspace…</div></div>;
   const name=stages[stage] as Stage;
-  const titles:Record<Stage,string>={Vehicle:"Identify the vehicle",Exterior:"Check the exterior",Interior:"Check the cabin",Mechanical:"Check mechanical systems","Road Test":"Run the road test",Evidence:"Build the evidence pack",Review:"Preflight and publish"};
+  const titles:Record<Stage,string>={Vehicle:"Identify the vehicle",Exterior:"Check the exterior",Interior:"Check the cabin",Mechanical:"Check mechanical systems","Road Test":"Run the road test",Evidence:"Build the evidence pack",Valuation:"Complete legacy valuation sheet",Review:"Preflight and publish"};
 
   return <div className="om-wiz">
-    <header className="om-wiz-head"><div><span>0{stage+1} / 07 • {role||"INSPECTOR"}</span><h1>{titles[name]}</h1><p>{name==="Vehicle"?"Enter identity once. Everything else stays attached.":"Tap the normal state. Exceptions reveal the detail controls."}</p></div><div className="om-wiz-pills"><span className={online?"online":""}>{online?<Wifi size={13}/>:<CloudOff size={13}/>} {online?"Online":"Offline"}</span><span><Cloud size={13}/> {saving?"Syncing":"Autosave"}</span></div></header>
+    <header className="om-wiz-head"><div><span>0{stage+1} / 08 • {role||"INSPECTOR"}</span><h1>{titles[name]}</h1><p>{name==="Vehicle"?"Enter identity once. Everything else stays attached.":"Tap the normal state. Exceptions reveal the detail controls."}</p></div><div className="om-wiz-pills"><span className={online?"online":""}>{online?<Wifi size={13}/>:<CloudOff size={13}/>} {online?"Online":"Offline"}</span><span><Cloud size={13}/> {saving?"Syncing":"Autosave"}</span></div></header>
     <nav className="om-wiz-steps">{stages.map((s,i)=><button className={i===stage?"active":i<stage?"done":""} key={s} onClick={()=>void jumpToStage(i)}><b>{i<stage?<Check size={12}/>:i+1}</b><span>{s}</span></button>)}</nav>
 
     <div className="om-wiz-grid"><main>
+      <VehicleModelViewer onApply={(part,status)=>updateItem(part.section,part.item,"status",status)}/>
       {name==="Vehicle"&&<VehicleStage draft={draft} updateVehicle={updateVehicle} updateDraft={updateDraft} upload={uploadEvidence} lookup={lookupVehicle} lookupBusy={lookupBusy} lookupMessage={lookupMessage} lookupSource={lookupSource}/>}
       {(name==="Exterior"||name==="Interior")&&<Checklist section={name} draft={draft} updateItem={updateItem} upload={uploadEvidence}/>}
       {name==="Mechanical"&&<Mechanical tab={mechTab} setTab={setMechTab} draft={draft} updateItem={updateItem} upload={uploadEvidence}/>}
       {name==="Road Test"&&<RoadTest draft={draft} updateDraft={updateDraft}/>}
+      {name==="Valuation"&&<ValuationSheet value={draft.valuation??createDefaultValuation()} onChange={valuation=>updateDraft({valuation})}/>
       {name==="Evidence"&&<Evidence draft={draft} upload={uploadEvidence} uploading={uploading} selected={selected} setSelected={setSelected} tool={annotationTool} setTool={setAnnotationTool} annotations={annotations} annotate={annotate}/>}
       {name==="Review"&&<Review draft={draft} score={score.overall} counts={score.counts} recommendation={recommendation} readiness={readiness} rules={readinessRules} signatureRef={signatureRef} draw={draw} clear={clearSignature} signed={signed} aiSummary={aiSummary} updateDraft={updateDraft} finalize={finalize} canFinalize={canFinalize}/>}
     </main><aside className="om-wiz-aside">
-      <div className="om-aside-dark"><small>NEXT BEST ACTION</small><strong>{stage===6?"Complete preflight":`Continue ${stages[stage+1]}`}</strong><p>{stage===0?"Registration is the only hard gate before capture.":"Keep moving. Exceptions get detail only when they appear."}</p><div className="om-aside-readiness"><span>Readiness</span><b>{readiness}%</b></div><div className="om-mini"><i style={{width:`${readiness}%`}}/></div></div>
+      <div className="om-aside-dark"><small>NEXT BEST ACTION</small><strong>{stage===7?"Complete preflight":`Continue ${stages[stage+1]}`}</strong><p>{stage===0?"Registration is the only hard gate before capture.":"Keep moving. Exceptions get detail only when they appear."}</p><div className="om-aside-readiness"><span>Readiness</span><b>{readiness}%</b></div><div className="om-mini"><i style={{width:`${readiness}%`}}/></div></div>
       <div className="om-aside-box"><b>Vehicle health</b><div className="om-score">{score.overall}</div><small>{recommendation}</small><div className="om-mini-stats"><span>{score.counts.Critical}<i>critical</i></span><span>{score.counts.Major}<i>major</i></span><span>{draft.photos.length}<i>evidence</i></span></div></div>
       <div className="om-aside-box"><b><ShieldCheck size={14}/> Data protection</b><p>Local cache first. Protected organization sync when connected.</p><span className="om-sync"><i className={online?"live":""}/>{online?"Connected to sync":"Working offline"}</span></div>
     </aside></div>
 
-    <footer className="om-wiz-footer"><button onClick={()=>setStage(s=>Math.max(0,s-1))} disabled={stage===0}><ArrowLeft size={15}/> Back</button><span role={notice.startsWith("Photo upload failed:")?"alert":"status"} aria-live="polite">{notice&&<>{notice.startsWith("Photo upload failed:")?<X size={13}/>:<CheckCircle2 size={13}/>}<span>{notice}</span></>}</span>{stage<6?<button className="primary" onClick={next}>{stage===0?"Start field inspection":stage===5?"Review inspection":`Continue ${stages[stage+1]}`}<ArrowRight size={15}/></button>:<button className="primary" onClick={finalize} disabled={!canFinalize||saving}>{saving?<Loader2 className="spin"/>:<FileText size={15}/>} {saving?"Preparing PDF…":"Print PDF"}</button>}</footer>
+    <footer className="om-wiz-footer"><button onClick={()=>setStage(s=>Math.max(0,s-1))} disabled={stage===0}><ArrowLeft size={15}/> Back</button><span role={notice.startsWith("Photo upload failed:")?"alert":"status"} aria-live="polite">{notice&&<>{notice.startsWith("Photo upload failed:")?<X size={13}/>:<CheckCircle2 size={13}/>}<span>{notice}</span></>}</span>{stage<7?<button className="primary" onClick={next}>{stage===0?"Start field inspection":stage===6?"Review inspection":`Continue ${stages[stage+1]}`}<ArrowRight size={15}/></button>:<button className="primary" onClick={finalize} disabled={!canFinalize||saving}>{saving?<Loader2 className="spin"/>:<FileText size={15}/>} {saving?"Preparing PDF…":"Print PDF"}</button>}</footer>
 
     {packageOpen&&<div className="om-package-backdrop" onClick={()=>!packageBusy&&setPackageOpen(false)}>
       <div className="om-package" onClick={e=>e.stopPropagation()}>

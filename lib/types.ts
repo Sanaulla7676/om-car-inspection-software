@@ -1,3 +1,4 @@
+import type { ValuationDraft } from "./valuation";
 export type Role = "SUPER_ADMIN" | "ORG_ADMIN" | "REVIEWER" | "INSPECTOR" | "CUSTOMER";
 export type InspectionStatus = "DRAFT" | "IN_PROGRESS" | "SUBMITTED" | "IN_REVIEW" | "CHANGES_REQUESTED" | "APPROVED" | "COMPLETED" | "CANCELLED";
 export type Severity = "Cosmetic" | "Minor" | "Moderate" | "Major" | "Critical";
@@ -31,6 +32,7 @@ export type InspectionDraft = {
     };
   };
   sections: Record<string, Record<string, { status: string; severity: Severity; notes: string }>>;
+  valuation?: ValuationDraft;
   findings: Fault[];
   photos: { name: string; url?: string; path?: string }[];
   signatureDataUrl?: string;
