@@ -3,6 +3,8 @@ import { PDFDocument } from "pdf-lib";
 import { createClient } from "@/lib/supabase/server";
 
 const MAX_ATTACHMENT_BYTES = 25 * 1024 * 1024;
+const MAX_TOTAL_ATTACHMENT_BYTES = 100 * 1024 * 1024;
+const MAX_ATTACHMENTS = 10;
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -34,31 +36,52 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   const form = await req.formData();
   const basePdf = form.get("basePdf");
-  const attachment = form.get("attachment");
+  const legacyAttachment = form.get("attachment");
+  const uploadedAttachments = form.getAll("attachments").filter((entry): entry is File => entry instanceof File);
+  // Keep compatibility with the old single-attachment client while supporting multiple PDFs.
+  const attachments = uploadedAttachments.length
+    ? uploadedAttachments
+    : legacyAttachment instanceof File
+      ? [legacyAttachment]
+      : [];
 
-  if (!(basePdf instanceof File) || !(attachment instanceof File)) {
-    return NextResponse.json({ error: "basePdf and attachment are required." }, { status: 400 });
+  if (!(basePdf instanceof File)) {
+    return NextResponse.json({ error: "The generated base PDF is required." }, { status: 400 });
   }
-  if (attachment.type !== "application/pdf" && !attachment.name.toLowerCase().endsWith(".pdf")) {
-    return NextResponse.json({ error: "The attachment must be a PDF." }, { status: 415 });
+  if (!attachments.length) {
+    return NextResponse.json({ error: "Select at least one supporting PDF." }, { status: 400 });
   }
-  if (attachment.size > MAX_ATTACHMENT_BYTES) {
-    return NextResponse.json({ error: "The attachment is too large. Maximum size is 25 MB." }, { status: 413 });
+  if (attachments.length > MAX_ATTACHMENTS) {
+    return NextResponse.json({ error: "Attach up to 10 supporting PDFs at a time." }, { status: 413 });
+  }
+
+  const totalBytes = attachments.reduce((sum, file) => sum + file.size, 0);
+  if (totalBytes > MAX_TOTAL_ATTACHMENT_BYTES) {
+    return NextResponse.json({ error: "The combined supporting PDFs exceed 100 MB." }, { status: 413 });
+  }
+  for (const attachment of attachments) {
+    if (attachment.type !== "application/pdf" && !attachment.name.toLowerCase().endsWith(".pdf")) {
+      return NextResponse.json({ error: attachment.name + " is not a PDF." }, { status: 415 });
+    }
+    if (attachment.size > MAX_ATTACHMENT_BYTES) {
+      return NextResponse.json({ error: attachment.name + " exceeds the 25 MB per-file limit." }, { status: 413 });
+    }
   }
 
   try {
     const merged = await PDFDocument.create();
     const reportDocument = await PDFDocument.load(await basePdf.arrayBuffer());
-    const attachmentDocument = await PDFDocument.load(await attachment.arrayBuffer());
-
     const reportPages = await merged.copyPages(reportDocument, reportDocument.getPageIndices());
     reportPages.forEach((page) => merged.addPage(page));
 
-    const attachmentPages = await merged.copyPages(attachmentDocument, attachmentDocument.getPageIndices());
-    attachmentPages.forEach((page) => merged.addPage(page));
+    for (const attachment of attachments) {
+      const attachmentDocument = await PDFDocument.load(await attachment.arrayBuffer());
+      const pages = await merged.copyPages(attachmentDocument, attachmentDocument.getPageIndices());
+      pages.forEach((page) => merged.addPage(page));
+    }
 
     const bytes = await merged.save();
-    const filename = `OM-Car-Inspection-${id}-v${report.current_version}-merged.pdf`;
+    const filename = `OM-Car-Inspection-${id}-v${report.current_version}-complete-package.pdf`;
 
     return new NextResponse(Buffer.from(bytes), {
       headers: {
