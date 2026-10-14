@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight, Camera, Check, CheckCircle2, Cloud, CloudOff, Do
 import { createClient } from "@/lib/supabase/client";
 import { loadLocalDraft, saveLocalDraft } from "@/lib/offline";
 import { calculateScore, recommendationForScore } from "@/lib/scoring";
+import { conditionOptionsFor, isIssueCode, normalizeConditionCode, normalizeRoadTestCode, ROAD_TEST_OPTIONS, severityForCode } from "@/lib/inspection-codes";
 import type { InspectionDraft, Severity } from "@/lib/types";
 import { createDefaultValuation } from "@/lib/valuation";
 import { ValuationSheet } from "@/components/valuation-sheet";
@@ -20,7 +21,6 @@ const sectionItems: Record<string,string[]> = {
   Electrical:["Headlights","Tail lamps","Indicators","Fog lamps","Brake lights","Reverse lights","Interior lights","Battery","Alternator","Power windows","Central locking","ORVM","Sunroof","Infotainment","Parking sensors","Cameras","ADAS","Defective Meters","Warning Lamp","Horn Defect","Power Window Defect","Keyless or Cylinder Defect","Audio Defect","Antenna Defect","Electronic Mirror Defect","Wiper Operation Defect","Head Lamp Defect","Battery Defect","Defective Seatbelts","Door Lock Defect"],
   Tyres:["Front Left","Front Right","Rear Left","Rear Right","Spare"]
 };
-const statuses=["Good","Fair","Damaged","Not working","Partial","N/A","Not tested"];
 const severities: Severity[]=["Cosmetic","Minor","Moderate","Major","Critical"];
 const evidenceSlots=[["Front 3/4","Exterior"],["Rear 3/4","Exterior"],["Driver side","Exterior"],["Passenger side","Exterior"],["Dashboard","Interior"],["Driver seat","Interior"],["Engine bay","Mechanical"],["Tyres / tread","Mechanical"]] as const;
 
@@ -28,7 +28,7 @@ function buildSections() {
   const out: InspectionDraft["sections"]={};
   for (const [section,items] of Object.entries(sectionItems)) {
     out[section]={};
-    items.forEach(item=>out[section][item]={status:"Good",severity:"Minor",notes:""});
+    items.forEach(item=>out[section][item]={status:"0",severity:"Minor",notes:""});
   }
   return out;
 }
@@ -39,11 +39,22 @@ function freshDraft(): InspectionDraft {
     customer:{name:"",phone:"",email:"",type:"Buyer"},
     vehicle:{registration:"",vin:"",make:"",model:"",variant:"",year:"",fuel:"Petrol",transmission:"Automatic",color:"",odometer:"",engineNumber:"",ownership:"1st owner"},
     sections:buildSections(),findings:[],photos:[],valuation:createDefaultValuation(),recommendation:"Suitable",reviewerComments:"",
-    testDrive:{distance:"",road:"Mixed city + highway",result:"Passed",notes:""},updatedAt:new Date().toISOString()
+    testDrive:{distance:"",road:"Mixed city + highway",result:"0",notes:""},updatedAt:new Date().toISOString()
   };
 }
-const isIssue=(status:string)=>!["Good","N/A","Not tested"].includes(status);
-function severityFor(status:string): Severity { return status==="Fair"||status==="Partial"?"Minor":status==="Damaged"?"Moderate":status==="Not working"?"Major":"Minor"; }
+const isIssue = isIssueCode;
+function severityFor(status:string): Severity { return severityForCode(status); }
+function normalizeDraftCodes(raw:Partial<InspectionDraft>):InspectionDraft {
+  const base=freshDraft();
+  const merged={...base,...raw};
+  const source=raw.sections??{};
+  const sectionNames=Object.keys({...base.sections,...source});
+  const sections=Object.fromEntries(sectionNames.map(section=>{
+    const rows={...(base.sections[section]??{}),...(source[section]??{})};
+    return [section,Object.fromEntries(Object.entries(rows).map(([item,row])=>[item,{...row,status:normalizeConditionCode(section,row.status)}]))];
+  })) as InspectionDraft["sections"];
+  return {...merged,sections,valuation:raw.valuation??createDefaultValuation(),testDrive:{...base.testDrive,...raw.testDrive,result:normalizeRoadTestCode(raw.testDrive?.result)}};
+}
 
 export function InspectionWizard() {
   const supabase=createClient();
@@ -55,7 +66,7 @@ export function InspectionWizard() {
 
   useEffect(()=>{
     const on=()=>setOnline(true),off=()=>setOnline(false); setOnline(navigator.onLine); addEventListener("online",on); addEventListener("offline",off);
-    const id=localStorage.getItem("om-active-inspection"); if(id){setInspectionId(id);loadLocalDraft(id).then(r=>r?.payload&&setDraft({...freshDraft(),...r.payload,valuation:r.payload.valuation??createDefaultValuation()})).catch(()=>{});}
+    const id=localStorage.getItem("om-active-inspection"); if(id){setInspectionId(id);loadLocalDraft(id).then(r=>r?.payload&&setDraft(normalizeDraftCodes({...freshDraft(),...r.payload}))).catch(()=>{});}
     fetch("/api/me").then(r=>r.ok?r.json():null).then(x=>{setOrgId(x?.organization?.id);setRole(x?.role??null);if(x?.user?.name)setDraft(d=>({...d,inspectorName:x.user.name}));}).catch(()=>{}).finally(()=>setLoading(false));
     return()=>{removeEventListener("online",on);removeEventListener("offline",off)}
   },[]);
@@ -74,7 +85,7 @@ export function InspectionWizard() {
   const score=useMemo(()=>calculateScore(draft.findings.map(f=>({severity:f.severity as Severity}))),[draft.findings]);
   const recommendation=recommendationForScore(score.overall,score.counts.Critical,score.counts.Major);
   const totalItems=useMemo(()=>Object.values(sectionItems).flat().length,[]);
-  const reviewed=useMemo(()=>Object.values(draft.sections).flatMap(s=>Object.values(s)).filter(v=>v.status!=="Not tested").length,[draft.sections]);
+  const reviewed=useMemo(()=>Object.values(draft.sections).flatMap(s=>Object.values(s)).filter(v=>v.status!=="NT").length,[draft.sections]);
   const evidenceSynced=draft.photos.length>=1&&draft.photos.every(p=>Boolean(p.path));
   const readinessRules=[{label:"Vehicle identity",done:Boolean(draft.vehicle.registration.trim())},{label:"Checklist reviewed",done:reviewed>=totalItems-1},{label:"Evidence captured",done:draft.photos.filter(p=>Boolean(p.path)).length>=4},{label:"All evidence synced",done:evidenceSynced},{label:"Recommendation ready",done:Boolean(recommendation)},{label:"Reviewer sign-off",done:signed}];
   const readiness=Math.round(readinessRules.filter(x=>x.done).length/readinessRules.length*100),canFinalize=readiness>=80&&Boolean(draft.vehicle.registration.trim())&&evidenceSynced;
@@ -92,7 +103,7 @@ export function InspectionWizard() {
   }
   function updateItem(section:string,item:string,key:"status"|"severity"|"notes",value:string){
     setDraft(prev=>{
-      const cur=prev.sections[section]?.[item]??{status:"Good",severity:"Minor" as Severity,notes:""}; const sev=key==="status"&&isIssue(value)?severityFor(value):key==="severity"?value as Severity:cur.severity;
+      const cur=prev.sections[section]?.[item]??{status:"0",severity:"Minor" as Severity,notes:""}; const sev=key==="status"&&isIssue(value)?severityFor(value):key==="severity"?value as Severity:cur.severity;
       const next={...cur,[key]:value,severity:sev}; const sections={...prev.sections,[section]:{...prev.sections[section],[item]:next}}; const code=`${section}:${item}`; const findings=[...prev.findings];const i=findings.findIndex(f=>f.code===code);
       if(isIssue(next.status)){const f={code,system:section,name:item,severity:sev,default_description:next.notes||`${item} requires attention.`,recommendation:sev==="Critical"?"Senior review before release.":"Verify, repair or document before delivery."};if(i>=0)findings[i]={...findings[i],...f};else findings.push(f)} else if(i>=0)findings.splice(i,1);
       return {...prev,sections,findings,updatedAt:new Date().toISOString()}
@@ -325,16 +336,16 @@ function VehicleStage({draft,updateVehicle,updateDraft,upload,lookup,lookupBusy,
   </div>
 }
 function Checklist({section,draft,updateItem,upload}:{section:"Exterior"|"Interior";draft:InspectionDraft;updateItem:(s:string,i:string,k:"status"|"severity"|"notes",v:string)=>void;upload:(f:File,l:string)=>Promise<void>}) {
-  const items=sectionItems[section];const good=items.filter(i=>!isIssue(draft.sections[section]?.[i]?.status||"Good")).length;
-  return <div className="om-stage"><div className="om-stage-head"><div><h2>{section}</h2><p className="sub">Good is one tap. Exceptions reveal severity, notes and evidence.</p></div><span className="om-chip">{good}/{items.length} good</span></div><div className="om-checklist">{items.map(item=>{const v=draft.sections[section]?.[item]??{status:"Good",severity:"Minor" as Severity,notes:""};const issue=isIssue(v.status);return <div className={`om-item ${issue?"issue":""}`} key={item}><div className="om-item-top"><div><div className="om-item-name">{item}</div><div className="om-item-meta">{issue?"Attention needed":"Tap Good and continue"}</div></div><select value={v.status} onChange={e=>updateItem(section,item,"status",e.target.value)}>{statuses.map(s=><option key={s}>{s}</option>)}</select></div>{issue&&<div className="om-item-detail"><select value={v.severity} onChange={e=>updateItem(section,item,"severity",e.target.value)}>{severities.map(s=><option key={s}>{s}</option>)}</select><textarea value={v.notes} onChange={e=>updateItem(section,item,"notes",e.target.value)} placeholder="Exact observation…"/><label className="om-photo"><Camera size={12}/> Add evidence<input type="file" accept="image/*,video/*,.pdf" onChange={e=>{const f=e.target.files?.[0];if(f)void upload(f,`${section} • ${item}`)}}/></label></div>}</div>})}</div></div>
+  const items=sectionItems[section];const zeroCount=items.filter(i=>(draft.sections[section]?.[i]?.status||"0")==="0").length;
+  return <div className="om-stage"><div className="om-stage-head"><div><h2>{section}</h2><p className="sub">Use the reference P/B/X damage codes and numbered levels. No generic condition grades.</p></div><span className="om-chip">{zeroCount}/{items.length} code 0</span></div><div className="om-callout"><ShieldCheck size={14}/><span>0 = no damage. P = paint / surface. B = body shape changed. X = cut, crack, hole or missing part. Level 1 = 0–2 in, level 2 = 2–6 in, level 3 = 6 in and above. NT = not inspected; NA = not applicable.</span></div><div className="om-checklist">{items.map(item=>{const v=draft.sections[section]?.[item]??{status:"0",severity:"Minor" as Severity,notes:""};const issue=isIssue(v.status);return <div className={`om-item ${issue?"issue":""}`} key={item}><div className="om-item-top"><div><div className="om-item-name">{item}</div><div className="om-item-meta">{issue?`Code ${v.status} · review required`:`Code ${v.status} recorded`}</div></div><select aria-label={`${item} inspection code`} value={v.status} onChange={e=>updateItem(section,item,"status",e.target.value)}>{conditionOptionsFor(section,v.status).map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</select></div>{issue&&<div className="om-item-detail"><select aria-label={`${item} severity`} value={v.severity} onChange={e=>updateItem(section,item,"severity",e.target.value)}>{severities.map(s=><option key={s}>{s}</option>)}</select><textarea value={v.notes} onChange={e=>updateItem(section,item,"notes",e.target.value)} placeholder="Exact observation / reference…"/><label className="om-photo"><Camera size={12}/> Add evidence<input type="file" accept="image/*,video/*,.pdf" onChange={e=>{const f=e.target.files?.[0];if(f)void upload(f,`${section} • ${item}`)}}/></label></div>}</div>})}</div></div>
 }
 
 function Mechanical({tab,setTab,draft,updateItem,upload}:{tab:"Mechanical"|"Electrical"|"Tyres";setTab:(t:"Mechanical"|"Electrical"|"Tyres")=>void;draft:InspectionDraft;updateItem:(s:string,i:string,k:"status"|"severity"|"notes",v:string)=>void;upload:(f:File,l:string)=>Promise<void>}) {
-  const items=sectionItems[tab];return <div className="om-stage"><div className="om-tabs">{(["Mechanical","Electrical","Tyres"] as const).map(t=><button key={t} className={tab===t?"active":""} onClick={()=>setTab(t)}>{t}</button>)}</div><div className="om-stage-head"><div><h2>{tab}</h2><p className="sub">Related systems in one stage. No unnecessary wizard ping-pong.</p></div></div><div className="om-checklist">{items.map(item=>{const v=draft.sections[tab]?.[item]??{status:"Good",severity:"Minor" as Severity,notes:""};const issue=isIssue(v.status);return <div className={`om-item ${issue?"issue":""}`} key={item}><div className="om-item-top"><div><div className="om-item-name">{item}</div><div className="om-item-meta">{issue?"Exception recorded":"No issue recorded"}</div></div><select value={v.status} onChange={e=>updateItem(tab,item,"status",e.target.value)}>{statuses.map(s=><option key={s}>{s}</option>)}</select></div>{issue&&<div className="om-item-detail"><select value={v.severity} onChange={e=>updateItem(tab,item,"severity",e.target.value)}>{severities.map(s=><option key={s}>{s}</option>)}</select><textarea value={v.notes} onChange={e=>updateItem(tab,item,"notes",e.target.value)} placeholder="Observation…"/><label className="om-photo"><Camera size={12}/> Add evidence<input type="file" accept="image/*,video/*,.pdf" onChange={e=>{const f=e.target.files?.[0];if(f)void upload(f,`${tab} • ${item}`)}}/></label></div>}</div>})}</div></div>
+  const items=sectionItems[tab];return <div className="om-stage"><div className="om-tabs">{(["Mechanical","Electrical","Tyres"] as const).map(t=><button key={t} className={tab===t?"active":""} onClick={()=>setTab(t)}>{t}</button>)}</div><div className="om-stage-head"><div><h2>{tab}</h2><p className="sub">Apply 0 / S / L codes. Legacy grades are flagged for recoding.</p></div></div><div className="om-callout"><ShieldCheck size={14}/><span>0 = no defect recorded. S = small defect. L = large defect. NT = not inspected; NA = not applicable. Select the size code, then add the verified observation and evidence.</span></div><div className="om-checklist">{items.map(item=>{const v=draft.sections[tab]?.[item]??{status:"0",severity:"Minor" as Severity,notes:""};const issue=isIssue(v.status);return <div className={`om-item ${issue?"issue":""}`} key={item}><div className="om-item-top"><div><div className="om-item-name">{item}</div><div className="om-item-meta">{issue?`Code ${v.status} · review required`:`Code ${v.status} recorded`}</div></div><select aria-label={`${item} inspection code`} value={v.status} onChange={e=>updateItem(tab,item,"status",e.target.value)}>{conditionOptionsFor(tab,v.status).map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</select></div>{issue&&<div className="om-item-detail"><select aria-label={`${item} severity`} value={v.severity} onChange={e=>updateItem(tab,item,"severity",e.target.value)}>{severities.map(s=><option key={s}>{s}</option>)}</select><textarea value={v.notes} onChange={e=>updateItem(tab,item,"notes",e.target.value)} placeholder="Observation / measured finding…"/><label className="om-photo"><Camera size={12}/> Add evidence<input type="file" accept="image/*,video/*,.pdf" onChange={e=>{const f=e.target.files?.[0];if(f)void upload(f,`${tab} • ${item}`)}}/></label></div>}</div>})}</div></div>
 }
 
 function RoadTest({draft,updateDraft}:{draft:InspectionDraft;updateDraft:(p:Partial<InspectionDraft>)=>void}) {
-  return <div className="om-stage"><div className="om-stage-head"><div><h2>Road test</h2><p className="sub">Record the test once. Write only meaningful behaviour.</p></div></div><div className="om-road"><div className="om-field"><label>Distance (km)</label><input value={draft.testDrive.distance} onChange={e=>updateDraft({testDrive:{...draft.testDrive,distance:e.target.value}})} placeholder="8"/></div><div className="om-field"><label>Road conditions</label><select value={draft.testDrive.road} onChange={e=>updateDraft({testDrive:{...draft.testDrive,road:e.target.value}})}><option>Mixed city + highway</option><option>City</option><option>Highway</option><option>Rough road</option></select></div><div className="om-field"><label>Result</label><select value={draft.testDrive.result} onChange={e=>updateDraft({testDrive:{...draft.testDrive,result:e.target.value}})}><option>Passed</option><option>Passed with notes</option><option>Failed</option><option>Not conducted</option></select></div></div><div className="om-field" style={{marginTop:10}}><label>Observation</label><textarea value={draft.testDrive.notes} onChange={e=>updateDraft({testDrive:{...draft.testDrive,notes:e.target.value}})} placeholder="Pull, vibration, braking, suspension, transmission, noise…"/></div></div>
+  return <div className="om-stage"><div className="om-stage-head"><div><h2>Road test</h2><p className="sub">Record the test once. Write only meaningful behaviour.</p></div></div><div className="om-road"><div className="om-field"><label>Distance (km)</label><input value={draft.testDrive.distance} onChange={e=>updateDraft({testDrive:{...draft.testDrive,distance:e.target.value}})} placeholder="8"/></div><div className="om-field"><label>Road conditions</label><select value={draft.testDrive.road} onChange={e=>updateDraft({testDrive:{...draft.testDrive,road:e.target.value}})}><option>Mixed city + highway</option><option>City</option><option>Highway</option><option>Rough road</option></select></div><div className="om-field"><label>Result</label><select value={draft.testDrive.result} onChange={e=>updateDraft({testDrive:{...draft.testDrive,result:e.target.value}})}>{ROAD_TEST_OPTIONS.map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</select></div></div><div className="om-field" style={{marginTop:10}}><label>Observation</label><textarea value={draft.testDrive.notes} onChange={e=>updateDraft({testDrive:{...draft.testDrive,notes:e.target.value}})} placeholder="Pull, vibration, braking, suspension, transmission, noise…"/></div></div>
 }
 
 function Evidence({draft,upload,uploading,selected,setSelected,tool,setTool,annotations,annotate}:{draft:InspectionDraft;upload:(f:File,l:string)=>Promise<void>;uploading:string;selected:number|null;setSelected:(n:number|null)=>void;tool:string|null;setTool:(s:string|null)=>void;annotations:Record<number,{x:number;y:number;type:string}[]>;annotate:(e:MouseEvent<HTMLDivElement>,i:number)=>void}) {
