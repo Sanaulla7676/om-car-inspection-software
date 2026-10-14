@@ -95,53 +95,65 @@ export function AuthExperience({ mode }: { mode: AuthMode }) {
 
           <form onSubmit={submit} className="om-auth-form">
             {isSignup && (
-              <label className="om-field">
-                <UserRound size={18} aria-hidden="true" />
-                <input
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  placeholder="Username"
-                  autoComplete="name"
-                  required
-                />
-              </label>
+              <div className="om-auth-field-group">
+                <label className="om-auth-field-label" htmlFor="auth-name">Full name</label>
+                <div className="om-field">
+                  <UserRound size={18} aria-hidden="true" />
+                  <input
+                    id="auth-name"
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                    placeholder="Enter your full name"
+                    autoComplete="name"
+                    required
+                  />
+                </div>
+              </div>
             )}
 
-            <label className="om-field">
-              <Mail size={18} aria-hidden="true" />
-              <input
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                placeholder="Email"
-                type="email"
-                autoComplete="email"
-                required
-              />
-            </label>
+            <div className="om-auth-field-group">
+              <label className="om-auth-field-label" htmlFor="auth-email">Email address</label>
+              <div className="om-field">
+                <Mail size={18} aria-hidden="true" />
+                <input
+                  id="auth-email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder="you@company.com"
+                  type="email"
+                  autoComplete="email"
+                  required
+                />
+              </div>
+            </div>
 
-            <label className="om-field">
-              <LockKeyhole size={18} aria-hidden="true" />
-              <input
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                placeholder="Password"
-                type={showPassword ? "text" : "password"}
-                autoComplete={isSignup ? "new-password" : "current-password"}
-                minLength={6}
-                required
-              />
-              <button
-                type="button"
-                className="om-password-toggle"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-                onClick={() => setShowPassword((value) => !value)}
-              >
-                {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
-              </button>
-            </label>
+            <div className="om-auth-field-group">
+              <label className="om-auth-field-label" htmlFor="auth-password">Password</label>
+              <div className="om-field">
+                <LockKeyhole size={18} aria-hidden="true" />
+                <input
+                  id="auth-password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  placeholder="Enter your password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete={isSignup ? "new-password" : "current-password"}
+                  minLength={6}
+                  required
+                />
+                <button
+                  type="button"
+                  className="om-password-toggle"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  onClick={() => setShowPassword((value) => !value)}
+                >
+                  {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                </button>
+              </div>
+            </div>
 
-            {error && <div className="om-auth-message error">{error}</div>}
-            {success && <div className="om-auth-message success">{success}</div>}
+            {error && <div className="om-auth-message error" role="alert" aria-live="assertive">{error}</div>}
+            {success && <div className="om-auth-message success" role="status" aria-live="polite">{success}</div>}
 
             <button className="om-auth-submit" disabled={busy}>
               {busy ? "Please wait…" : formTitle}
