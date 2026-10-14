@@ -30,7 +30,7 @@ const validFunctionCodes = new Set(FUNCTION_OPTIONS.map((option) => option.value
 
 export function conditionOptionsFor(section: string, currentStatus?: string): ConditionOption[] {
   const base = section === "Exterior" || section === "Interior" ? BODY_DAMAGE_OPTIONS : FUNCTION_OPTIONS;
-  if (currentStatus && !base.some((option) => option.value === currentStatus)) {
+  if (currentStatus && !base.some((option) => option.value === currentStatus) && !base.some((option) => option.value === "RC")) {
     return [...base, { value: "RC", label: "RC · Reclassify legacy entry" }];
   }
   return base;
