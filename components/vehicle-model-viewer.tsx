@@ -262,7 +262,7 @@ export function VehicleModelViewer({section,onApply}:Props) {
       <div className="om-model-bottom">
         <div className="om-model-selection"><span className="om-model-status-dot"/><div><b>{picked.label}</b><small>{picked.section==="Frame"?"Frame accident worksheet [Z]":picked.section+" checklist"} · selected component</small></div></div>
         <div className="om-model-actions">
-          <label className="om-fortuner-code-label"><span>Inspection code</span><select aria-label={"Inspection code for "+picked.label} value={status} onChange={event=>setStatus(event.target.value)}>{options.map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
+          <label className="om-diagram-code-label"><span>Inspection code</span><select aria-label={"Inspection code for "+picked.label} value={status} onChange={event=>setStatus(event.target.value)}>{options.map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
           <button type="button" className="om-model-apply" onClick={()=>onApply(picked,status)}><ShieldCheck size={13}/> Apply selection</button>
         </div>
       </div>
