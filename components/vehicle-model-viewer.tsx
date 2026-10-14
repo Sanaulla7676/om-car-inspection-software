@@ -99,7 +99,6 @@ function defaultMode(section:string):Mode {
 
 function Diagram({mode,selected}:{mode:Mode;selected:Part}) {
   const selectedLabel = selected.label.length>36 ? selected.label.slice(0,33)+"…" : selected.label;
-  const shared = <g fill="none" stroke="#88a5bd" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>;
   return (
     <svg className="om-diagram-svg" viewBox="0 0 720 300" role="img" aria-label={mode+" 2D labelled inspection diagram"}>
       <defs>
