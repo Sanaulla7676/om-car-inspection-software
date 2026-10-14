@@ -110,7 +110,7 @@ export function InspectionWizard() {
   function updateDraft(p:Partial<InspectionDraft>){setDraft(d=>({...d,...p,updatedAt:new Date().toISOString()}))}
   function syncValuationVehicle(vehicle:InspectionDraft["vehicle"],current:InspectionDraft["valuation"]){
     const valuation=current??createDefaultValuation();
-    return {...valuation,vehicle:{...valuation.vehicle,registration:vehicle.registration,chassis:vehicle.vin,engine:vehicle.engineNumber,manufacturer:vehicle.make,modelSuffix:[vehicle.model,vehicle.variant].filter(Boolean).join(" "),monthYear:vehicle.year,color:vehicle.color,kmRun:vehicle.odometer,owners:vehicle.ownership,fuel:vehicle.fuel}};
+    return {...valuation,vehicle:{...valuation.vehicle,registration:vehicle.registration,chassis:vehicle.vin,engine:vehicle.engineNumber,manufacturer:vehicle.make,modelSuffix:[vehicle.model,vehicle.variant].filter(Boolean).join(" "),monthYear:vehicle.year,color:vehicle.color,kmRun:vehicle.odometer,owners:vehicle.ownership,fuel:vehicle.fuel,transmission:vehicle.transmission}};
   }
   function updateVehicle(k:keyof InspectionDraft["vehicle"],v:string){
     setDraft(d=>{
@@ -140,6 +140,7 @@ export function InspectionWizard() {
     if(functionRow&&["0","S","L","NT","NA","RC"].includes(status)){
       const severity=status==="S"?"Small":status==="L"?"Large":"";
       updateDraft({valuation:{...valuation,functionItems:{...valuation.functionItems,[part.item]:{...functionRow,severity}}}});
+      updateItem(part.section,part.item,"status",status);
       setNotice(part.label+" recorded with "+(severity||status)+" in Function Evaluation [Y].");
       return;
     }
