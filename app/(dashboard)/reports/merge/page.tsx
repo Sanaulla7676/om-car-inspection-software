@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect,useState } from "react";
+import { Suspense,useEffect,useState } from "react";
 import { FileText,Loader2,Merge,Upload } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 
-export default function PdfStudioPage(){return <AppShell module="reports"><Studio/></AppShell>}
+export default function PdfStudioPage(){return <AppShell module="reports"><Suspense fallback={<div className="page"><div className="card" role="status">Loading PDF Studio…</div></div>}><Studio/></Suspense></AppShell>}
 
 function Studio(){
  const params=useSearchParams(),reportId=params.get("report")||"";
