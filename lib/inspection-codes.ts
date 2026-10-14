@@ -12,8 +12,7 @@ const BODY_DAMAGE_OPTIONS: ConditionOption[] = [
   { value: "X2", label: "X2 · Cut / crack / hole / missing · Level 2" },
   { value: "X3", label: "X3 · Cut / crack / hole / missing · Level 3" },
   { value: "NT", label: "NT · Not inspected" },
-  { value: "NA", label: "NA · Not applicable" },
-  { value: "RC", label: "RC · Reclassify legacy entry" }
+  { value: "NA", label: "NA · Not applicable" }
 ];
 
 const FUNCTION_OPTIONS: ConditionOption[] = [
@@ -21,8 +20,7 @@ const FUNCTION_OPTIONS: ConditionOption[] = [
   { value: "S", label: "S · Small defect" },
   { value: "L", label: "L · Large defect" },
   { value: "NT", label: "NT · Not inspected" },
-  { value: "NA", label: "NA · Not applicable" },
-  { value: "RC", label: "RC · Reclassify legacy entry" }
+  { value: "NA", label: "NA · Not applicable" }
 ];
 
 const validBodyCodes = new Set(BODY_DAMAGE_OPTIONS.map((option) => option.value));
@@ -30,7 +28,8 @@ const validFunctionCodes = new Set(FUNCTION_OPTIONS.map((option) => option.value
 
 export function conditionOptionsFor(section: string, currentStatus?: string): ConditionOption[] {
   const base = section === "Exterior" || section === "Interior" ? BODY_DAMAGE_OPTIONS : FUNCTION_OPTIONS;
-  if (currentStatus && !base.some((option) => option.value === currentStatus) && !base.some((option) => option.value === "RC")) {
+  // Only expose the migration code when opening an old record that needs manual recoding.
+  if (currentStatus && !base.some((option) => option.value === currentStatus)) {
     return [...base, { value: "RC", label: "RC · Reclassify legacy entry" }];
   }
   return base;
