@@ -82,7 +82,7 @@ export async function GET(_req:Request,{params}:{params:Promise<{id:string}>}){
    for(const row of val.interiorRows||[])if(row.part||row.damageType||row.rfCost)draw("X / "+(row.part||"Interior part")+" · Qty "+(row.quantity||"—")+" · "+(row.damageType||"—")+" · Level "+row.damageLevel+" · RF INR "+(row.rfCost||"0"),8);
    for(const [label,row] of Object.entries(val.interiorDamage||{}) as [string,any][])if(row.level||row.rfCost)draw("Interior part / "+label+" · Level "+row.level+" · RF INR "+(row.rfCost||"0"),8);
    draw("Function Defect Details [Y]",10,true);
-   for(const [label,row] of Object.entries(val.functionItems||{}) as [string,any][])if(row.severity||row.details||row.rfCost)draw("Y / "+label+" · "+(row.severity||"—")+" · "+(row.details||"No details")+" · RF INR "+(row.rfCost||"0"),8);
+   for(const [label,row] of Object.entries(val.functionItems||{}) as [string,any][])if(row.severity||row.details||row.rfCost)draw("Y / "+label+" · "+(row.severity==="Small"?"S":row.severity==="Large"?"L":"—")+" · "+(row.details||"No details")+" · RF INR "+(row.rfCost||"0"),8);
    draw("Frame Defect Details [Z]",10,true);
    for(const [label,row] of Object.entries(val.frameItems||{}) as [string,any][])if(row.dent||row.repair||row.replaced||row.size||row.rfCost)draw("Z / "+label+" · Dent "+(row.dent?"Yes":"No")+" · Repair "+(row.repair?"Yes":"No")+" · Replaced "+(row.replaced?"Yes":"No")+" · "+(row.size||"—")+" · RF INR "+(row.rfCost||"0"),8);
    for(const [label,row] of Object.entries(val.weldedExterior||{}) as [string,any][])if(row.repaired||row.replaced||row.rfCost)draw("Welded exterior / "+label+" · Repair "+(row.repaired?"Yes":"No")+" · Replaced "+(row.replaced?"Yes":"No")+" · RF INR "+(row.rfCost||"0"),8);
