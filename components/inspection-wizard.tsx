@@ -305,10 +305,10 @@ async function downloadReportPdf(){
   setPackageBusy(true);try{const blob=await getReportPdf();downloadBlob(blob,`${draft.inspectionNumber}.pdf`);setNotice("PDF downloaded with the inspection evidence.");setPackageOpen(false)}catch(e){setNotice(e instanceof Error?e.message:"PDF download failed.")}finally{setPackageBusy(false)}
 }
 async function previewReportPdf(){
-  setPackageBusy(true);try{const blob=await getReportPdf();const url=URL.createObjectURL(blob);const tab=window.open(url,"_blank","noopener,noreferrer");if(!tab)throw new Error("Allow pop-ups to preview the generated PDF.");setTimeout(()=>URL.revokeObjectURL(url),60000)}catch(e){setNotice(e instanceof Error?e.message:"PDF preview failed.")}finally{setPackageBusy(false)}
+  setPackageBusy(true);try{const blob=await getReportPdf();const tab=window.open("about:blank","_blank");if(!tab)throw new Error("Allow pop-ups to preview the generated PDF.");tab.opener=null;const url=URL.createObjectURL(blob);tab.location.href=url;setTimeout(()=>URL.revokeObjectURL(url),60000)}catch(e){setNotice(e instanceof Error?e.message:"PDF preview failed.")}finally{setPackageBusy(false)}
 }
 async function previewAttachment(file:File){
-  const url=URL.createObjectURL(file);const tab=window.open(url,"_blank","noopener,noreferrer");if(!tab){URL.revokeObjectURL(url);setNotice("Allow pop-ups to preview the selected PDF.");return}setTimeout(()=>URL.revokeObjectURL(url),60000);
+  const url=URL.createObjectURL(file);const tab=window.open(url,"_blank");if(!tab){URL.revokeObjectURL(url);setNotice("Allow pop-ups to preview the selected PDF.");return}tab.opener=null;tab.location.href=url;setTimeout(()=>URL.revokeObjectURL(url),60000);
 }
 function addAttachmentFiles(fileList:FileList|null){
   const files=Array.from(fileList??[]);if(!files.length)return;
