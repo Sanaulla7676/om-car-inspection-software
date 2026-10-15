@@ -82,14 +82,14 @@ export function MarketingPage({ content }: { content: MarketingPageContent }) {
                   <Link href="/login" className="site-button-v2 button-glass"><ShieldCheck size={15} /> Team sign in</Link>
                 </div>
               </div>
-              <aside className="marketing-hero-meta" data-reveal data-gsap-reveal>
+              <aside className="marketing-hero-meta" data-gsap-reveal>
                 <span className="meta-kicker">{isGuide ? "WHAT THIS PAGE COVERS" : "A CLEARER WORKFLOW"}</span>
                 <strong>{isGuide ? "Learn the limits as well as the checks." : "Define scope before the inspection begins."}</strong>
                 <p>{isGuide ? "Use the guide to ask better questions and identify when more evidence is needed." : "Access, test conditions and available evidence shape what an inspection can establish."}</p>
               </aside>
             </div>
           </div>
-          <div className="marketing-page-hero-photo" data-gsap-image>
+          <div className="marketing-page-hero-photo" data-gsap-page-expand>
             <img src={heroImage} alt={heroImageLabel + " visual"} fetchPriority="high" />
             <div className="marketing-page-photo-label"><span>{heroImageLabel}</span><b>{content.title}</b></div>
           </div>
@@ -113,7 +113,7 @@ export function MarketingPage({ content }: { content: MarketingPageContent }) {
               <p>{isGuide ? "When evidence is incomplete, record the question that remains rather than treating an untested item as clear. Seek a qualified or authorised specialist for safety-critical, legal or technical matters beyond the agreed scope." : "The most useful inspection record distinguishes what was directly observed from what is suspected, and highlights items that need confirmation. Availability, price and specific deliverables are confirmed before the booking is final."}</p>
               <Link href={(isGuide ? (content.primaryHref || "/services") : "/book-inspection") as any} className="text-link-v2">{isGuide ? "Explore the relevant service" : "Discuss this service"} <ArrowRight size={14} /></Link>
             </article>
-            <aside className="marketing-check-panel site-spotlight" data-reveal data-gsap-reveal>
+            <aside className="marketing-check-panel site-spotlight" data-gsap-reveal data-gsap-reveal>
               <h3>{isGuide ? "Checklist to keep in mind" : "What a structured review may cover"}</h3>
               <ul className="marketing-check-list">
                 {content.checks.map((check, index) => <li key={check}><span>{String(index + 1).padStart(2, "0")}</span><div>{check}</div></li>)}
