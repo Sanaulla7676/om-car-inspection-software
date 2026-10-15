@@ -10,7 +10,7 @@ export function SiteFooter() {
             <span className="lux-footer-car">⌒</span><b>OMKAR</b><small>CAR INSPECTION</small>
           </Link>
           <p>Professional vehicle inspection, structured valuation and evidence-led reporting for clearer decisions.</p>
-          <Link className="lux-footer-admin" href="/dashboard"><ShieldCheck size={15} /> Open admin software <ArrowUpRight size={13} /></Link>
+          <Link className="lux-footer-admin" href="/login"><ShieldCheck size={15} /> Team sign-in <ArrowUpRight size={13} /></Link>
         </div>
         <div className="lux-footer-col">
           <h3>INSPECTION SERVICES</h3>
@@ -32,7 +32,7 @@ export function SiteFooter() {
           <h3>READY TO BEGIN?</h3>
           <p>Choose a service or ask the team about scope, timing and available booking options.</p>
           <Link className="lux-footer-contact-cta" href="/book-inspection">Request an inspection <ArrowRight size={14} /></Link>
-          <Link href="/dashboard">Admin sign-in <ShieldCheck size={13} /></Link>
+          <Link href="/login">Team sign-in <ShieldCheck size={13} /></Link>
         </div>
       </div>
       <div className="lux-footer-bottom">
