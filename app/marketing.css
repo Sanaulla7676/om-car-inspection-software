@@ -1818,3 +1818,223 @@ html{scroll-behavior:smooth}
 @media(prefers-reduced-motion:reduce){
   .lux-floating-contact a{transition:none!important}
 }
+
+
+
+/* ONE shared-state hero carousel. Each slide is rendered as a single image layer:
+   the old photo is unmounted instead of lingering over the new vehicle. */
+.lux-car-image-hero.lux-synchronized-hero{
+  position:relative;width:100%;margin:0;padding:0;overflow:visible;background:#fff;
+}
+.lux-car-image-hero.lux-synchronized-hero .lux-sync-frame{
+  position:relative;display:block;width:100%;max-width:none;margin:0;padding:0;
+  aspect-ratio:1680 / 864;overflow:hidden;border:0;border-radius:0;background:#e8e8e5;isolation:isolate;
+}
+.lux-car-image-hero.lux-synchronized-hero .lux-sync-frame>.lux-sync-image{
+  position:absolute!important;inset:0!important;z-index:0!important;display:block!important;
+  width:100%!important;height:100%!important;max-width:none!important;
+  padding:0!important;object-fit:cover!important;object-position:center 52%!important;
+  filter:none!important;opacity:1!important;transform:none!important;
+  animation:luxSyncedImageResolve .64s cubic-bezier(.2,.75,.2,1) both!important;
+}
+@keyframes luxSyncedImageResolve{from{opacity:.55;transform:scale(1.012)}to{opacity:1;transform:scale(1)}}
+.lux-car-image-hero.lux-synchronized-hero .lux-sync-frame:after{
+  content:"";position:absolute;z-index:1;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,rgba(255,255,255,.97) 0%,rgba(255,255,255,.94) 13%,rgba(255,255,255,.85) 21%,rgba(255,255,255,.58) 28%,rgba(255,255,255,.2) 36%,rgba(255,255,255,0) 44%);
+}
+.lux-car-image-hero.lux-synchronized-hero .lux-sync-copy{
+  animation:luxSyncedCopyResolve .58s cubic-bezier(.18,.75,.2,1) both;
+}
+@keyframes luxSyncedCopyResolve{from{opacity:0;filter:blur(5px);transform:translate3d(0,12px,0)}to{opacity:1;filter:blur(0);transform:translate3d(0,0,0)}}
+.lux-car-image-hero.lux-synchronized-hero .lux-sync-kicker{
+  margin:0 0 10px;color:#6b7377;font:800 clamp(8px,.7vw,10px)/1.4 "DM Sans",Arial,sans-serif;letter-spacing:.13em;text-transform:uppercase;
+}
+.lux-car-image-hero.lux-synchronized-hero .lux-sync-title{
+  font-size:clamp(40px,4.3vw,66px)!important;line-height:.88!important;letter-spacing:-.035em!important;
+}
+.lux-car-image-hero.lux-synchronized-hero .lux-sync-title .lux-car-hero-title-line{overflow:visible;animation:none!important}
+.lux-car-image-hero.lux-synchronized-hero .lux-sync-title em{font-style:normal;color:#b78431}
+.lux-car-image-hero.lux-synchronized-hero .lux-car-hero-description{
+  font-size:clamp(11px,.92vw,14px);line-height:1.72;max-width:470px;margin:14px 0 16px;
+}
+.lux-car-image-hero.lux-synchronized-hero .lux-car-hero-proof{gap:6px;margin-top:14px;font-size:8px}
+.lux-car-image-hero.lux-synchronized-hero .lux-car-hero-proof svg{color:#9b752f}
+.lux-car-image-hero.lux-synchronized-hero .lux-sync-counter{
+  position:absolute;z-index:3;right:clamp(16px,3vw,42px);top:clamp(16px,3vw,34px);
+  padding:9px 12px;border:1px solid rgba(255,255,255,.75);border-radius:999px;
+  background:rgba(255,255,255,.88);color:#40484d;font:800 9px/1 "DM Sans",Arial,sans-serif;letter-spacing:.12em;
+  backdrop-filter:blur(9px);
+}
+.lux-car-image-hero.lux-synchronized-hero .lux-sync-progress{
+  position:absolute;z-index:3;bottom:0;left:0;right:0;height:3px;background:rgba(22,27,31,.12);overflow:hidden;
+}
+.lux-car-image-hero.lux-synchronized-hero .lux-sync-progress>span{
+  display:block;width:100%;height:100%;background:linear-gradient(90deg,#bd8833,#f1d28b);
+  transform-origin:left center;animation:luxSlideProgress 3s linear both;
+}
+@keyframes luxSlideProgress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.lux-sync-slide-nav{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;
+  width:min(1320px,calc(100% - 48px));margin:12px auto clamp(22px,3vw,36px);
+}
+.lux-sync-slide-nav button{
+  position:relative;display:flex;align-items:center;gap:10px;min-width:0;min-height:45px;
+  padding:10px 12px;border:1px solid #e8e5de;border-radius:12px;background:#fff;color:#30383d;
+  text-align:left;transition:transform .22s,border-color .22s,background .22s,box-shadow .22s;
+}
+.lux-sync-slide-nav button:hover{transform:translateY(-2px);border-color:#d5bd8b;box-shadow:0 8px 18px rgba(31,36,39,.06)}
+.lux-sync-slide-nav button>span{
+  display:grid;place-items:center;flex:0 0 25px;width:25px;height:25px;border-radius:50%;
+  background:#f7f1e5;color:#986c28;font:800 9px/1 "DM Sans",Arial,sans-serif;
+}
+.lux-sync-slide-nav button>b{min-width:0;flex:1;font:800 clamp(9px,.82vw,11px)/1.25 "DM Sans",Arial,sans-serif}
+.lux-sync-slide-nav button>svg{flex:0 0 auto;color:#777f83;transition:transform .2s}
+.lux-sync-slide-nav button.is-active{border-color:#d4ae61;background:linear-gradient(120deg,#fffaf0,#fff);box-shadow:0 5px 17px rgba(151,109,40,.08)}
+.lux-sync-slide-nav button.is-active>span{background:linear-gradient(135deg,#f9e8bd,#d8ad5e);color:#302410}
+.lux-sync-slide-nav button.is-active>svg{color:#a4772d;transform:translateX(2px)}
+.lux-sync-slide-nav button:focus-visible{outline:2px solid #c69c50;outline-offset:2px}
+
+/* Booking remains one panel. The type choice, car picker and calendar stay inside it. */
+.lux-inspection-inquiry-wrap{
+  width:min(1320px,calc(100% - 48px));margin:20px auto clamp(24px,3vw,38px)!important;
+  padding:clamp(18px,2.2vw,26px)!important;border:1px solid #e7dfcf;border-radius:18px;
+  background:linear-gradient(115deg,#fffaf0 0%,#fff 51%,#fbfaf7 100%);
+  box-shadow:0 10px 28px rgba(25,30,33,.045);
+}
+.lux-inspection-inquiry-top{margin-bottom:14px!important}
+.lux-inquiry-heading h2{font-size:clamp(29px,3vw,37px)!important}
+.lux-inquiry-heading p{font-size:12px!important;line-height:1.65!important}
+.lux-inspection-inquiry-form{display:flex!important;flex-direction:column;gap:13px!important}
+.lux-inspection-type-selector{min-width:0;margin:0;padding:0;border:0}
+.lux-inspection-type-selector legend{padding:0;margin-bottom:8px;color:#353e43;font:800 10px/1.3 "DM Sans",Arial,sans-serif}
+.lux-inspection-type-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;max-width:670px}
+.lux-inspection-type-option{
+  display:flex;align-items:center;gap:10px;min-width:0;min-height:55px;padding:9px 11px;
+  border:1px solid #e4e4df;border-radius:11px;background:#fff;color:#293137;text-align:left;
+  transition:border-color .2s,background .2s,box-shadow .2s,transform .2s;
+}
+.lux-inspection-type-option:hover{transform:translateY(-1px);border-color:#d6bd8c}
+.lux-inspection-type-option.is-selected{border-color:#d0a95b;background:#fff8e9;box-shadow:0 4px 14px rgba(161,116,43,.08)}
+.lux-inspection-type-icon{display:grid;place-items:center;flex:0 0 31px;width:31px;height:31px;border-radius:9px;background:#f5f3ed;color:#986c28}
+.lux-inspection-type-option.is-selected .lux-inspection-type-icon{background:#f3dfb3;color:#79551e}
+.lux-inspection-type-copy{display:grid;gap:4px;flex:1;min-width:0}
+.lux-inspection-type-copy b{font:800 11px/1.25 "DM Sans",Arial,sans-serif}
+.lux-inspection-type-copy small{font:500 9px/1.35 "DM Sans",Arial,sans-serif;color:#71797e}
+.lux-inspection-type-check{display:grid;place-items:center;flex:0 0 18px;width:18px;height:18px;border:1px solid #d8d9d4;border-radius:50%;color:white}
+.lux-inspection-type-option.is-selected .lux-inspection-type-check{border-color:#b88839;background:#b88839}
+.lux-inspection-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.lux-inspection-field{position:relative;display:grid;align-content:start;gap:6px;min-width:0;color:#31393e;font:750 10px/1.3 "DM Sans",Arial,sans-serif}
+.lux-inspection-field>span,.lux-inspection-field>label>span{color:#31393e;font:750 10px/1.3 "DM Sans",Arial,sans-serif}
+.lux-inspection-field input,.lux-inspection-field select,.lux-vehicle-entry{
+  width:100%;min-width:0;min-height:43px;padding:10px 11px;border:1px solid #dcdedb;border-radius:9px;
+  outline:none;background:#fff;color:#273137;font:500 12px/1.4 "DM Sans",Arial,sans-serif;
+  transition:border-color .18s,box-shadow .18s;
+}
+.lux-inspection-field input::placeholder{color:#969da0}
+.lux-inspection-field input:focus,.lux-inspection-field select:focus,.lux-vehicle-entry:focus-within{
+  border-color:#c7a05a;box-shadow:0 0 0 3px rgba(200,158,75,.12)
+}
+.lux-vehicle-picker>label{display:block;margin:0 0 6px}
+.lux-vehicle-picker{gap:0}
+.lux-vehicle-entry{display:flex;align-items:center;gap:8px;padding:0 9px}
+.lux-vehicle-entry>svg{flex:0 0 auto;color:#a77b32}
+.lux-vehicle-entry input{flex:1;min-width:0;min-height:41px;padding:8px 0;border:0!important;box-shadow:none!important;background:transparent!important}
+.lux-vehicle-entry>button{display:grid;place-items:center;flex:0 0 30px;width:30px;height:30px;border:0;border-radius:7px;background:#f7f2e8;color:#886228}
+.lux-vehicle-suggestions{
+  position:absolute;z-index:90;top:100%;left:0;right:0;margin-top:5px;padding:11px;
+  border:1px solid #e4dccb;border-radius:11px;background:#fff;box-shadow:0 14px 35px rgba(26,31,35,.14);
+}
+.lux-vehicle-suggestions>p{margin:0 0 8px;color:#747c80;font:600 9px/1.45 "DM Sans",Arial,sans-serif}
+.lux-vehicle-suggestions>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.lux-vehicle-suggestions>div>button{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;padding:8px;border:1px solid #eee8dc;border-radius:7px;background:#fffdf8;color:#394248;font:650 9px/1.3 "DM Sans",Arial,sans-serif;text-align:left}
+.lux-vehicle-suggestions>div>button:hover{background:#fff4d9;border-color:#d7b86f}
+.lux-date-picker{z-index:auto}
+.lux-date-picker .lux-date-trigger{
+  display:flex;align-items:center;gap:9px;width:100%;min-width:0;min-height:43px;padding:10px 11px;
+  border:1px solid #dcdedb;border-radius:9px;background:#fff;color:#273137;text-align:left;
+  font:500 12px/1.4 "DM Sans",Arial,sans-serif;transition:border-color .18s,box-shadow .18s;
+}
+.lux-date-picker .lux-date-trigger:hover,.lux-date-picker .lux-date-trigger[aria-expanded="true"]{border-color:#c7a05a}
+.lux-date-picker .lux-date-trigger:focus-visible{outline:2px solid #c7a05a;outline-offset:2px}
+.lux-date-picker .lux-date-trigger>svg:first-child{color:#9a702d;flex:0 0 auto}
+.lux-date-picker .lux-date-trigger>span{flex:1;min-width:0}
+.lux-date-picker .lux-date-trigger .date-placeholder{color:#969da0}
+.lux-date-picker .lux-date-trigger .is-rotated{transform:rotate(90deg)}
+.lux-date-picker .lux-date-trigger.has-error{border-color:#c94c48}
+.lux-date-error{font-size:9px;color:#b13a36}
+.lux-calendar-popover{
+  position:absolute;z-index:100;top:calc(100% + 7px);left:0;width:min(304px,calc(100vw - 48px));
+  padding:13px;border:1px solid #e6ddca;border-radius:13px;background:#fff;box-shadow:0 16px 42px rgba(23,29,32,.17);
+  animation:luxCalendarArrive .18s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes luxCalendarArrive{from{opacity:0;transform:translateY(5px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+.lux-calendar-header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.lux-calendar-header>b{color:#222a2f;font:800 12px/1.2 "DM Sans",Arial,sans-serif}
+.lux-calendar-header>button{display:grid;place-items:center;width:30px;height:30px;border:1px solid #e7e6df;border-radius:8px;background:#fff;color:#424b50}
+.lux-calendar-header>button:disabled{opacity:.35;cursor:not-allowed}
+.lux-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
+.lux-calendar-grid>span,.lux-calendar-grid>button{display:grid;place-items:center;min-width:0;aspect-ratio:1;border:0;border-radius:8px;background:transparent;color:#343d43;font:600 10px/1 "DM Sans",Arial,sans-serif}
+.lux-calendar-weekdays{margin-bottom:4px}
+.lux-calendar-weekdays>span{color:#91989b;font-size:9px}
+.lux-calendar-grid>button:not(:disabled):hover{background:#faf0d7;color:#5f451d}
+.lux-calendar-grid>button.is-selected{background:#c89a4d;color:#18140d;font-weight:900}
+.lux-calendar-grid>button.is-today:not(.is-selected){box-shadow:inset 0 0 0 1px #c89a4d}
+.lux-calendar-grid>button:disabled{color:#c7cccd;cursor:not-allowed}
+.lux-calendar-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid #f0ede5}
+.lux-calendar-footer>span{max-width:190px;color:#777f83;font:500 8px/1.5 "DM Sans",Arial,sans-serif}
+.lux-calendar-footer>button{padding:7px 12px;border:1px solid #d4ad65;border-radius:999px;background:#fff4da;color:#493619;font:800 9px/1 "DM Sans",Arial,sans-serif}
+.lux-inquiry-extra{margin-top:1px}
+.lux-inquiry-extra summary{font-size:10px;line-height:1.6}
+.lux-inquiry-extra-fields{grid-template-columns:1fr 1fr}
+.lux-inspection-submit{min-height:45px!important;border-radius:999px!important;font-size:11px!important}
+.lux-inspection-submit:disabled{opacity:.7;cursor:progress}
+.lux-inspection-submit:focus-visible{outline:3px solid #c99e50;outline-offset:3px}
+.lux-inquiry-foot{font-size:9px!important}
+.lux-inquiry-status{padding:9px 12px;border-radius:8px;background:#fff7e5;color:#79571f!important}
+.lux-floating-contact.is-hidden-for-enquiry{opacity:0!important;visibility:hidden!important;pointer-events:none!important;transform:translateY(8px);}
+
+/* Motion should be purposeful and should not stop working when a new slide is selected. */
+.lux-sync-slide-nav button:active,.lux-inspection-type-option:active{transform:scale(.99)}
+@media(max-width:900px){
+  .lux-inspection-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lux-inspection-inquiry-wrap{width:calc(100% - 32px)}
+}
+@media(max-width:620px){
+  .lux-car-image-hero.lux-synchronized-hero .lux-sync-frame{aspect-ratio:4 / 3}
+  .lux-car-image-hero.lux-synchronized-hero .lux-sync-frame>.lux-sync-image{object-position:59% center!important}
+  .lux-car-image-hero.lux-synchronized-hero .lux-sync-frame:after{
+    background:linear-gradient(90deg,rgba(255,255,255,.97) 0%,rgba(255,255,255,.9) 33%,rgba(255,255,255,.55) 55%,rgba(255,255,255,.08) 80%,rgba(255,255,255,0) 100%);
+  }
+  .lux-car-image-hero.lux-synchronized-hero .lux-car-hero-copy{left:16px;top:50%;width:66%;max-width:310px}
+  .lux-car-image-hero.lux-synchronized-hero .lux-sync-title{font-size:clamp(29px,7.8vw,36px)!important}
+  .lux-car-image-hero.lux-synchronized-hero .lux-car-hero-description{font-size:10px;line-height:1.45;margin:9px 0 10px}
+  .lux-car-image-hero.lux-synchronized-hero .lux-car-hero-proof{font-size:6px;gap:4px;margin-top:9px}
+  .lux-car-image-hero.lux-synchronized-hero .lux-car-hero-secondary{display:none}
+  .lux-sync-slide-nav{width:calc(100% - 22px);gap:5px;margin:9px auto 20px}
+  .lux-sync-slide-nav button{min-height:44px;padding:7px 6px;gap:5px;border-radius:9px}
+  .lux-sync-slide-nav button>span{width:20px;height:20px;flex-basis:20px;font-size:8px}
+  .lux-sync-slide-nav button>b{font-size:8px;line-height:1.2}
+  .lux-sync-slide-nav button>svg{display:none}
+  .lux-inspection-inquiry-wrap{width:calc(100% - 22px);padding:15px 13px!important;margin-top:14px!important;border-radius:14px}
+  .lux-inquiry-heading h2{font-size:30px!important}
+  .lux-inquiry-heading p{font-size:11px!important}
+  .lux-inspection-inquiry-top{gap:10px;margin-bottom:11px!important}
+  .lux-inquiry-icon{width:36px;height:36px;flex-basis:36px}
+  .lux-inspection-type-options{grid-template-columns:1fr;gap:6px}
+  .lux-inspection-type-option{min-height:47px;padding:7px 9px}
+  .lux-inspection-type-copy b{font-size:10px}
+  .lux-inspection-type-copy small{font-size:8px}
+  .lux-inspection-fields{grid-template-columns:1fr;gap:10px}
+  .lux-inspection-field input,.lux-vehicle-entry,.lux-date-picker .lux-date-trigger{min-height:43px;font-size:12px}
+  .lux-vehicle-suggestions{position:absolute}
+  .lux-vehicle-suggestions>div{grid-template-columns:1fr}
+  .lux-calendar-popover{left:0;right:auto;width:min(304px,calc(100vw - 48px))}
+  .lux-inquiry-extra-fields{grid-template-columns:1fr}
+  .lux-inspection-submit{min-height:45px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .lux-car-image-hero.lux-synchronized-hero .lux-sync-frame>.lux-sync-image,
+  .lux-car-image-hero.lux-synchronized-hero .lux-sync-copy,
+  .lux-sync-progress>span,.lux-calendar-popover{animation:none!important}
+  .lux-sync-slide-nav button,.lux-inspection-type-option{transition:none!important}
+}
