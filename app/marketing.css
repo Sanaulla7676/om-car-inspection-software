@@ -1647,3 +1647,11 @@ html{scroll-behavior:smooth}
   .lux-coaching-banner-action{padding:12px;align-items:flex-start;flex-direction:column}
   .marketing-site:not(.luxury-home) .marketing-page-hero-photo.marketing-masterclass-banner{margin-top:18px!important}
 }
+
+
+
+/* The supplied masterclass graphic is already composed edge-to-edge; animate its
+   reveal mask without scaling the outer box beyond the viewport. */
+.marketing-site:not(.luxury-home) .marketing-page-hero-photo.marketing-masterclass-banner{
+  transform:none!important;will-change:clip-path!important;
+}
