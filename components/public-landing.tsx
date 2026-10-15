@@ -19,6 +19,7 @@ const MERCEDES_IMAGE = "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/178525/glc-
 const XUV700_IMAGE = "https://cdn-s3.autocarindia.com/Mahindra/xuv700/_KMC0974.JPG";
 const INSPECTION_IMAGE = "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/9ded0ab3-2c6c-4815-b563-d0a46c973a66.png";
 const REPORT_IMAGE = "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1400&q=90";
+const REFERENCE_HERO_IMAGE = "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/1a208753-0e6c-434b-b10f-ded45c12cfa0.png";
 
 const vehicleLineup = [
   { name: "Hyundai Verna", type: "SEDAN · NEW VEHICLE PDI", image: VERNA_IMAGE, alt: "Hyundai Verna sedan in Titan Grey" },
@@ -117,21 +118,37 @@ const workflow = [
 ];
 
 export default function PublicLanding() {
-  const [activeSlide, setActiveSlide] = useState(0);
-  const [previousSlide, setPreviousSlide] = useState(0);
+  // Open with the exact hero reference supplied by the user, then transition to the live PDI slides.
+  const [activeSlide, setActiveSlide] = useState(-1);
+  const [previousSlide, setPreviousSlide] = useState(-1);
   const [isChangingSlide, setIsChangingSlide] = useState(false);
   const [paused, setPaused] = useState(false);
-  const slide = slides[activeSlide];
+  const isReferenceOpening = activeSlide < 0;
+  const slide = slides[activeSlide < 0 ? 0 : activeSlide];
 
   useEffect(() => {
     if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setInterval(() => {
+    const timer = window.setTimeout(() => {
       setPreviousSlide(activeSlide);
-      setActiveSlide((current) => (current + 1) % slides.length);
+      setActiveSlide((current) => current < 0 ? 0 : (current + 1) % slides.length);
       setIsChangingSlide(true);
       window.setTimeout(() => setIsChangingSlide(false), 680);
-    }, 3000);
-    return () => window.clearInterval(timer);
+    }, isReferenceOpening ? 4500 : 3600);
+    return () => window.clearTimeout(timer);
+  }, [paused, activeSlide, isReferenceOpening]);
+
+  function chooseSlide(index: number) {
+    if (index !== activeSlide) {
+      setPreviousSlide(activeSlide);
+      setActiveSlide(index);
+      setIsChangingSlide(true);
+      window.setTimeout(() => setIsChangingSlide(false), 680);
+    }
+    setPaused(true);
+    window.setTimeout(() => setPaused(false), 8000);
+  }
+
+  return () => window.clearInterval(timer);
   }, [paused, activeSlide]);
 
   function chooseSlide(index: number) {
@@ -150,7 +167,13 @@ export default function PublicLanding() {
       <ScrollMotion />
       <SiteNavigation />
       <main>
-        <section className="lux-editorial-hero" aria-labelledby="lux-hero-title">
+        <section className={"lux-editorial-hero" + (isReferenceOpening ? " is-reference-opening" : "")} aria-labelledby="lux-hero-title">
+          {isReferenceOpening ? (
+            <div className="lux-reference-opening-banner" key="reference-opening-banner">
+              <img src={REFERENCE_HERO_IMAGE} alt="OMKAR Car Inspection hero with the message Know Your Car Before You Buy and a Toyota Fortuner, featuring inspection services and PDI coaching" fetchPriority="high" />
+            </div>
+          ) : (
+          <div className="lux-live-hero" key={"live-hero-" + slide.id}>
           <div className="lux-editorial-hero-head">
             <div className="lux-editorial-headline" key={slide.id + "-heading"}>
               <p className="lux-eyebrow lux-race-eyebrow"><span /> VEHICLE PDI · PRE-OWNED INSPECTION · COACHING</p>
@@ -182,7 +205,7 @@ export default function PublicLanding() {
             <div className="lux-scroll-expand-sticky">
               <div className="lux-hero-fullbleed" data-gsap-scroll-expand aria-label={slide.alt}>
                 <img className="lux-hero-active-image" src={slide.image} alt={slide.alt} fetchPriority="high" />
-                {previousSlide !== activeSlide && <img className={"lux-hero-previous-image" + (isChangingSlide ? " is-fading" : "")} src={slides[previousSlide].image} alt="" aria-hidden="true" />}
+                {previousSlide >= 0 && previousSlide !== activeSlide && <img className={"lux-hero-previous-image" + (isChangingSlide ? " is-fading" : "")} src={slides[previousSlide].image} alt="" aria-hidden="true" />}
                 <div className="lux-scroll-expanded-copy" data-gsap-scroll-copy>
                   <p>{slide.imageTag} <span> / {slide.index}</span></p>
                   <h2>{slide.accent}</h2>
@@ -198,6 +221,7 @@ export default function PublicLanding() {
             <span><ShieldCheck size={15} /> Evidence-led reporting</span>
             <span><GraduationCap size={16} /> Practical PDI coaching</span>
           </div>
+          )}
         </section>
 
         <section className="lux-model-lineup" aria-labelledby="lux-model-lineup-title">
