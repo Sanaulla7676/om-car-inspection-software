@@ -150,7 +150,7 @@ export default function PublicLanding() {
 
   return (
     <div className="marketing-site home-page luxury-home luxury-motion-site">
-      <ScrollMotion />
+      <ScrollMotion key={isReferenceOpening ? "scroll-opening" : "scroll-live"} />
       <SiteNavigation />
       <main>
         <section className={"lux-editorial-hero" + (isReferenceOpening ? " is-reference-opening" : "")} aria-labelledby="lux-hero-title">
@@ -159,7 +159,7 @@ export default function PublicLanding() {
               <img src={REFERENCE_HERO_IMAGE} alt="OMKAR Car Inspection hero with the message Know Your Car Before You Buy and a Toyota Fortuner, featuring inspection services and PDI coaching" fetchPriority="high" />
             </div>
           ) : (
-          <div className="lux-live-hero" key={"live-hero-" + slide.id}>
+          <div className="lux-live-hero">
           <div className="lux-editorial-hero-head">
             <div className="lux-editorial-headline" key={slide.id + "-heading"}>
               <p className="lux-eyebrow lux-race-eyebrow"><span /> VEHICLE PDI · PRE-OWNED INSPECTION · COACHING</p>
