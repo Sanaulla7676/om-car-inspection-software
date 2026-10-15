@@ -1550,3 +1550,16 @@ html{scroll-behavior:smooth}
 @media(prefers-reduced-motion:reduce){
   .lux-reference-opening-banner,.lux-live-hero{animation:none!important}
 }
+
+
+
+/* Keep the sticky hero stage tied to the viewport rather than an overflow ancestor. */
+.lux-editorial-hero:not(.is-reference-opening),
+.lux-editorial-hero:not(.is-reference-opening) .lux-live-hero,
+.lux-editorial-hero:not(.is-reference-opening) .lux-scroll-expand-story,
+.lux-editorial-hero:not(.is-reference-opening) .lux-scroll-expand-sticky{
+  overflow:visible!important;
+}
+.lux-editorial-hero:not(.is-reference-opening) .lux-scroll-expand-sticky{
+  position:sticky!important;align-self:start;
+}
