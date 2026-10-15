@@ -30,6 +30,7 @@ export function VehicleInspectionInquiryBar() {
     return new Date(now.getFullYear(), now.getMonth(), 1);
   });
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [calendarPlacement, setCalendarPlacement] = useState<"above" | "below">("below");
   const [vehiclePickerOpen, setVehiclePickerOpen] = useState(false);
   const [dateError, setDateError] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -148,14 +149,24 @@ export function VehicleInspectionInquiryBar() {
 
           <div className="lux-inspection-field lux-date-picker" ref={calendarWrap}>
             <span className="lux-inspection-field-label">Preferred date *</span>
-            <button className={"lux-date-trigger" + (dateError ? " has-error" : "")} type="button" onClick={() => { setCalendarOpen((open) => !open); setDateError(false); }} aria-haspopup="dialog" aria-expanded={calendarOpen} aria-label="Choose preferred inspection date">
+            <button className={"lux-date-trigger" + (dateError ? " has-error" : "")} type="button" onClick={() => {
+                const nextOpen = !calendarOpen;
+                if (nextOpen) {
+                  const bounds = calendarWrap.current?.getBoundingClientRect();
+                  const roomBelow = bounds ? window.innerHeight - bounds.bottom : window.innerHeight;
+                  const roomAbove = bounds ? bounds.top : 0;
+                  setCalendarPlacement(roomBelow < 370 && roomAbove >= 350 ? "above" : "below");
+                }
+                setCalendarOpen(nextOpen);
+                setDateError(false);
+              }} aria-haspopup="dialog" aria-expanded={calendarOpen} aria-label="Choose preferred inspection date">
               <CalendarDays size={17} aria-hidden="true" />
               <span className={selectedDate ? "has-date" : "date-placeholder"}>{selectedDate ? prettyDate(selectedDate) : "Choose a date"}</span>
               <ChevronRight className={calendarOpen ? "is-rotated" : ""} size={15} aria-hidden="true" />
             </button>
             <input type="hidden" name="date" value={selectedDate} />
             {dateError && <span className="lux-date-error" role="alert">Select a preferred date from the calendar.</span>}
-            {calendarOpen && <div className="lux-calendar-popover" role="dialog" aria-label="Choose an inspection date">
+            {calendarOpen && <div className={"lux-calendar-popover" + (calendarPlacement === "above" ? " is-above" : "")} role="dialog" aria-label="Choose an inspection date">
               <div className="lux-calendar-header">
                 <button type="button" aria-label="Previous month" disabled={visibleMonth.getFullYear() === today.getFullYear() && visibleMonth.getMonth() === today.getMonth()} onClick={() => setVisibleMonth((date) => new Date(date.getFullYear(), date.getMonth() - 1, 1))}><ChevronLeft size={17} /></button>
                 <b>{visibleMonth.toLocaleDateString("en-IN", { month: "long", year: "numeric" })}</b>
