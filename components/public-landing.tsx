@@ -12,70 +12,81 @@ import { SiteFooter } from "@/components/site-footer";
 import { ScrollMotion } from "@/components/scroll-motion";
 import { CoachingInquiryForm } from "@/components/coaching-inquiry-form";
 
-const SUV_IMAGE = "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/af834010-4b06-4bb8-9ed5-9f42b14c3220.png";
-const SPORT_IMAGE = "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/fd170dfd-8d3f-4205-9b9c-5cc1fa429cfb.png";
+const VERNA_IMAGE = "https://htcms-prod-images.s3.ap-south-1.amazonaws.com/htmobile1/hyundai_new-verna/images/colours_hyundai-verna_titan-grey_1920x1033.jpg";
+const FORTUNER_IMAGE = "https://imgd.aeplcdn.com/0X0/n/cw/ec/44709/fortuner-exterior-right-front-three-quarter-20.jpeg?isig=0&q=80";
+const THAR_IMAGE = "https://img.indianautosblog.com/2021/01/23/2020-mahindra-thar-review-680b.jpg";
+const MERCEDES_IMAGE = "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/178525/glc-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80";
+const XUV700_IMAGE = "https://cdn-s3.autocarindia.com/Mahindra/xuv700/_KMC0974.JPG";
 const INSPECTION_IMAGE = "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/9ded0ab3-2c6c-4815-b563-d0a46c973a66.png";
+const REPORT_IMAGE = "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1400&q=90";
+
+const vehicleLineup = [
+  { name: "Hyundai Verna", type: "SEDAN · NEW VEHICLE PDI", image: VERNA_IMAGE, alt: "Hyundai Verna sedan in Titan Grey" },
+  { name: "Toyota Fortuner", type: "SUV · HANDOVER INSPECTION", image: FORTUNER_IMAGE, alt: "Toyota Fortuner SUV front three-quarter view" },
+  { name: "Mahindra Thar", type: "SUV · PRE-OWNED INSPECTION", image: THAR_IMAGE, alt: "Mahindra Thar off-road SUV" },
+  { name: "Mercedes-Benz GLC", type: "PREMIUM VEHICLE INSPECTION", image: MERCEDES_IMAGE, alt: "Mercedes-Benz GLC SUV front three-quarter view" },
+  { name: "Mahindra XUV700", type: "SUV · CONDITION REVIEW", image: XUV700_IMAGE, alt: "Mahindra XUV700 SUV on Indian roads" }
+];
 
 const slides = [
   {
-    id: "new-pdi",
-    index: "01",
-    tab: "New Vehicle PDI",
-    kicker: "BEFORE THE KEYS ARE YOURS",
-    title: "VEHICLE PDI",
-    accent: "INSPECT BEFORE HANDOVER.",
-    description: "A new-car handover check covering panel fit, paint, lights, cabin condition, accessible functions and delivery documents before sign-off.",
-    cta: "Explore New Vehicle PDI",
-    href: "/services/new-car-pdi",
-    image: SUV_IMAGE,
-    alt: "Metallic luxury SUV in a bright premium showroom",
-    imageTag: "NEW VEHICLE PDI",
-    imageNote: "Inspect the details before handover"
+    id: "verna-pdi", index: "01", tab: "New Vehicle PDI",
+    kicker: "BEFORE YOU ACCEPT DELIVERY",
+    title: "NEW VEHICLE PDI", accent: "INSPECT BEFORE HANDOVER.",
+    description: "A structured new-car handover check for visible paint and panel condition, cabin finish, accessible functions and delivery documents.",
+    cta: "Explore New Vehicle PDI", href: "/services/new-car-pdi",
+    image: VERNA_IMAGE, alt: "Hyundai Verna sedan in Titan Grey",
+    imageTag: "HYUNDAI VERNA · NEW PDI", imageNote: "Check fit, finish and handover details"
   },
   {
-    id: "preowned",
-    index: "02",
-    tab: "Pre-Owned PDI / PDA",
+    id: "fortuner-pdi", index: "02", tab: "SUV Inspection",
+    kicker: "CHECK THE DETAILS, NOT THE ASSUMPTIONS",
+    title: "SUV INSPECTION", accent: "LOOK BEYOND THE SHINE.",
+    description: "Review visible bodywork, glass, wheels, cabin condition and accessible features before accepting or purchasing an SUV such as a Fortuner.",
+    cta: "Explore Vehicle Inspection", href: "/services/used-car-inspection",
+    image: FORTUNER_IMAGE, alt: "Toyota Fortuner SUV front three-quarter view",
+    imageTag: "TOYOTA FORTUNER", imageNote: "Structured exterior and function checks"
+  },
+  {
+    id: "thar-preowned", index: "03", tab: "Pre-Owned PDI / PDA",
     kicker: "BEFORE YOU COMMIT",
-    title: "USED VEHICLE PDI",
-    accent: "KNOW THE CONDITION.",
-    description: "A pre-purchase vehicle condition review covering bodywork, paint, tyres, cabin wear and accessible functions, with findings recorded for your decision.",
-    cta: "Explore Pre-Owned Inspection",
-    href: "/services/used-car-inspection",
-    image: SPORT_IMAGE,
-    alt: "Graphite performance coupe in a warm, high-end studio",
-    imageTag: "PRE-OWNED INSPECTION",
-    imageNote: "Record condition and follow-up points"
+    title: "PRE-OWNED PDI", accent: "KNOW THE CONDITION.",
+    description: "Record visible wear and damage, tyre and wheel condition, cabin observations and items that need closer assessment before a used-car purchase.",
+    cta: "Explore Pre-Owned Inspection", href: "/services/used-car-inspection",
+    image: THAR_IMAGE, alt: "Mahindra Thar SUV in an outdoor setting",
+    imageTag: "MAHINDRA THAR · PRE-OWNED", imageNote: "Capture observations and follow-up points"
   },
   {
-    id: "coaching",
-    index: "03",
-    tab: "PDI Coaching",
-    kicker: "LEARN THE INSPECTION METHOD",
-    title: "PDI COACHING",
-    accent: "LEARN THE CHECKLIST.",
-    description: "Practical PDI coaching in inspection sequence, condition marking, evidence capture and writing a clear, structured vehicle report.",
-    cta: "Explore PDI Coaching",
-    href: "/masterclass",
-    image: INSPECTION_IMAGE,
-    alt: "Vehicle inspector using a paint thickness gauge beside a black SUV in a bright workshop",
-    imageTag: "PDI COACHING",
-    imageNote: "Observe, mark, document and explain"
+    id: "mercedes-premium", index: "04", tab: "Premium Vehicles",
+    kicker: "DETAILS DESERVE A CLOSER LOOK",
+    title: "PREMIUM CAR PDI", accent: "EVERY DETAIL MATTERS.",
+    description: "A consistent inspection method for premium cars, documenting visible condition, accessible functions, equipment and areas requiring specialist verification.",
+    cta: "See Inspection Scope", href: "/services/new-car-pdi",
+    image: MERCEDES_IMAGE, alt: "Mercedes-Benz GLC SUV front three-quarter view",
+    imageTag: "MERCEDES-BENZ GLC", imageNote: "Document condition clearly and consistently"
+  },
+  {
+    id: "pdi-coaching", index: "05", tab: "PDI Coaching",
+    kicker: "LEARN THE METHOD. PRACTISE THE CHECKS.",
+    title: "PDI COACHING", accent: "BUILT THROUGH PRACTICE.",
+    description: "Practical coaching in inspection order, condition marking, evidence capture and writing reports that separate observation from assumption.",
+    cta: "Explore PDI Coaching", href: "/masterclass",
+    image: INSPECTION_IMAGE, alt: "Vehicle inspector checking paint condition beside an SUV in a workshop",
+    imageTag: "PDI COACHING & TRAINING", imageNote: "Observe, mark, document and explain"
   }
 ];
-
 const services = [
   {
     number: "01", label: "NEW VEHICLE", title: "New Vehicle PDI",
     intro: "Inspect a factory-new vehicle before handover sign-off.",
     points: ["Exterior fit and finish", "Cabin and accessible functions", "Handover items and evidence"],
-    href: "/services/new-car-pdi", image: SUV_IMAGE, icon: CarFront
+    href: "/services/new-car-pdi", image: VERNA_IMAGE, icon: CarFront
   },
   {
     number: "02", label: "PRE-OWNED VEHICLE", title: "Pre-Owned PDI / PDA",
     intro: "Record visible condition before you commit to a used vehicle.",
     points: ["Panels, paint, glass and lights", "Tyres, cabin and visible concerns", "Findings that need follow-up"],
-    href: "/services/used-car-inspection", image: SPORT_IMAGE, icon: Gauge
+    href: "/services/used-car-inspection", image: THAR_IMAGE, icon: Gauge
   },
   {
     number: "03", label: "PRACTICAL LEARNING", title: "PDI Coaching",
@@ -87,7 +98,7 @@ const services = [
     number: "04", label: "DOCUMENTATION", title: "Valuation & Reports",
     intro: "Keep condition findings and documents together.",
     points: ["W / X / Y / Z worksheet", "Photo and video evidence", "Report PDF and supporting files"],
-    href: "/services/inspection-report", image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1400&q=90", icon: FileText
+    href: "/services/inspection-report", image: REPORT_IMAGE, icon: FileText
   }
 ];
 
@@ -112,7 +123,7 @@ export default function PublicLanding() {
 
   useEffect(() => {
     if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setInterval(() => setActiveSlide((current) => (current + 1) % slides.length), 3000);
+    const timer = window.setInterval(() => setActiveSlide((current) => (current + 1) % slides.length), 3600);
     return () => window.clearInterval(timer);
   }, [paused, activeSlide]);
 
@@ -152,7 +163,7 @@ export default function PublicLanding() {
                 </button>
               ))}
             </div>
-            <div className="lux-carousel-status"><span>{slide.index}</span><i /><span>03</span></div>
+            <div className="lux-carousel-status"><span>{slide.index}</span><i /><span>{String(slides.length).padStart(2, "0")}</span></div>
           </div>
 
           <div className="lux-scroll-expand-story" data-gsap-scroll-story>
@@ -165,7 +176,7 @@ export default function PublicLanding() {
                   <small>{slide.imageNote}</small>
                   <Link href={slide.href as any}>{slide.cta} <ArrowRight size={15} /></Link>
                 </div>
-                <div className="lux-image-index">OM / {slide.index}</div>
+                <div className="lux-image-index">OM / {slide.index} — {String(slides.length).padStart(2, "0")}</div>
               </div>
             </div>
           </div>
@@ -173,6 +184,22 @@ export default function PublicLanding() {
             <span><BadgeCheck size={15} /> Clear scope before inspection</span>
             <span><ShieldCheck size={15} /> Evidence-led reporting</span>
             <span><GraduationCap size={16} /> Practical PDI coaching</span>
+          </div>
+        </section>
+
+        <section className="lux-model-lineup" aria-labelledby="lux-model-lineup-title">
+          <div className="lux-model-lineup-head">
+            <div><p className="lux-eyebrow"><span /> VEHICLE TYPES WE COVER</p><h2 id="lux-model-lineup-title">Indian roads. Real inspection needs.</h2></div>
+            <span className="lux-model-lineup-note">ILLUSTRATIVE MODEL GALLERY</span>
+          </div>
+          <div className="lux-model-lineup-track">
+            {vehicleLineup.map((vehicle, index) => (
+              <article className="lux-model-card" key={vehicle.name} data-gsap-reveal>
+                <div className="lux-model-image"><img src={vehicle.image} alt={vehicle.alt} loading={index < 2 ? "eager" : "lazy"} /></div>
+                <div className="lux-model-meta"><span>{vehicle.type}</span><h3>{vehicle.name}</h3></div>
+                <span className="lux-model-index">{String(index + 1).padStart(2, "0")}</span>
+              </article>
+            ))}
           </div>
         </section>
 
