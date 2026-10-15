@@ -11,15 +11,17 @@ import { SiteNavigation } from "@/components/site-navigation";
 import { SiteFooter } from "@/components/site-footer";
 import { ScrollMotion } from "@/components/scroll-motion";
 import { CoachingInquiryForm } from "@/components/coaching-inquiry-form";
+import { VehicleInspectionInquiryBar } from "@/components/vehicle-inspection-inquiry-bar";
 
 const VERNA_IMAGE = "https://htcms-prod-images.s3.ap-south-1.amazonaws.com/htmobile1/hyundai_new-verna/images/colours_hyundai-verna_titan-grey_1920x1033.jpg";
-const FORTUNER_IMAGE = "https://imgd.aeplcdn.com/0X0/n/cw/ec/44709/fortuner-exterior-right-front-three-quarter-20.jpeg?isig=0&q=80";
+const FORTUNER_IMAGE = "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/936fcbb7-1c2c-420f-ab93-c8a897dfb549.png";
 const THAR_IMAGE = "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/40087/thar-exterior-right-front-three-quarter-37.jpeg?isig=0&q=80";
 const MERCEDES_IMAGE = "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/178525/glc-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80";
 const XUV700_IMAGE = "https://cdn-s3.autocarindia.com/Mahindra/xuv700/_KMC0974.JPG";
-const INSPECTION_IMAGE = "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/9ded0ab3-2c6c-4815-b563-d0a46c973a66.png";
+const INSPECTION_IMAGE = "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/18971d42-3c84-4532-b232-c7a29e9ac3dd.png";
 const REPORT_IMAGE = "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1400&q=90";
-const REFERENCE_HERO_IMAGE = "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/1a208753-0e6c-434b-b10f-ded45c12cfa0.png";
+const REFERENCE_HERO_IMAGE = "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/936fcbb7-1c2c-420f-ab93-c8a897dfb549.png";
+const HOME_COACHING_BANNER = "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/cc9e2296-b59d-45ec-ba87-f6af4cf87d45.png";
 
 const vehicleLineup = [
   { name: "Hyundai Verna", type: "SEDAN · NEW VEHICLE PDI", image: VERNA_IMAGE, alt: "Hyundai Verna sedan in Titan Grey" },
@@ -118,23 +120,35 @@ const workflow = [
 ];
 
 export default function PublicLanding() {
-  // Open with the exact hero reference supplied by the user, then transition to the live PDI slides.
-  const [activeSlide, setActiveSlide] = useState(-1);
-  const [previousSlide, setPreviousSlide] = useState(-1);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [previousSlide, setPreviousSlide] = useState(0);
   const [isChangingSlide, setIsChangingSlide] = useState(false);
   const [paused, setPaused] = useState(false);
-  const isReferenceOpening = activeSlide < 0;
-  const slide = slides[activeSlide < 0 ? 0 : activeSlide];
+  const slide = slides[activeSlide];
 
   useEffect(() => {
     if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setTimeout(() => {
+    const timer = window.setInterval(() => {
       setPreviousSlide(activeSlide);
-      setActiveSlide((current) => current < 0 ? 0 : (current + 1) % slides.length);
+      setActiveSlide((current) => (current + 1) % slides.length);
       setIsChangingSlide(true);
       window.setTimeout(() => setIsChangingSlide(false), 680);
-    }, 3200);
-    return () => window.clearTimeout(timer);
+    }, 3600);
+    return () => window.clearInterval(timer);
+  }, [paused, activeSlide]);
+
+  function chooseSlide(index: number) {
+    if (index !== activeSlide) {
+      setPreviousSlide(activeSlide);
+      setActiveSlide(index);
+      setIsChangingSlide(true);
+      window.setTimeout(() => setIsChangingSlide(false), 680);
+    }
+    setPaused(true);
+    window.setTimeout(() => setPaused(false), 8000);
+  }
+
+  return () => window.clearTimeout(timer);
   }, [paused, activeSlide, isReferenceOpening]);
 
   function chooseSlide(index: number) {
@@ -150,65 +164,67 @@ export default function PublicLanding() {
 
   return (
     <div className="marketing-site home-page luxury-home luxury-motion-site">
-      <ScrollMotion key={isReferenceOpening ? "scroll-opening" : "scroll-live"} />
+      <ScrollMotion />
       <SiteNavigation />
       <main>
-        <section className={"lux-editorial-hero" + (isReferenceOpening ? " is-reference-opening" : "")} aria-labelledby="lux-hero-title">
-          {isReferenceOpening ? (
-            <div className="lux-reference-opening-banner" key="reference-opening-banner">
-              <img src={REFERENCE_HERO_IMAGE} alt="OMKAR Car Inspection hero with the message Know Your Car Before You Buy and a Toyota Fortuner, featuring inspection services and PDI coaching" fetchPriority="high" />
-            </div>
-          ) : (
+        <section className="lux-car-image-hero" aria-label="Vehicle inspection hero">
+          <div className="lux-reference-opening-banner" data-gsap-image>
+            <img src={REFERENCE_HERO_IMAGE} alt="Glossy black SUV in a bright professional vehicle inspection workshop" fetchPriority="high" />
+          </div>
+        </section>
+
+        <VehicleInspectionInquiryBar />
+
+        <section className="lux-editorial-hero lux-live-service-hero" aria-labelledby="lux-hero-title">
           <div className="lux-live-hero">
-          <div className="lux-editorial-hero-head">
-            <div className="lux-editorial-headline" key={slide.id + "-heading"}>
-              <p className="lux-eyebrow lux-race-eyebrow"><span /> VEHICLE PDI · PRE-OWNED INSPECTION · COACHING</p>
-              <p className="lux-slide-kicker">{slide.kicker}</p>
-              <h1 id="lux-hero-title" className="lux-racing-title">
-                <span>{slide.title}</span>
-                <span className="lux-racing-accent">{slide.accent}</span>
-              </h1>
-            </div>
-            <div className="lux-editorial-headline-side" key={slide.id + "-copy"}>
-              <p>{slide.description}</p>
-              <Link href={slide.href as any} className="lux-button lux-button-gold">{slide.cta} <ArrowRight size={16} /></Link>
-              <Link href="#services" className="lux-text-link">View all services <ArrowDownRight size={15} /></Link>
-            </div>
-          </div>
-
-          <div className="lux-hero-carousel-controls" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
-            <div className="lux-carousel-tabs" role="tablist" aria-label="Featured services">
-              {slides.map((item, index) => (
-                <button key={item.id} type="button" role="tab" aria-selected={activeSlide === index} className={activeSlide === index ? "is-active" : ""} onClick={() => chooseSlide(index)}>
-                  <span>{item.index}</span>{item.tab}
-                </button>
-              ))}
-            </div>
-            <div className="lux-carousel-status"><span>{slide.index}</span><i /><span>{String(slides.length).padStart(2, "0")}</span></div>
-          </div>
-
-          <div className="lux-scroll-expand-story" data-gsap-scroll-story>
-            <div className="lux-scroll-expand-sticky">
-              <div className="lux-hero-fullbleed" data-gsap-scroll-expand aria-label={slide.alt}>
-                <img className="lux-hero-active-image" src={slide.image} alt={slide.alt} fetchPriority="high" />
-                {previousSlide >= 0 && previousSlide !== activeSlide && <img className={"lux-hero-previous-image" + (isChangingSlide ? " is-fading" : "")} src={slides[previousSlide].image} alt="" aria-hidden="true" />}
-                <div className="lux-scroll-expanded-copy" data-gsap-scroll-copy>
-                  <p>{slide.imageTag} <span> / {slide.index}</span></p>
-                  <h2>{slide.accent}</h2>
-                  <small>{slide.imageNote}</small>
-                  <Link href={slide.href as any}>{slide.cta} <ArrowRight size={15} /></Link>
-                </div>
-                <div className="lux-image-index">OM / {slide.index} — {String(slides.length).padStart(2, "0")}</div>
+            <div className="lux-editorial-hero-head">
+              <div className="lux-editorial-headline" key={slide.id + "-heading"}>
+                <p className="lux-eyebrow lux-race-eyebrow"><span /> VEHICLE PDI · PRE-OWNED INSPECTION · COACHING</p>
+                <p className="lux-slide-kicker">{slide.kicker}</p>
+                <h1 id="lux-hero-title" className="lux-racing-title">
+                  <span>{slide.title}</span>
+                  <span className="lux-racing-accent">{slide.accent}</span>
+                </h1>
+              </div>
+              <div className="lux-editorial-headline-side" key={slide.id + "-copy"}>
+                <p>{slide.description}</p>
+                <Link href={slide.href as any} className="lux-button lux-button-gold">{slide.cta} <ArrowRight size={16} /></Link>
+                <Link href="#services" className="lux-text-link">View all services <ArrowDownRight size={15} /></Link>
               </div>
             </div>
+
+            <div className="lux-hero-carousel-controls" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+              <div className="lux-carousel-tabs" role="tablist" aria-label="Featured services">
+                {slides.map((item, index) => (
+                  <button key={item.id} type="button" role="tab" aria-selected={activeSlide === index} className={activeSlide === index ? "is-active" : ""} onClick={() => chooseSlide(index)}>
+                    <span>{item.index}</span>{item.tab}
+                  </button>
+                ))}
+              </div>
+              <div className="lux-carousel-status"><span>{slide.index}</span><i /><span>{String(slides.length).padStart(2, "0")}</span></div>
+            </div>
+
+            <div className="lux-scroll-expand-story" data-gsap-scroll-story>
+              <div className="lux-scroll-expand-sticky">
+                <div className="lux-hero-fullbleed" data-gsap-scroll-expand aria-label={slide.alt}>
+                  <img className="lux-hero-active-image" src={slide.image} alt={slide.alt} fetchPriority="high" />
+                  {previousSlide !== activeSlide && <img className={"lux-hero-previous-image" + (isChangingSlide ? " is-fading" : "")} src={slides[previousSlide].image} alt="" aria-hidden="true" />}
+                  <div className="lux-scroll-expanded-copy" data-gsap-scroll-copy>
+                    <p>{slide.imageTag} <span> / {slide.index}</span></p>
+                    <h2>{slide.accent}</h2>
+                    <small>{slide.imageNote}</small>
+                    <Link href={slide.href as any}>{slide.cta} <ArrowRight size={15} /></Link>
+                  </div>
+                  <div className="lux-image-index">OM / {slide.index} — {String(slides.length).padStart(2, "0")}</div>
+                </div>
+              </div>
+            </div>
+            <div className="lux-hero-underbar">
+              <span><BadgeCheck size={15} /> Clear scope before inspection</span>
+              <span><ShieldCheck size={15} /> Evidence-led reporting</span>
+              <span><GraduationCap size={16} /> Practical PDI coaching</span>
+            </div>
           </div>
-          <div className="lux-hero-underbar">
-            <span><BadgeCheck size={15} /> Clear scope before inspection</span>
-            <span><ShieldCheck size={15} /> Evidence-led reporting</span>
-            <span><GraduationCap size={16} /> Practical PDI coaching</span>
-          </div>
-          </div>
-          )}
         </section>
 
         <section className="lux-model-lineup" aria-labelledby="lux-model-lineup-title">
@@ -280,6 +296,11 @@ export default function PublicLanding() {
             </div>
             <div className="lux-training-actions"><Link href="/masterclass" className="lux-button lux-button-gold">Training outline <ArrowRight size={15} /></Link><a href="#coaching-enquiry" className="lux-text-link">Ask about a batch <ArrowDownRight size={15} /></a></div>
           </div>
+        </section>
+
+        <section className="lux-coaching-banner-wrap" data-gsap-image>
+          <img src={HOME_COACHING_BANNER} alt="Six-day vehicle PDI masterclass with hands-on coaching, expert guidance and practical vehicle inspection learning" loading="lazy" />
+          <div className="lux-coaching-banner-action"><span>6-DAY PRACTICAL MASTERCLASS</span><Link href="/masterclass">Explore the coaching programme <ArrowRight size={16} /></Link></div>
         </section>
 
         <section className="lux-six-day-masterclass" id="six-day-masterclass">
