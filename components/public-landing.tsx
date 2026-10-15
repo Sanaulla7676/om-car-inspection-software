@@ -1,194 +1,227 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { ArrowDown, ArrowRight, CheckCircle2, ClipboardCheck, FileText, Gauge, GraduationCap, ScanSearch, ShieldCheck, Sparkles, Wrench } from "lucide-react";
+import {
+  ArrowDown, ArrowRight, BadgeCheck, Camera, CarFront, ChartNoAxesCombined,
+  Check, CheckCircle2, ClipboardCheck, Clock3, FileCheck2, FileText,
+  Gauge, HeartHandshake, ShieldCheck, Star, Users, Wrench
+} from "lucide-react";
 import { SiteNavigation } from "@/components/site-navigation";
 import { SiteFooter } from "@/components/site-footer";
-import { SiteEffects } from "@/components/site-effects";
-import { guidePages } from "@/lib/marketing-content";
 
-const slides = [
+const services = [
   {
-    phrase: "you decide.",
-    eyebrow: "PROFESSIONAL INSPECTION",
-    image: "/omkar-inspection-hero.webp",
-    alt: "Professional vehicle inspector in a modern automotive workshop"
+    id: "new-pdi",
+    number: "01",
+    title: "New Vehicle PDI",
+    short: "Pre-delivery inspection",
+    text: "Check the vehicle carefully before you accept the keys.",
+    bullets: ["Exterior and fit-finish checks", "Functional and cabin review", "Handover evidence"],
+    href: "/services/new-car-pdi",
+    image: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1400&q=90",
+    icon: CarFront,
+    tone: "blue"
+  },
+  {
+    id: "old-pda",
+    number: "02",
+    title: "Old Vehicle PDA",
+    short: "Pre-purchase assessment",
+    text: "Understand observed condition before you make a buying decision.",
+    bullets: ["Body and interior condition", "Mechanical observations", "Road-test notes where agreed"],
+    href: "/services/used-car-inspection",
+    image: "https://images.unsplash.com/photo-1489824904134-891ab64532f1?auto=format&fit=crop&w=1400&q=90",
+    icon: Gauge,
+    tone: "amber"
+  },
+  {
+    id: "valuation",
+    number: "03",
+    title: "Vehicle Valuation",
+    short: "Structured condition review",
+    text: "Bring inspection findings and refurbishment costs into one view.",
+    bullets: ["W / X / Y / Z evaluation", "RF cost worksheet", "Buying-price summary"],
+    href: "/services/used-car-pdi",
+    image: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=1400&q=90",
+    icon: ChartNoAxesCombined,
+    tone: "mint"
+  },
+  {
+    id: "reports",
+    number: "04",
+    title: "Reports & Documentation",
+    short: "Evidence-ready reporting",
+    text: "Keep findings, supporting documents and the final PDF together.",
+    bullets: ["Photo and video evidence", "Supporting PDF attachments", "Combined downloadable report"],
+    href: "/services/inspection-report",
+    image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1400&q=90",
+    icon: FileText,
+    tone: "violet"
   }
 ];
 
-const serviceCards = [
-  { slug:"used-car-inspection", label:"PRE-PURCHASE", title:"Used-car inspection", text:"Understand visible condition, questions and limitations before committing to a purchase.", image:"https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=1000&q=82", icon:ScanSearch },
-  { slug:"new-car-pdi", label:"BEFORE DELIVERY", title:"New-car PDI", text:"Review fit, finish, accessible functions and handover items before delivery.", image:"https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=1000&q=82", icon:ClipboardCheck },
-  { slug:"used-car-pdi", label:"HANDOVER RECORD", title:"Used-vehicle PDI", text:"Document observed condition at handover with a clear, repeatable checklist.", image:"https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=1000&q=82", icon:ShieldCheck },
-  { slug:"vehicle-diagnostics", label:"WARNING LIGHTS", title:"Diagnostic observations", text:"Record symptoms and scan findings without confusing a code with a full diagnosis.", image:"https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=1000&q=82", icon:Gauge },
-  { slug:"inspection-report", label:"CLEAR DOCUMENTATION", title:"Inspection reports", text:"Connect important findings to evidence, severity, limitations and next steps.", image:"https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=1000&q=82", icon:FileText },
-  { slug:"fleet-vehicle-inspection", label:"REPEATABLE WORKFLOWS", title:"Fleet inspections", text:"Standardise records and follow-up actions across a changing vehicle fleet.", image:"https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=1000&q=82", icon:Wrench }
+const strengths = [
+  { title: "Structured inspection", text: "Separate sections keep checks organised and repeatable.", icon: ClipboardCheck, tone: "blue" },
+  { title: "Reference-based evaluation", text: "Use the worksheet's W / X / Y / Z and condition codes.", icon: ChartNoAxesCombined, tone: "gold" },
+  { title: "2D inspection guides", text: "Choose a system and use labelled diagrams to guide observations.", icon: CarFront, tone: "blue" },
+  { title: "Image & video evidence", text: "Attach visual context to the inspection record.", icon: Camera, tone: "mint" },
+  { title: "Combine multiple PDFs", text: "Review and merge supporting documents into one package.", icon: FileCheck2, tone: "violet" },
+  { title: "Clear and practical", text: "A responsive layout helps the workflow stay easy to follow.", icon: ShieldCheck, tone: "gold" }
 ];
 
-const guideFeatured = [
-  guidePages.find((page) => page.slug === "used-car-inspection-checklist")!,
-  guidePages.find((page) => page.slug === "new-car-pdi-checklist")!,
-  guidePages.find((page) => page.slug === "understanding-obd-codes")!,
+const workflow = [
+  { number: "01", title: "Choose the inspection", text: "Start a New PDI, Old Vehicle PDA or valuation.", icon: ClipboardCheck, tone: "amber" },
+  { number: "02", title: "Complete the checklist", text: "Record the selected condition codes and observations.", icon: CheckCircle2, tone: "blue" },
+  { number: "03", title: "Add evidence", text: "Upload photos, video and relevant documents.", icon: Camera, tone: "mint" },
+  { number: "04", title: "Review the report", text: "Check the details before generating the PDF.", icon: FileText, tone: "violet" },
+  { number: "05", title: "Download or share", text: "Download the report or merge supporting PDFs.", icon: ArrowDown, tone: "rose" }
 ];
 
-const days = [
-  ["DAY 01", "The inspection method", "Vehicle identity, scope, safe working habits and the order of checks."],
-  ["DAY 02", "Body, paint and exterior", "Panels, glass, lamps, tyres, wheels and documenting visible signs."],
-  ["DAY 03", "Engine-bay fundamentals", "Safe visual observations, fluids where accessible, hoses and leak clues."],
-  ["DAY 04", "Cabin and diagnostics", "Interior controls, warning lamps and an introduction to OBD code context."],
-  ["DAY 05", "Road tests and reporting", "Authorised test observations, evidence photos, severity and plain-language reports."],
-  ["DAY 06", "Supervised live practice", "Run a guided checklist, review findings and practise explaining limitations."]
+const audiences = [
+  { title: "Car dealers", image: "https://images.unsplash.com/photo-1562519819-016930ada31b?auto=format&fit=crop&w=900&q=88", alt: "Vehicles displayed at an automotive showroom" },
+  { title: "Individual buyers", image: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=900&q=88", alt: "Driver checking a vehicle before a journey" },
+  { title: "Corporate fleets", image: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=900&q=88", alt: "Vehicle ready for fleet use" },
+  { title: "Insurance teams", image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=900&q=88", alt: "Documents being reviewed at a desk" },
+  { title: "Leasing companies", image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=900&q=88", alt: "Premium vehicle side view" },
+  { title: "Automotive businesses", image: "https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=900&q=88", alt: "Vehicle being inspected in a workshop" }
 ];
 
-const faqs = [
-  ["Can an inspection guarantee that a car has no faults?", "No. A point-in-time inspection has limits. Hidden, intermittent and inaccessible issues may require separate diagnosis."],
-  ["Is new-car PDI the same as regular servicing?", "No. PDI reviews the accessible condition and handover items. Scheduled maintenance and repairs follow their own procedures."],
-  ["Does the six-day masterclass guarantee a job or income?", "No. It is a practical learning outline, not a promise of placement, certification or earnings."],
-  ["How do I access the inspection software?", "Use the Inspection Software item in the capsule navigation. It opens the existing /dashboard application route, not a copied demo."]
+const expectations = [
+  { title: "The details are easier to review", text: "Findings are grouped into a consistent inspection workflow.", icon: ClipboardCheck },
+  { title: "Evidence stays with the record", text: "Keep photos, videos and documents close to the relevant report.", icon: Camera },
+  { title: "Next steps are clearer", text: "A report can record observed issues, limitations and follow-up actions.", icon: HeartHandshake }
 ];
 
 export default function PublicLanding() {
-  const [activeSlide, setActiveSlide] = useState(0);
-  const slide = slides[activeSlide];
-
-  useEffect(() => {
-    if (slides.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setInterval(() => setActiveSlide((value) => (value + 1) % slides.length), 5200);
-    return () => window.clearInterval(timer);
-  }, []);
-
   return (
-    <div className="marketing-site home-page">
-      <SiteEffects />
+    <div className="marketing-site home-page luxury-home">
       <SiteNavigation />
       <main>
-        <section className="home-hero" aria-label="OM Car Inspection introduction">
-          <div className="hero-background-stack" aria-hidden="true">
-            {slides.map((item, index) => <div key={item.phrase} className={"hero-background-image" + (index === activeSlide ? " is-active" : "")} style={{ backgroundImage: "url(" + item.image + ")" }} />)}
-          </div>
-          <div className="hero-grid-overlay" aria-hidden="true" />
-          <div className="hero-orbit orbit-one" aria-hidden="true" />
-          <div className="hero-orbit orbit-two" aria-hidden="true" />
-          <div className="home-hero-content">
-            <div className="home-hero-copy">
-              <p className="eyebrow eyebrow-on-dark"><span className="eyebrow-live-dot" /> VEHICLE INSPECTION · PRACTICAL TRAINING</p>
-              <p className="hero-caption-live" key={slide.eyebrow}><Sparkles size={14} /> {slide.eyebrow}</p>
-              <h1 className="home-hero-title"><span className="hero-line-fixed">Inspect before</span><span className="hero-line-switch shiny-heading" key={slide.phrase}>{slide.phrase}</span></h1>
-              <p className="home-hero-description">A more structured way to assess vehicle condition, document what you see and know which questions deserve a closer look.</p>
-              <div className="home-hero-actions">
-                <Link className="site-button-v2 button-bright" href="/services"><span>Explore services</span><ArrowRight size={16} /></Link>
-                <Link className="site-button-v2 button-glass" href="/book-inspection"><span>Request an inspection</span><ArrowRight size={16} /></Link>
-              </div>
-              <div className="hero-confidence-points">
-                <span><CheckCircle2 size={15} /> Defined scope</span>
-                <span><CheckCircle2 size={15} /> Evidence-first notes</span>
-                <span><CheckCircle2 size={15} /> Clear limitations</span>
-              </div>
+        <section className="lux-hero" aria-labelledby="lux-hero-title">
+          <div className="lux-hero-copy">
+            <p className="lux-eyebrow"><span /> PROFESSIONAL · ACCURATE · TRUSTED</p>
+            <h1 id="lux-hero-title">CAR INSPECTION<br /><span>MADE SIMPLE.</span></h1>
+            <p className="lux-hero-description">Complete vehicle inspection, structured valuation and professional reports, all in one clear workflow.</p>
+            <div className="lux-hero-promises">
+              <div><span><ShieldCheck size={18} /></span><b>Detailed<br />inspection</b></div>
+              <div><span><ChartNoAxesCombined size={18} /></span><b>Structured<br />valuation</b></div>
+              <div><span><Clock3 size={18} /></span><b>Clear<br />workflow</b></div>
+              <div><span><Users size={18} /></span><b>Built for<br />professionals</b></div>
             </div>
-
+            <div className="lux-hero-actions">
+              <Link href="/book-inspection" className="lux-button lux-button-gold">Start an inspection <ArrowRight size={16} /></Link>
+              <Link href="/services/inspection-report" className="lux-button lux-button-white"><FileText size={15} /> View report features</Link>
+            </div>
+            <p className="lux-hero-footnote"><Check size={14} /> Evidence-first records · Clear scope · Practical reporting</p>
           </div>
-          <div className="hero-bottom-row">
-            <a className="hero-scroll-cue" href="#services"><span className="scroll-cue-line" /> SCROLL TO EXPLORE <ArrowDown size={14} /></a>
-
+          <div className="lux-hero-visual" aria-label="Mr. Omkar in an automotive workshop">
+            <img src="/omkar-inspection-hero.webp" alt="Mr. Omkar standing confidently in a modern automotive inspection workshop" fetchPriority="high" />
+            <div className="lux-hero-fade" />
+            <div className="lux-hero-signature"><span>Omkar</span><b>MR. OMKAR</b><small>Automotive inspection</small></div>
+            <div className="lux-hero-stamp"><span><BadgeCheck size={21} /></span><div><b>Evidence-led</b><small>Inspection workflow</small></div></div>
           </div>
         </section>
 
-        <section className="proof-rail" aria-label="Inspection approach">
-          <div><span className="proof-rail-icon"><ScanSearch size={18} /></span><p><b>Structured inspection</b><small>Checks organised by area</small></p></div>
-          <div><span className="proof-rail-icon"><FileText size={18} /></span><p><b>Evidence-led reporting</b><small>Findings linked to context</small></p></div>
-          <div><span className="proof-rail-icon"><ShieldCheck size={18} /></span><p><b>Honest limitations</b><small>Clear about what was not checked</small></p></div>
-          <div><span className="proof-rail-icon"><GraduationCap size={18} /></span><p><b>Practical learning</b><small>Six-day guided outline</small></p></div>
+        <section className="lux-service-grid" id="services" aria-label="Inspection services">
+          {services.map((service) => {
+            const Icon = service.icon;
+            return (
+              <article className={"lux-service-card tone-" + service.tone} id={service.id} key={service.id}>
+                <div className="lux-service-copy">
+                  <div className="lux-service-heading">
+                    <span className="lux-service-icon"><Icon size={22} /></span>
+                    <div><small>{service.number} / SERVICE</small><h2>{service.title}</h2></div>
+                  </div>
+                  <p className="lux-service-short">{service.short}</p>
+                  <p className="lux-service-text">{service.text}</p>
+                  <ul>{service.bullets.map((bullet) => <li key={bullet}><Check size={13} /> {bullet}</li>)}</ul>
+                  <Link href={service.href} className="lux-round-link" aria-label={"Explore " + service.title}><ArrowRight size={18} /></Link>
+                </div>
+                <div className="lux-service-photo"><img src={service.image} alt="" loading="lazy" /></div>
+              </article>
+            );
+          })}
         </section>
 
-        <section className="site-section-v2 services-section-v2" id="services">
-          <div className="site-container-v2">
-            <div className="section-heading-v2" data-reveal>
-              <div><p className="eyebrow"><span className="eyebrow-live-dot" /> INSPECTION SERVICES</p><h2>Choose the check<br /><span>that fits the question.</span></h2></div>
-              <p className="section-intro-v2">A buyer preparing to purchase, a driver collecting a new car and a team managing vehicles need different checklists. Start with the right page.</p>
-            </div>
-            <div className="service-card-grid-v2">
-              {serviceCards.map((item, index) => {
-                const Icon = item.icon;
-                return (
-                  <article className="service-card-v2 site-spotlight" data-reveal data-reveal-delay={index * 65} key={item.slug}>
-                    <Link href={("/services/" + item.slug) as any} className="service-card-link">
-                      <div className="service-card-photo"><img src={item.image} alt="" loading="lazy" /><span className="service-card-index">0{index + 1}</span><span className="service-photo-arrow"><ArrowRight size={17} /></span></div>
-                      <div className="service-card-copy-v2"><div className="service-card-kicker"><Icon size={14} /><span>{item.label}</span></div><h3>{item.title}</h3><p>{item.text}</p><span className="card-read-link">View service details <ArrowRight size={14} /></span></div>
-                    </Link>
-                  </article>
-                );
-              })}
-            </div>
-            <div className="section-bottom-action" data-reveal><Link href="/services" className="text-link-v2">View all inspection services <ArrowRight size={15} /></Link></div>
+        <section className="lux-proof-strip" aria-label="Platform capabilities">
+          <div><span><CarFront size={20} /></span><div><b>PDI + PDA</b><small>Two inspection journeys</small></div></div>
+          <div><span><ChartNoAxesCombined size={20} /></span><div><b>W / X / Y / Z</b><small>Structured valuation sheet</small></div></div>
+          <div><span><Camera size={20} /></span><div><b>Photo + video</b><small>Attach supporting evidence</small></div></div>
+          <div><span><FileCheck2 size={20} /></span><div><b>One PDF package</b><small>Combine reports & attachments</small></div></div>
+        </section>
+
+        <section className="lux-section lux-why" aria-labelledby="lux-why-title">
+          <div className="lux-section-heading">
+            <p className="lux-eyebrow"><span /> A MORE CLEARLY STRUCTURED PROCESS</p>
+            <h2 id="lux-why-title">Why choose <em>Omkar</em> Car Inspection?</h2>
+            <p>Professional inspection, organised valuation and transparent documentation.</p>
+          </div>
+          <div className="lux-strength-grid">
+            {strengths.map((item) => {
+              const Icon = item.icon;
+              return <article className="lux-strength-card" key={item.title}><span className={"lux-strength-icon tone-" + item.tone}><Icon size={21} /></span><h3>{item.title}</h3><p>{item.text}</p></article>;
+            })}
           </div>
         </section>
 
-        <section className="site-section-v2 method-section-v2">
-          <div className="site-container-v2 method-grid-v2">
-            <div className="method-copy-v2" data-reveal>
-              <p className="eyebrow"><span className="eyebrow-live-dot" /> A BETTER PROCESS</p>
-              <h2>Not just a tick-box.<br /><span>A record you can use.</span></h2>
-              <p>Each inspection should make the scope clear, distinguish observations from assumptions, and show the next step when an issue needs more investigation.</p>
-              <Link href="/services/inspection-report" className="site-button-v2 button-dark">What makes a useful report <ArrowRight size={15} /></Link>
-            </div>
-            <div className="method-visual site-spotlight" data-reveal>
-              <div className="method-visual-top"><span>INSPECTION NOTE</span><span className="method-visual-code">OM / 03</span></div>
-              <div className="inspection-report-demo">
-                <div className="report-demo-header"><span className="report-demo-mark">OM</span><div><b>Condition record</b><small>Example layout · illustrative only</small></div><span className="report-demo-status">REVIEW</span></div>
-                <div className="report-demo-line large" /><div className="report-demo-line" /><div className="report-demo-line medium" />
-                <div className="report-demo-evidence"><div /><div /><div /></div>
-                <div className="report-demo-foot"><span><CheckCircle2 size={14} /> Observations recorded</span><span>Limitations noted</span></div>
-              </div>
-              <div className="method-floating-badge"><ShieldCheck size={17} /><span><b>Evidence first</b><small>Keep the context with the finding</small></span></div>
-            </div>
+        <section className="lux-section lux-workflow" aria-labelledby="lux-workflow-title">
+          <div className="lux-section-heading">
+            <p className="lux-eyebrow"><span /> FROM INSPECTION TO DOCUMENTATION</p>
+            <h2 id="lux-workflow-title">How it works</h2>
+            <p>From the first checklist to a reviewed, downloadable report.</p>
+          </div>
+          <div className="lux-workflow-row">
+            {workflow.map((item, index) => {
+              const Icon = item.icon;
+              return <article className={"lux-workflow-step tone-" + item.tone} key={item.number}><div className="lux-workflow-icon"><Icon size={23} /><span>{item.number}</span></div><h3>{item.title}</h3><p>{item.text}</p>{index < workflow.length - 1 && <div className="lux-workflow-connector" aria-hidden="true"><ArrowRight size={16} /></div>}</article>;
+            })}
           </div>
         </section>
 
-        <section className="site-section-v2 masterclass-section-v2" id="masterclass">
-          <div className="site-container-v2">
-            <div className="masterclass-shell-v2">
-              <div className="masterclass-background-glow" aria-hidden="true" />
-              <div className="masterclass-head-v2" data-reveal>
-                <p className="eyebrow eyebrow-on-dark"><span className="eyebrow-live-dot" /> PRACTICAL LEARNING</p>
-                <h2>Six days.<br /><span>Real inspection fundamentals.</span></h2>
-                <p>A guided learning outline that moves from safe observation to writing and explaining a structured inspection report. Confirm the actual batch details before enrolling.</p>
-                <Link href="/masterclass" className="site-button-v2 button-bright">Explore the masterclass <ArrowRight size={15} /></Link>
-              </div>
-              <div className="masterclass-days-v2">
-                {days.map((day, index) => <Link href="/masterclass" className="masterclass-day-v2" data-reveal data-reveal-delay={index * 55} key={day[0]}><span className="masterclass-day-number">{day[0]}</span><div><h3>{day[1]}</h3><p>{day[2]}</p></div><ArrowRight size={16} /></Link>)}
-              </div>
-            </div>
+        <section className="lux-about" id="about" aria-label="About Mr. Omkar">
+          <div className="lux-about-portrait"><img src="/omkar-inspection-hero.webp" alt="Mr. Omkar in a professional automotive workshop" loading="lazy" /><span className="lux-about-halo" /></div>
+          <div className="lux-about-message">
+            <p className="lux-eyebrow"><span /> THE APPROACH</p>
+            <h2>Transparency and trust in every inspection.</h2>
+            <p>Every record should make the observed condition easier to understand, keep supporting evidence close at hand, and make limitations clear.</p>
+            <div className="lux-about-signature">Omkar <small>Automotive inspection</small></div>
+          </div>
+          <div className="lux-about-points">
+            <div><span><ShieldCheck size={18} /></span><b>Professional process</b></div>
+            <div><span><BadgeCheck size={18} /></span><b>Structured records</b></div>
+            <div><span><FileText size={18} /></span><b>Reports with evidence</b></div>
+            <div><span><HeartHandshake size={18} /></span><b>Clearer decisions</b></div>
           </div>
         </section>
 
-        <section className="site-section-v2 guides-section-v2">
-          <div className="site-container-v2">
-            <div className="section-heading-v2" data-reveal>
-              <div><p className="eyebrow"><span className="eyebrow-live-dot" /> KNOW BEFORE YOU GO</p><h2>Useful guides.<br /><span>Clearer questions.</span></h2></div>
-              <p className="section-intro-v2">Understand what a check can show, what it cannot prove, and when to seek a specialist opinion.</p>
-            </div>
-            <div className="guide-feature-grid">
-              {guideFeatured.map((guide, index) => <article className="guide-feature-card site-spotlight" data-reveal data-reveal-delay={index * 80} key={guide.slug}><span className="guide-feature-number">GUIDE / 0{index + 1}</span><h3>{guide.title}</h3><p>{guide.intro}</p><Link href={("/guides/" + guide.slug) as any} className="text-link-v2">Read the guide <ArrowRight size={15} /></Link></article>)}
-            </div>
-            <div className="section-bottom-action" data-reveal><Link href="/guides" className="text-link-v2">Browse all learning guides <ArrowRight size={15} /></Link></div>
+        <section className="lux-section lux-customers" id="customers" aria-labelledby="lux-customers-title">
+          <div className="lux-section-heading">
+            <p className="lux-eyebrow"><span /> WHO IT IS FOR</p>
+            <h2 id="lux-customers-title">Designed for automotive decisions</h2>
+            <p>Useful for individuals and teams who need a clearer vehicle-condition record.</p>
+          </div>
+          <div className="lux-audience-grid">
+            {audiences.map((audience) => <article className="lux-audience-card" key={audience.title}><img src={audience.image} alt={audience.alt} loading="lazy" /><h3>{audience.title}</h3></article>)}
           </div>
         </section>
 
-        <section className="faq-section-v2">
-          <div className="site-container-v2 faq-layout-v2">
-            <div data-reveal><p className="eyebrow"><span className="eyebrow-live-dot" /> GOOD TO KNOW</p><h2>Clear answers<br /><span>before you book.</span></h2><p className="faq-intro-v2">The exact inspection scope depends on access, vehicle condition, available tools and what you request.</p><Link href="/faq" className="text-link-v2">Read all FAQs <ArrowRight size={15} /></Link></div>
-            <div className="faq-list-v2">
-              {faqs.map(([question, answer], index) => <details className="faq-item-v2" data-reveal data-reveal-delay={index * 55} key={question}><summary><span>{question}</span><i /></summary><div className="faq-answer-v2"><p>{answer}</p></div></details>)}
-            </div>
+        <section className="lux-section lux-expectations" aria-labelledby="lux-expectations-title">
+          <div className="lux-section-heading">
+            <p className="lux-eyebrow"><span /> WHAT GOOD DOCUMENTATION SHOULD DO</p>
+            <h2 id="lux-expectations-title">Clear findings. Better-informed next steps.</h2>
+            <p>Rather than unverified star ratings or placeholder testimonials, these are the outcomes the product is designed to support.</p>
+          </div>
+          <div className="lux-expectation-grid">
+            {expectations.map((item) => {
+              const Icon = item.icon;
+              return <article className="lux-expectation-card" key={item.title}><span><Icon size={22} /></span><h3>{item.title}</h3><p>{item.text}</p><div className="lux-expectation-rule" /></article>;
+            })}
           </div>
         </section>
 
-        <section className="home-cta-v2">
-          <div className="site-container-v2 home-cta-inner-v2" data-reveal>
-            <div><p className="eyebrow eyebrow-on-dark"><span className="eyebrow-live-dot" /> YOUR NEXT STEP</p><h2>Know what you're<br /><span>looking at.</span></h2><p>Choose a service, explore the learning resources, or open the existing inspection software.</p></div>
-            <div className="home-cta-actions-v2"><Link href="/book-inspection" className="site-button-v2 button-bright">Request an inspection <ArrowRight size={15} /></Link><Link href="/masterclass" className="site-button-v2 button-glass">Explore training <ArrowRight size={15} /></Link><Link href="/dashboard" className="home-cta-software"><ShieldCheck size={15} /> Open inspection software <ArrowRight size={13} /></Link></div>
-          </div>
+        <section className="lux-final-cta" id="contact">
+          <div><p className="lux-eyebrow lux-eyebrow-light"><span /> YOUR NEXT STEP</p><h2>Make the next vehicle decision with more clarity.</h2><p>Choose a service for customers or open the secure inspection application if you are part of the team.</p></div>
+          <div className="lux-final-actions"><Link href="/book-inspection" className="lux-button lux-button-gold">Request an inspection <ArrowRight size={16} /></Link><Link href="/dashboard" className="lux-button lux-button-ghost"><ShieldCheck size={16} /> Open admin software</Link></div>
         </section>
       </main>
       <SiteFooter />
