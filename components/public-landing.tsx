@@ -157,7 +157,7 @@ export default function PublicLanding() {
 
           <div className="lux-scroll-expand-story" data-gsap-scroll-story>
             <div className="lux-scroll-expand-sticky">
-              <div className="lux-hero-fullbleed" data-gsap-scroll-expand key={slide.id + "-image"} aria-label={slide.alt}>
+              <div className="lux-hero-fullbleed" data-gsap-scroll-expand aria-label={slide.alt}>
                 <img src={slide.image} alt={slide.alt} fetchPriority="high" />
                 <div className="lux-scroll-expanded-copy" data-gsap-scroll-copy>
                   <p>{slide.imageTag} <span> / {slide.index}</span></p>
