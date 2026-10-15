@@ -650,7 +650,7 @@ export const contactContent: MarketingPageContent = {
   faqs: [
     { question: "Does submitting an enquiry book a slot?", answer: "No. The team must confirm availability and the terms directly." },
     { question: "What if I do not know which inspection to select?", answer: "Choose the closest option and explain your question. The team can clarify the appropriate scope before confirmation." },
-    { question: "Can I use the inspection software from this page?", answer: "Yes. Choose Inspection Software in the capsule navigation to open the existing dashboard route." }
+    { question: "Can I use the inspection software from this page?", answer: "Yes. Use the separate Login / Sign in action to open team sign-in. Customer pages and the inspection application stay separate." }
   ],
   primaryHref: "/book-inspection", primaryLabel: "Start a booking enquiry"
 };
