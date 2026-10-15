@@ -947,3 +947,270 @@ html{scroll-behavior:smooth}
   .lux-hero-copy-dynamic,.lux-hero-visual,.lux-hero-visual>img{animation:none!important}
   .lux-coaching-visual img{transition:none!important}
 }
+
+
+
+/* =========================================================================
+   STRADA-INSPIRED EDITORIAL MOTION — OM CAR INSPECTION
+   Bright showroom visuals, condensed automotive display typography,
+   scroll-triggered reveals and white / graphite / champagne-gold palette.
+   ========================================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap');
+.marketing-site{font-family:"DM Sans",Arial,sans-serif!important}
+.marketing-site h1,.marketing-site h2,.marketing-site h3,.lux-racing-title{font-family:"Barlow Condensed","Arial Narrow",Impact,sans-serif!important}
+.marketing-site .lux-eyebrow,.lux-enquiry-form,.lux-button,.lux-text-link,.lux-service-tag{font-family:"DM Sans",Arial,sans-serif!important}
+.luxury-home{background:#fff!important;color:#161a1e!important}
+.luxury-home .lux-eyebrow{font-family:"DM Sans",Arial,sans-serif!important;font-size:9px!important;font-weight:800!important;letter-spacing:.17em!important;color:#737b80!important}
+.luxury-home .lux-eyebrow>span{background:#c79745!important;box-shadow:0 0 0 4px rgba(199,151,69,.12)!important}
+
+/* Large, image-led hero inspired by the timing and reveal of the reference */
+.lux-editorial-hero{width:100%;padding:clamp(28px,4.2vw,57px) 0 0;background:#fff;color:#171b1f;overflow:hidden}
+.lux-editorial-hero-head{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,.62fr);align-items:end;gap:clamp(25px,5.4vw,88px);width:min(1320px,calc(100% - 72px));margin:0 auto;padding:0 0 22px}
+.lux-editorial-headline{min-width:0;animation:luxBlurWordReveal .85s cubic-bezier(.2,.8,.2,1) both}
+.lux-race-eyebrow{margin:0 0 28px!important}
+.lux-slide-kicker{font-size:9px;font-weight:700;letter-spacing:.17em;color:#8a8b88;text-transform:uppercase;margin:0 0 8px}
+.lux-racing-title{margin:0!important;color:#111519!important;font-size:clamp(57px,8.15vw,123px)!important;font-weight:800!important;letter-spacing:-.045em!important;line-height:.82!important;text-transform:uppercase!important;font-stretch:condensed!important}
+.lux-racing-title>span{display:block;color:#111519!important;-webkit-text-fill-color:#111519!important;background:none!important;transform-origin:left center}
+.lux-racing-title .lux-racing-accent{margin-top:8px;color:#bb8733!important;-webkit-text-fill-color:#bb8733!important;font-size:.78em!important;letter-spacing:-.028em!important;line-height:.95!important}
+.lux-editorial-headline-side{align-self:end;max-width:430px;padding:0 0 3px;animation:luxBlurWordReveal .85s .12s cubic-bezier(.2,.8,.2,1) both}
+.lux-editorial-headline-side>p{font-size:13px;line-height:1.9;color:#646b70;margin:0 0 20px;max-width:415px}
+.lux-editorial-headline-side .lux-button{min-height:44px;padding:0 18px;font-size:11px}
+.lux-text-link{display:inline-flex;align-items:center;gap:7px;margin:12px 0 0 3px;color:#666d71!important;font-size:10px;font-weight:700;transition:color .2s,transform .2s}
+.lux-text-link:hover{color:#956a22!important;transform:translateX(2px)}
+.lux-hero-carousel-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;width:min(1320px,calc(100% - 72px));margin:0 auto 17px}
+.lux-carousel-tabs{display:flex;align-items:center;flex-wrap:wrap;gap:5px}
+.lux-carousel-tabs button{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:8px 13px;border:1px solid #e6e8e8;border-radius:999px;background:rgba(255,255,255,.95);color:#545b60;font:650 10px/1 "DM Sans",Arial,sans-serif;white-space:nowrap;transition:background .2s,border-color .2s,transform .2s,color .2s;cursor:pointer}
+.lux-carousel-tabs button:hover{border-color:#d9c18f;background:#fffaf0;transform:translateY(-1px)}
+.lux-carousel-tabs button>span{font:700 10px/1 "Barlow Condensed",sans-serif;color:#a27b37}
+.lux-carousel-tabs button.is-active{border-color:#dbc28c;background:#fff5df;color:#503917;box-shadow:inset 0 1px rgba(255,255,255,.95),0 4px 11px rgba(119,86,28,.055)}
+.lux-carousel-status{display:flex;align-items:center;gap:9px;flex:0 0 auto;color:#969a9b;font:700 10px/1 "Barlow Condensed",sans-serif;letter-spacing:.08em}
+.lux-carousel-status>span:first-child{color:#a97625}
+.lux-carousel-status i{width:44px;height:1px;background:linear-gradient(90deg,#c18d3b 0 38%,#e3e5e5 38%);display:block}
+.lux-hero-fullbleed{position:relative;width:100%;height:clamp(365px,58svh,715px);min-height:360px;overflow:hidden;background:#efeee9;isolation:isolate;animation:luxPhotoStageIn .9s cubic-bezier(.18,.72,.2,1) both}
+.lux-hero-fullbleed>img{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;object-position:center 50%;filter:none!important;opacity:1!important;transform:scale(1.005);animation:luxPhotoResolve 1.05s cubic-bezier(.18,.72,.2,1) both}
+.lux-hero-fullbleed:after{content:none!important;display:none!important}
+.lux-image-caption{position:absolute;left:clamp(18px,4.5vw,72px);bottom:clamp(18px,3vw,38px);display:flex;align-items:center;gap:11px;max-width:min(420px,calc(100% - 36px));padding:13px 17px;border:1px solid rgba(255,255,255,.9);border-radius:15px;background:rgba(255,255,255,.93);box-shadow:0 9px 25px rgba(18,25,31,.10);backdrop-filter:blur(18px);color:#20262b}
+.lux-image-caption-marker{width:31px;height:31px;display:grid;place-items:center;flex:0 0 31px;border-radius:50%;background:#fff1d2;color:#a8792d}
+.lux-image-caption b,.lux-image-caption small{display:block}
+.lux-image-caption b{font:700 10px/1.25 "DM Sans",Arial,sans-serif;letter-spacing:.11em;color:#1d2328}
+.lux-image-caption small{margin-top:4px;font:500 10px/1.35 "DM Sans",Arial,sans-serif;color:#6b7074}
+.lux-image-index{position:absolute;top:19px;right:clamp(18px,4.5vw,72px);border:1px solid rgba(255,255,255,.85);border-radius:999px;padding:9px 12px;background:rgba(255,255,255,.87);color:#4a5054;font:700 9px/1 "DM Sans",Arial,sans-serif;letter-spacing:.12em;backdrop-filter:blur(14px)}
+.lux-hero-underbar{display:flex;align-items:center;justify-content:center;gap:clamp(18px,4vw,56px);flex-wrap:wrap;min-height:62px;padding:12px 24px;border-bottom:1px solid #eeefef;background:#fff}
+.lux-hero-underbar>span{display:inline-flex;align-items:center;gap:7px;font-size:9px;font-weight:650;color:#73797c;letter-spacing:.01em}
+.lux-hero-underbar svg{color:#ad7e30}
+
+/* Animations follow the reference's quiet reveal rhythm, not flashy gimmicks */
+@keyframes luxBlurWordReveal{from{opacity:0;filter:blur(9px);transform:translateY(21px)}to{opacity:1;filter:blur(0);transform:translateY(0)}}
+@keyframes luxPhotoStageIn{from{clip-path:inset(0 0 0 100%)}to{clip-path:inset(0 0 0 0)}}
+@keyframes luxPhotoResolve{from{opacity:.72;transform:scale(1.035)}to{opacity:1;transform:scale(1.005)}}
+.lux-hero-fullbleed>img{will-change:transform,opacity}
+.lux-carousel-tabs button:focus-visible,.lux-enquiry-form input:focus-visible,.lux-enquiry-form select:focus-visible,.lux-enquiry-form textarea:focus-visible{outline:2px solid #b88734;outline-offset:3px}
+
+/* Service cards are full photo cards with clean labels and no tinted overlays */
+.lux-service-section,.lux-process-section{width:min(1320px,calc(100% - 72px));margin:0 auto;padding:clamp(58px,7.5vw,103px) 0}
+.lux-section-title-row{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:27px}
+.lux-section-title-row h2{font:700 clamp(40px,5.3vw,72px)/.88 "Barlow Condensed","Arial Narrow",sans-serif!important;letter-spacing:-.025em!important;text-transform:uppercase;color:#161a1e;margin:0}
+.lux-section-title-row>p{max-width:360px;margin:0;color:#747a7d;font-size:12px;line-height:1.8}
+.lux-service-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:13px!important;width:100%!important;margin:0!important}
+.lux-service-card{display:flex!important;flex-direction:column!important;min-width:0;min-height:0!important;border:1px solid #e8e9e8!important;border-radius:15px!important;overflow:hidden;background:#fff!important;box-shadow:0 5px 20px rgba(20,26,31,.025)!important;transition:transform .32s cubic-bezier(.2,.75,.2,1),border-color .3s,box-shadow .3s!important}
+.lux-service-card:hover{transform:translateY(-5px)!important;border-color:#d7c49c!important;box-shadow:0 16px 32px rgba(20,26,31,.08)!important}
+.lux-service-img-link{position:relative;display:block;height:clamp(170px,17vw,252px);overflow:hidden;background:#f0eee8}
+.lux-service-img-link img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .65s cubic-bezier(.2,.7,.2,1);filter:none!important}
+.lux-service-card:hover .lux-service-img-link img{transform:scale(1.045)}
+.lux-service-index{position:absolute;top:11px;left:11px;display:grid;place-items:center;min-width:30px;height:30px;padding:0 8px;border:1px solid rgba(255,255,255,.85);border-radius:999px;background:rgba(255,255,255,.92);color:#8b692f;font:700 12px/1 "Barlow Condensed",sans-serif}
+.lux-service-arrow{position:absolute;right:11px;bottom:11px;width:35px;height:35px;display:grid;place-items:center;border:1px solid #ece2cd;border-radius:50%;background:rgba(255,255,255,.96);color:#252a2e;transition:transform .2s,background .2s}
+.lux-service-card:hover .lux-service-arrow{transform:translateX(2px);background:#fff5dc}
+.lux-service-card-body{display:flex;flex:1;flex-direction:column;padding:17px 17px 18px}
+.lux-service-tag{color:#9a7a43;font-size:8px;font-weight:800;letter-spacing:.14em;line-height:1.4}
+.lux-service-card-body h3{margin:8px 0 8px;color:#181d21;font:700 27px/.97 "Barlow Condensed","Arial Narrow",sans-serif!important;letter-spacing:-.012em!important}
+.lux-service-card-body>p{margin:0;color:#6b7175;font-size:10px;line-height:1.65;min-height:34px}
+.lux-service-card-body ul{display:grid;gap:7px;list-style:none;padding:0;margin:16px 0 15px}
+.lux-service-card-body li{display:flex;gap:7px;align-items:flex-start;color:#50575b;font-size:9px;line-height:1.45}
+.lux-service-card-body li svg{flex:0 0 13px;color:#a97a2e;margin-top:1px}
+.lux-service-link{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;padding-top:13px;border-top:1px solid #eff0ef;color:#454b4f!important;font-size:10px;font-weight:750;transition:color .2s}
+.lux-service-link svg{color:#ab7a2d;transition:transform .2s}
+.lux-service-link:hover{color:#93671f!important}
+.lux-service-link:hover svg{transform:translateX(3px)}
+
+/* Worksheet reference strip */
+.lux-worksheet-section{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);align-items:center;gap:clamp(30px,6vw,95px);padding:clamp(42px,6vw,78px) max(36px,calc((100% - 1320px)/2));background:#f9f8f5;border-top:1px solid #efeee9;border-bottom:1px solid #efeee9}
+.lux-worksheet-copy h2,.lux-training-copy h2,.lux-form-intro h2,.lux-final-contact h2{font:700 clamp(38px,4.8vw,65px)/.9 "Barlow Condensed","Arial Narrow",sans-serif!important;letter-spacing:-.025em!important;text-transform:uppercase;color:#171b1f;margin:0}
+.lux-worksheet-copy>p:not(.lux-eyebrow){font-size:12px;line-height:1.85;color:#70777b;max-width:420px;margin:15px 0 21px}
+.lux-code-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.lux-code-card{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:9px;padding:17px;border:1px solid #e9e6df;border-radius:13px;background:#fff;transition:transform .25s,border-color .25s,box-shadow .25s}
+.lux-code-card:hover{transform:translateY(-3px);border-color:#dbc89d;box-shadow:0 9px 22px rgba(30,32,30,.045)}
+.lux-code-card>div{display:flex;align-items:center;gap:9px}
+.lux-code-card>div>span{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#fff2d7;color:#a5762d;font:800 21px/1 "Barlow Condensed",sans-serif}
+.lux-code-card h3{margin:0;font:700 23px/1 "Barlow Condensed",sans-serif!important;text-transform:uppercase;color:#212529}
+.lux-code-card p{grid-column:1/-1;margin:0;color:#72787a;font-size:10px;line-height:1.7}
+.lux-code-card>svg{grid-column:2;grid-row:1;color:#ac7d32}
+
+/* Coaching section and the WhatsApp enquiry form */
+.lux-training-section{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.92fr);gap:clamp(28px,5vw,74px);align-items:center;width:min(1320px,calc(100% - 72px));margin:0 auto;padding:clamp(58px,7.5vw,102px) 0}
+.lux-training-image{position:relative;min-height:330px;height:clamp(330px,39vw,500px);overflow:hidden;border-radius:16px;background:#f0eee8}
+.lux-training-image img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:55% 46%}
+.lux-training-photo-label{position:absolute;left:15px;bottom:15px;padding:10px 13px;border:1px solid rgba(255,255,255,.87);border-radius:999px;background:rgba(255,255,255,.92);color:#5d4b2d;font-size:8px;font-weight:800;letter-spacing:.13em;backdrop-filter:blur(12px)}
+.lux-training-copy h2{max-width:570px}
+.lux-training-copy>p:not(.lux-eyebrow){max-width:500px;margin:15px 0;color:#6a7175;font-size:12px;line-height:1.85}
+.lux-training-list{display:grid;gap:8px;margin:18px 0 23px}
+.lux-training-list span{display:flex;gap:8px;align-items:flex-start;color:#485055;font-size:10px;line-height:1.5}
+.lux-training-list svg{flex:0 0 14px;color:#ad7b2d}
+.lux-training-actions{display:flex;flex-wrap:wrap;align-items:center;gap:15px}
+.lux-coaching-enquiry{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(28px,6vw,88px);align-items:start;width:100%;padding:clamp(42px,6vw,82px) max(36px,calc((100% - 1320px)/2));background:#f9f8f5;border-top:1px solid #eeece7;border-bottom:1px solid #eeece7}
+.lux-form-intro{padding-top:13px}
+.lux-form-intro h2{font-size:clamp(39px,4.6vw,62px)}
+.lux-form-intro>p:not(.lux-eyebrow){max-width:430px;margin:16px 0 25px;color:#6a7175;font-size:12px;line-height:1.9}
+.lux-form-feature{display:flex;align-items:center;gap:12px;padding:14px 0;border-top:1px solid #e9e7e1}
+.lux-form-feature>span{width:39px;height:39px;display:grid;place-items:center;flex:0 0 39px;border:1px solid #e8dcc1;border-radius:50%;background:#fff;color:#a5762d}
+.lux-form-feature b,.lux-form-feature small{display:block}
+.lux-form-feature b{font-size:11px;color:#292e31}
+.lux-form-feature small{margin-top:4px;color:#767c7e;font-size:9px;line-height:1.55}
+.lux-enquiry-form{padding:clamp(20px,3vw,31px);border:1px solid #e7e3da;border-radius:17px;background:#fff;box-shadow:0 15px 36px rgba(29,31,30,.045)}
+.lux-form-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid #f0eee9}
+.lux-form-header>div>span{font-size:8px;font-weight:850;letter-spacing:.16em;color:#a17c3b}
+.lux-form-header h3{margin:7px 0 0;color:#1d2225;font:700 29px/1 "Barlow Condensed",sans-serif!important;text-transform:uppercase}
+.lux-form-badge{width:42px;height:42px;display:grid;place-items:center;border:1px solid #e9dcc1;border-radius:50%;background:#fff7e7;color:#a7782c}
+.lux-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px 12px}
+.lux-form-field{display:grid;gap:7px;min-width:0}
+.lux-form-field>span{color:#4b5255;font-size:9px;font-weight:750}
+.lux-form-field input,.lux-form-field select,.lux-form-field textarea{width:100%;min-width:0;border:1px solid #e3e6e5;border-radius:9px;background:#fff;color:#242a2e;padding:12px 12px;font:500 11px/1.45 "DM Sans",Arial,sans-serif;outline:none;transition:border-color .2s,box-shadow .2s}
+.lux-form-field input::placeholder,.lux-form-field textarea::placeholder{color:#a2a6a7}
+.lux-form-field input:focus,.lux-form-field select:focus,.lux-form-field textarea:focus{border-color:#cfaa67;box-shadow:0 0 0 3px rgba(201,161,83,.11)}
+.lux-form-field select{appearance:auto}
+.lux-form-field textarea{resize:vertical;min-height:75px}
+.lux-form-field-full{grid-column:1/-1}
+.lux-form-submit{width:100%;margin-top:18px;min-height:46px!important;font-size:11px!important}
+.lux-form-privacy{margin:12px 0 0;color:#83888a;font-size:9px;line-height:1.7}
+.lux-form-success{display:flex;align-items:flex-start;gap:7px;margin:12px 0 0;color:#72501d;font-size:10px;line-height:1.5}
+.lux-form-success svg{flex:0 0 14px;margin-top:1px}
+.lux-process-section{padding-top:clamp(52px,6.5vw,86px)}
+.lux-process-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.lux-process-step{position:relative;min-height:190px;padding:20px;border:1px solid #e9e9e6;border-radius:14px;background:#fff;transition:transform .26s,border-color .26s,box-shadow .26s}
+.lux-process-step:hover{transform:translateY(-3px);border-color:#d8c69f;box-shadow:0 11px 25px rgba(23,28,30,.04)}
+.lux-step-number{font:700 12px/1 "Barlow Condensed",sans-serif;color:#aa7b31;letter-spacing:.1em}
+.lux-step-icon{display:block;margin:18px 0 17px;color:#a7782d}
+.lux-process-step h3{margin:0 0 7px;color:#1d2225;font:700 25px/.98 "Barlow Condensed",sans-serif!important;text-transform:uppercase}
+.lux-process-step p{margin:0;color:#747a7d;font-size:10px;line-height:1.7}
+.lux-final-contact{display:flex;align-items:center;justify-content:space-between;gap:30px;width:min(1320px,calc(100% - 72px));margin:0 auto;padding:36px 0 64px}
+.lux-final-contact>div:first-child{max-width:670px}
+.lux-final-contact h2{font-size:clamp(38px,4.5vw,61px)}
+.lux-final-contact>div:first-child>p:last-child{margin:14px 0 0;color:#70777a;font-size:11px;line-height:1.8}
+.lux-final-contact-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:8px;max-width:460px}
+.lux-final-contact-actions .lux-button{min-height:41px;padding:0 13px;font-size:10px}
+.lux-separate-login{display:inline-flex;align-items:center;gap:6px;padding:9px 5px;color:#73797c!important;font-size:9px;font-weight:700}
+.lux-separate-login:hover{color:#a5762d!important}
+
+/* Page-specific hero photographs and clean detail-page layouts */
+.marketing-site:not(.luxury-home) .marketing-hero,.marketing-site:not(.luxury-home) .marketing-index-hero{padding-bottom:35px!important}
+.marketing-page-hero-photo{position:relative;width:min(1320px,calc(100% - 64px));height:clamp(300px,42vw,520px);margin:34px auto 0;overflow:hidden;border:1px solid #e9e6de;border-radius:15px;background:#f0eee8;isolation:isolate}
+.marketing-page-hero-photo img{width:100%;height:100%;display:block;object-fit:cover;object-position:center 52%;filter:none!important}
+.marketing-page-photo-label{position:absolute;left:clamp(14px,3vw,35px);bottom:clamp(14px,3vw,35px);display:flex;flex-direction:column;gap:6px;max-width:min(450px,calc(100% - 28px));padding:15px 19px;border:1px solid rgba(255,255,255,.9);border-radius:14px;background:rgba(255,255,255,.93);box-shadow:0 8px 25px rgba(20,27,31,.09);backdrop-filter:blur(14px)}
+.marketing-page-photo-label span{font:800 8px/1 "DM Sans",Arial,sans-serif;letter-spacing:.15em;color:#97702f}
+.marketing-page-photo-label b{font:700 clamp(24px,3.1vw,38px)/.98 "Barlow Condensed","Arial Narrow",sans-serif;text-transform:uppercase;color:#191e21}
+.marketing-index-hero-photo{margin-top:28px}
+
+/* Remove green/cyan/mint remnants from all public marketing pages */
+.marketing-site:not(.luxury-home) .eyebrow-live-dot{background:#c0923b!important;box-shadow:0 0 0 4px rgba(192,146,59,.12)!important}
+.marketing-site:not(.luxury-home) .marketing-hero-title span,.marketing-site:not(.luxury-home) .marketing-index-hero h1 span{color:#ba8732!important;-webkit-text-fill-color:#ba8732!important}
+.marketing-site:not(.luxury-home) .masterclass-schedule-card>span{background:#fff1d0!important;color:#97702f!important}
+.marketing-site:not(.luxury-home) .marketing-check-list li>span{background:#fff1d0!important;color:#97702f!important}
+
+/* Responsive image crops / layout */
+@media(min-width:1500px){.lux-hero-fullbleed{height:64svh}.lux-racing-title{font-size:clamp(106px,8vw,145px)!important}}
+@media(max-width:1050px){
+  .lux-racing-title{font-size:clamp(58px,8.2vw,96px)!important}
+  .lux-editorial-hero-head,.lux-hero-carousel-controls{width:calc(100% - 44px)}
+  .lux-service-section,.lux-process-section,.lux-training-section,.lux-final-contact{width:calc(100% - 44px)}
+  .lux-service-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .lux-service-img-link{height:clamp(220px,30vw,330px)}
+  .lux-service-card-body h3{font-size:31px!important}
+  .lux-worksheet-section,.lux-coaching-enquiry{padding-left:28px;padding-right:28px}
+  .lux-training-section{gap:28px}
+  .lux-process-step{padding:16px;min-height:185px}
+  .lux-process-step h3{font-size:23px!important}
+  .lux-final-contact{align-items:flex-start;flex-direction:column}
+  .lux-final-contact-actions{justify-content:flex-start;max-width:none}
+}
+@media(max-width:760px){
+  .lux-editorial-hero{padding-top:28px}
+  .lux-editorial-hero-head{grid-template-columns:1fr;gap:15px;width:calc(100% - 36px);padding-bottom:17px}
+  .lux-race-eyebrow{margin-bottom:23px!important}
+  .lux-racing-title{font-size:clamp(59px,13.2vw,91px)!important;line-height:.83!important}
+  .lux-racing-title .lux-racing-accent{margin-top:7px}
+  .lux-editorial-headline-side{max-width:570px}
+  .lux-editorial-headline-side>p{font-size:12px;margin-bottom:13px}
+  .lux-editorial-headline-side .lux-button{min-height:41px}
+  .lux-hero-carousel-controls{width:calc(100% - 36px);align-items:flex-start;gap:8px;margin-bottom:12px}
+  .lux-carousel-tabs{gap:4px}
+  .lux-carousel-tabs button{min-height:34px;padding:8px 10px;font-size:9px}
+  .lux-carousel-tabs button>span{display:none}
+  .lux-carousel-status{padding-top:10px}
+  .lux-hero-fullbleed{height:clamp(320px,55svh,510px);min-height:320px}
+  .lux-hero-fullbleed>img{object-position:55% center}
+  .lux-image-caption{left:12px;bottom:12px;padding:10px 12px;border-radius:12px;max-width:calc(100% - 24px)}
+  .lux-image-caption-marker{width:28px;height:28px;flex-basis:28px}
+  .lux-image-caption b{font-size:9px}
+  .lux-image-caption small{font-size:9px}
+  .lux-image-index{top:12px;right:12px;font-size:8px}
+  .lux-hero-underbar{justify-content:flex-start;gap:11px 17px;padding:12px 18px;min-height:0}
+  .lux-hero-underbar>span{font-size:8px}
+  .lux-hero-underbar svg{width:13px;height:13px}
+  .lux-service-section,.lux-process-section{width:calc(100% - 36px);padding:56px 0}
+  .lux-section-title-row{display:block;margin-bottom:21px}
+  .lux-section-title-row h2{font-size:clamp(43px,9vw,61px)!important}
+  .lux-section-title-row>p{margin-top:13px;max-width:520px;font-size:11px}
+  .lux-service-grid{gap:10px!important}
+  .lux-service-img-link{height:clamp(165px,32vw,260px)}
+  .lux-service-card-body{padding:14px}
+  .lux-service-card-body h3{font-size:26px!important}
+  .lux-service-card-body>p{min-height:0}
+  .lux-service-card-body ul{margin:13px 0}
+  .lux-worksheet-section{grid-template-columns:1fr;gap:24px;padding:42px 18px}
+  .lux-worksheet-copy h2,.lux-training-copy h2,.lux-form-intro h2,.lux-final-contact h2{font-size:clamp(40px,8vw,57px)!important}
+  .lux-code-grid{gap:8px}
+  .lux-code-card{padding:13px}
+  .lux-code-card h3{font-size:21px!important}
+  .lux-training-section{grid-template-columns:1fr;width:calc(100% - 36px);gap:22px;padding:55px 0}
+  .lux-training-image{height:clamp(285px,62vw,420px);min-height:285px}
+  .lux-training-copy h2{max-width:650px}
+  .lux-coaching-enquiry{grid-template-columns:1fr;gap:22px;padding:42px 18px}
+  .lux-form-intro h2{max-width:570px}
+  .lux-form-intro>p:not(.lux-eyebrow){margin-bottom:15px}
+  .lux-form-feature{padding:11px 0}
+  .lux-process-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .lux-process-step{min-height:165px;padding:14px}
+  .lux-process-step h3{font-size:22px!important}
+  .lux-final-contact{width:calc(100% - 36px);padding:42px 0 52px}
+  .marketing-page-hero-photo{width:calc(100% - 36px);height:clamp(260px,58vw,410px);margin-top:23px;border-radius:12px}
+}
+@media(max-width:440px){
+  .lux-editorial-hero-head,.lux-hero-carousel-controls{width:calc(100% - 28px)}
+  .lux-racing-title{font-size:clamp(53px,13vw,66px)!important}
+  .lux-editorial-headline-side>p{font-size:11px;line-height:1.8}
+  .lux-hero-carousel-controls{flex-direction:column}
+  .lux-carousel-tabs{display:grid;grid-template-columns:1fr;gap:5px;width:100%}
+  .lux-carousel-tabs button{justify-content:flex-start;padding:10px 12px;min-height:36px}
+  .lux-carousel-tabs button>span{display:inline}
+  .lux-carousel-status{display:none}
+  .lux-hero-fullbleed{height:350px}
+  .lux-service-section,.lux-process-section,.lux-training-section,.lux-final-contact{width:calc(100% - 28px)}
+  .lux-service-grid{grid-template-columns:1fr!important}
+  .lux-service-img-link{height:230px}
+  .lux-service-card-body{padding:17px}
+  .lux-service-card-body h3{font-size:29px!important}
+  .lux-service-card-body li{font-size:10px}
+  .lux-code-grid{grid-template-columns:1fr}
+  .lux-code-card p{font-size:10px}
+  .lux-form-grid{grid-template-columns:1fr}
+  .lux-form-field-full{grid-column:auto}
+  .lux-enquiry-form{padding:17px}
+  .lux-form-header h3{font-size:26px!important}
+  .lux-process-grid{grid-template-columns:1fr}
+  .lux-process-step{min-height:0}
+  .lux-final-contact-actions{width:100%;display:grid;grid-template-columns:1fr}
+  .lux-final-contact-actions .lux-button{width:100%}
+}
+@media(prefers-reduced-motion:reduce){
+  .lux-editorial-headline,.lux-editorial-headline-side,.lux-hero-fullbleed,.lux-hero-fullbleed>img{animation:none!important}
+  .lux-service-card,.lux-service-img-link img,.lux-code-card,.lux-process-step{transition:none!important}
+}
