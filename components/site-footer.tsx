@@ -1,48 +1,44 @@
 import Link from "next/link";
-import { ArrowUpRight, ArrowRight, ShieldCheck } from "lucide-react";
+import { ArrowRight, ShieldCheck, CarFront, FileText, Instagram, Mail, Phone, ArrowUpRight } from "lucide-react";
 
 export function SiteFooter() {
   return (
-    <footer className="site-footer-v2">
-      <div className="site-footer-inner">
-        <div className="site-footer-brand-block">
-          <Link href="/" className="site-brand-v2 footer-brand-v2">
-            <span className="site-brand-mark">OM<span>.</span></span>
-            <span className="site-brand-copy"><b>OM CAR INSPECTION</b><small>INSPECT · LEARN · BUILD</small></span>
+    <footer className="site-footer-v2 luxury-footer">
+      <div className="lux-footer-main">
+        <div className="lux-footer-brand">
+          <Link href="/" className="lux-footer-logo" aria-label="Omkar Car Inspection home">
+            <span className="lux-footer-car">⌒</span><b>OMKAR</b><small>CAR INSPECTION</small>
           </Link>
-          <p>Structured vehicle condition reviews and practical learning, built around clear observations and evidence-led reporting.</p>
-          <Link className="footer-dashboard-link" href="/dashboard"><ShieldCheck size={15} /> Open the inspection software <ArrowUpRight size={14} /></Link>
+          <p>Professional vehicle inspection, structured valuation and evidence-led reporting for clearer decisions.</p>
+          <Link className="lux-footer-admin" href="/dashboard"><ShieldCheck size={15} /> Open admin software <ArrowUpRight size={13} /></Link>
         </div>
-        <div className="site-footer-col">
+        <div className="lux-footer-col">
           <h3>INSPECTION SERVICES</h3>
-          <Link href="/services/used-car-inspection">Used-car inspection</Link>
-          <Link href="/services/new-car-pdi">New-car PDI</Link>
-          <Link href="/services/used-car-pdi">Used-vehicle PDI</Link>
-          <Link href="/services/vehicle-diagnostics">Vehicle diagnostics</Link>
-          <Link href="/services/inspection-report">Inspection reports</Link>
-          <Link href="/services">All services <ArrowRight size={13} /></Link>
+          <Link href="/services/new-car-pdi">New Vehicle PDI</Link>
+          <Link href="/services/used-car-inspection">Old Vehicle PDA</Link>
+          <Link href="/#valuation">Vehicle valuation</Link>
+          <Link href="/services/inspection-report">Reports & documentation</Link>
+          <Link href="/services">Explore all services <ArrowRight size={13} /></Link>
         </div>
-        <div className="site-footer-col">
-          <h3>LEARN & EXPLORE</h3>
-          <Link href="/masterclass">Six-day masterclass</Link>
+        <div className="lux-footer-col">
+          <h3>RESOURCES</h3>
           <Link href="/guides">Inspection guides</Link>
-          <Link href="/guides/used-car-inspection-checklist">Used-car checklist</Link>
-          <Link href="/guides/new-car-pdi-checklist">New-car PDI checklist</Link>
-          <Link href="/about">About</Link>
-          <Link href="/faq">FAQs</Link>
+          <Link href="/faq">Frequently asked questions</Link>
+          <Link href="/about">About Omkar</Link>
+          <Link href="/contact">Contact & bookings</Link>
+          <Link href="/privacy">Privacy information</Link>
         </div>
-        <div className="site-footer-col">
-          <h3>GET IN TOUCH</h3>
-          <p>Share your vehicle details or learning goals. Timing, scope and fees are confirmed before a booking is final.</p>
-          <Link className="footer-contact-link" href="/contact">Contact and bookings <ArrowRight size={14} /></Link>
-          <Link href="/book-masterclass">Request a masterclass slot</Link>
-          <Link href="/book-inspection">Request an inspection</Link>
+        <div className="lux-footer-col lux-footer-contact">
+          <h3>READY TO BEGIN?</h3>
+          <p>Choose a service or ask the team about scope, timing and available booking options.</p>
+          <Link className="lux-footer-contact-cta" href="/book-inspection">Request an inspection <ArrowRight size={14} /></Link>
+          <Link href="/dashboard">Admin sign-in <ShieldCheck size={13} /></Link>
         </div>
       </div>
-      <div className="site-footer-bottom">
-        <span>© {new Date().getFullYear()} OM Car Inspection</span>
-        <span>Evidence first. Clearer decisions.</span>
-        <Link href="/privacy">Privacy information <ArrowUpRight size={12} /></Link>
+      <div className="lux-footer-bottom">
+        <span>© {new Date().getFullYear()} Omkar Car Inspection</span>
+        <span>Inspect clearly. Decide confidently.</span>
+        <Link href="/privacy">Privacy & terms <ArrowUpRight size={12} /></Link>
       </div>
     </footer>
   );
