@@ -2046,3 +2046,63 @@ html{scroll-behavior:smooth}
   top:auto!important;
   bottom:calc(100% + 7px)!important;
 }
+
+
+
+/* Full-bleed, page-specific hero photography with about 20% viewport breathing room. */
+.lux-car-image-hero.lux-synchronized-hero .lux-sync-frame{
+  width:100vw!important;max-width:none!important;margin:0!important;
+  height:min(80vh,800px)!important;min-height:520px!important;max-height:800px!important;
+  aspect-ratio:auto!important;border-radius:0!important;border:0!important;
+}
+.lux-car-image-hero.lux-synchronized-hero .lux-sync-frame>.lux-sync-image{
+  object-fit:cover!important;object-position:center 53%!important;
+}
+.marketing-site:not(.luxury-home) .marketing-page-hero-photo,
+.marketing-site:not(.luxury-home) .marketing-index-hero-photo{
+  position:relative!important;
+  width:100vw!important;max-width:none!important;
+  height:min(80vh,800px)!important;min-height:500px!important;max-height:800px!important;
+  aspect-ratio:auto!important;
+  margin:clamp(18px,2.4vw,32px) calc(50% - 50vw) 0!important;
+  overflow:hidden!important;border:0!important;border-radius:0!important;
+  clip-path:none!important;transform:none!important;
+  background:#ecebe7!important;isolation:isolate;
+}
+.marketing-site:not(.luxury-home) .marketing-page-hero-photo>img,
+.marketing-site:not(.luxury-home) .marketing-index-hero-photo>img{
+  display:block!important;width:100%!important;height:100%!important;max-width:none!important;
+  object-fit:cover!important;object-position:center 52%!important;
+}
+.marketing-site:not(.luxury-home) .marketing-masterclass-banner{
+  background:#101318!important;
+}
+.marketing-site:not(.luxury-home) .marketing-masterclass-banner>img{
+  object-position:center 50%!important;
+}
+@media(max-width:900px){
+  .lux-car-image-hero.lux-synchronized-hero .lux-sync-frame{
+    height:70vh!important;min-height:440px!important;max-height:660px!important;
+  }
+  .marketing-site:not(.luxury-home) .marketing-page-hero-photo,
+  .marketing-site:not(.luxury-home) .marketing-index-hero-photo{
+    height:68vh!important;min-height:420px!important;max-height:650px!important;
+  }
+}
+@media(max-width:620px){
+  .lux-car-image-hero.lux-synchronized-hero .lux-sync-frame{
+    height:62vh!important;min-height:360px!important;max-height:540px!important;aspect-ratio:auto!important;
+  }
+  .lux-car-image-hero.lux-synchronized-hero .lux-sync-frame>.lux-sync-image{
+    object-position:center 53%!important;
+  }
+  .marketing-site:not(.luxury-home) .marketing-page-hero-photo,
+  .marketing-site:not(.luxury-home) .marketing-index-hero-photo{
+    height:58vh!important;min-height:320px!important;max-height:500px!important;
+    margin-top:18px!important;
+  }
+  .marketing-site:not(.luxury-home) .marketing-page-hero-photo>img,
+  .marketing-site:not(.luxury-home) .marketing-index-hero-photo>img{
+    object-position:center 50%!important;
+  }
+}
