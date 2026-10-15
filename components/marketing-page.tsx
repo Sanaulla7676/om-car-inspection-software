@@ -79,7 +79,7 @@ export function MarketingPage({ content }: { content: MarketingPageContent }) {
                 <p className="marketing-hero-intro">{content.intro}</p>
                 <div className="marketing-hero-actions">
                   <Link href={(content.primaryHref || (isGuide ? "/services/used-car-inspection" : "/book-inspection")) as any} className="site-button-v2 button-bright">{content.primaryLabel || (isGuide ? "Explore inspection services" : "Request an inspection")} <ArrowRight size={15} /></Link>
-                  <Link href="/dashboard" className="site-button-v2 button-glass"><ShieldCheck size={15} /> Inspection software</Link>
+                  <Link href="/login" className="site-button-v2 button-glass"><ShieldCheck size={15} /> Team sign in</Link>
                 </div>
               </div>
               <aside className="marketing-hero-meta" data-reveal data-gsap-reveal>
