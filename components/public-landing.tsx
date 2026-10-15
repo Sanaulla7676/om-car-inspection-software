@@ -154,8 +154,21 @@ export default function PublicLanding() {
       <SiteNavigation />
       <main>
         <section className="lux-car-image-hero" aria-label="Vehicle inspection hero">
-          <div className="lux-reference-opening-banner" data-gsap-image>
+          <div className="lux-reference-opening-banner lux-car-hero-frame">
             <img src={REFERENCE_HERO_IMAGE} alt="Glossy black SUV in a bright professional vehicle inspection workshop" fetchPriority="high" />
+            <div className="lux-car-hero-copy">
+              <p className="lux-car-hero-eyebrow"><span /> PROFESSIONAL CAR INSPECTION</p>
+              <h1 className="lux-car-hero-title" aria-label="Know your car before you buy">
+                <span className="lux-car-hero-title-line lux-car-title-line-one">KNOW YOUR CAR</span>
+                <span className="lux-car-hero-title-line lux-car-title-line-two">BEFORE YOU <em>BUY.</em></span>
+              </h1>
+              <p className="lux-car-hero-description">New &amp; pre-owned vehicle inspections, accurate valuation, and practical <strong>6-day PDI coaching.</strong></p>
+              <div className="lux-car-hero-actions">
+                <a href="#vehicle-inquiry" className="lux-car-hero-primary">Book an Inspection <ArrowRight size={16} /></a>
+                <a href="#six-day-masterclass" className="lux-car-hero-secondary">Explore 6-Day Masterclass</a>
+              </div>
+              <p className="lux-car-hero-proof">NEW VEHICLE PDI <span /> PRE-OWNED PDA <span /> HANDS-ON COACHING</p>
+            </div>
           </div>
         </section>
 
