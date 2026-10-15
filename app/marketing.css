@@ -1454,3 +1454,99 @@ html{scroll-behavior:smooth}
     display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important
   }
 }
+
+
+
+/* Opening frame supplied by the user: show the complete banner at natural ratio,
+   edge-to-edge, with no text duplicate layered on top. */
+.lux-editorial-hero.is-reference-opening{
+  padding:0!important;margin:0!important;background:#fff!important;overflow:hidden!important;
+}
+.lux-reference-opening-banner{
+  display:block;position:relative;width:100%;max-width:none;margin:0;padding:0;
+  overflow:hidden;background:#f5f4ef;aspect-ratio:1090 / 315;
+  animation:luxReferenceHeroIn .68s cubic-bezier(.2,.75,.18,1) both;
+}
+.lux-reference-opening-banner img{
+  display:block;width:100%;height:100%;object-fit:cover;object-position:center center;
+  filter:contrast(1.025) saturate(1.035);image-rendering:auto;
+}
+@keyframes luxReferenceHeroIn{from{opacity:.65;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.lux-editorial-hero.is-reference-opening+.lux-model-lineup{padding-top:25px!important}
+.lux-model-lineup{padding-top:clamp(24px,3vw,36px)!important}
+.lux-live-hero{animation:luxLiveHeroEnter .62s cubic-bezier(.2,.75,.18,1) both}
+@keyframes luxLiveHeroEnter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Make the next image reach its full edge-to-edge size after a small scroll
+   rather than requiring a long scroll through a tall spacer. */
+.lux-scroll-expand-story{height:108svh!important}
+.lux-scroll-expand-sticky{
+  top:82px!important;height:calc(100svh - 82px)!important;
+  min-height:490px!important;max-height:none!important;
+}
+.lux-scroll-expand-sticky .lux-hero-fullbleed{
+  height:100%!important;min-height:0!important;width:100%!important;
+  border-radius:0!important;
+}
+.lux-scroll-expand-sticky .lux-scroll-expanded-copy{max-width:min(720px,calc(100% - 32px))}
+.lux-scroll-expand-sticky .lux-scroll-expanded-copy h2{font-size:clamp(42px,5.4vw,82px)!important}
+.lux-scroll-expand-sticky .lux-hero-fullbleed>img.lux-hero-active-image{object-position:center 52%!important}
+.lux-model-lineup{padding-bottom:clamp(28px,3.6vw,48px)!important}
+
+/* Six-day course: show the curriculum as a real, scannable learning path. */
+.lux-six-day-masterclass{
+  display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);
+  gap:clamp(26px,5.5vw,78px);align-items:center;
+  padding:clamp(42px,6vw,78px) max(36px,calc((100% - 1320px)/2));
+  background:linear-gradient(110deg,#faf8f2,#fff 72%);
+  border-top:1px solid #efebe2;border-bottom:1px solid #efebe2;
+}
+.lux-six-day-visual{
+  position:relative;min-width:0;height:clamp(330px,39vw,490px);overflow:hidden;
+  border-radius:15px;background:#eeece6;
+}
+.lux-six-day-visual>img{display:block;width:100%;height:100%;object-fit:cover;object-position:center center}
+.lux-six-day-visual-badge{
+  position:absolute;left:16px;bottom:16px;display:flex;align-items:center;gap:12px;
+  padding:13px 16px;border:1px solid rgba(255,255,255,.88);border-radius:14px;
+  background:rgba(255,255,255,.94);box-shadow:0 10px 28px rgba(22,28,33,.10);backdrop-filter:blur(14px);
+}
+.lux-six-day-visual-badge>span{font:800 45px/.8 "Barlow Condensed","Arial Narrow",sans-serif;color:#b78330}
+.lux-six-day-visual-badge b,.lux-six-day-visual-badge small{display:block}
+.lux-six-day-visual-badge b{font:800 11px/1.2 "DM Sans",Arial,sans-serif;letter-spacing:.12em;color:#202529}
+.lux-six-day-visual-badge small{margin-top:5px;font:700 8px/1.2 "DM Sans",Arial,sans-serif;letter-spacing:.1em;color:#7d7361}
+.lux-six-day-copy{min-width:0}
+.lux-six-day-copy h2{max-width:640px;margin:0;color:#171b1f;font:800 clamp(43px,5.2vw,70px)/.88 "Barlow Condensed","Arial Narrow",sans-serif!important;letter-spacing:-.026em!important;text-transform:uppercase}
+.lux-six-day-copy h2 em{font-style:normal;color:#b78330}
+.lux-six-day-intro{max-width:620px;margin:15px 0 21px;color:#505a60;font:500 13px/1.8 "DM Sans",Arial,sans-serif}
+.lux-six-day-timeline{display:grid;gap:0;border-top:1px solid #e6e0d4}
+.lux-six-day-timeline article{display:grid;grid-template-columns:63px minmax(0,1fr);gap:12px;padding:13px 0;border-bottom:1px solid #e6e0d4}
+.lux-six-day-timeline article>span{display:flex;align-items:center;justify-content:center;align-self:start;min-height:29px;padding:5px 7px;border:1px solid #e6d4af;border-radius:999px;background:#fff6e4;color:#8b6427;font:800 11px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.05em}
+.lux-six-day-timeline b,.lux-six-day-timeline small{display:block}
+.lux-six-day-timeline b{color:#22282d;font:750 12px/1.35 "DM Sans",Arial,sans-serif}
+.lux-six-day-timeline small{margin-top:4px;color:#616a70;font:500 11px/1.6 "DM Sans",Arial,sans-serif}
+.lux-six-day-actions{display:flex;align-items:center;gap:15px;flex-wrap:wrap;margin-top:21px}
+.lux-six-day-actions .lux-button{min-height:43px;font-size:10px}
+.lux-six-day-actions .lux-text-link{margin:0}
+.lux-six-day-note{margin:13px 0 0;color:#6d7478;font:500 10px/1.65 "DM Sans",Arial,sans-serif}
+@media(max-width:900px){
+  .lux-six-day-masterclass{grid-template-columns:1fr;gap:24px;padding-left:24px;padding-right:24px}
+  .lux-six-day-visual{height:clamp(260px,50vw,390px)}
+}
+@media(max-width:760px){
+  .lux-scroll-expand-story{height:112svh!important}
+  .lux-scroll-expand-sticky{top:71px!important;height:calc(100svh - 71px)!important;min-height:320px!important}
+  .lux-reference-opening-banner{aspect-ratio:1090 / 315}
+  .lux-reference-opening-banner img{object-fit:contain}
+  .lux-six-day-masterclass{padding:40px 18px}
+  .lux-six-day-visual{height:clamp(245px,67vw,350px)}
+  .lux-six-day-copy h2{font-size:clamp(42px,9.5vw,58px)!important}
+  .lux-six-day-intro{font-size:12px}
+  .lux-six-day-timeline article{grid-template-columns:55px minmax(0,1fr);gap:10px;padding:12px 0}
+  .lux-six-day-timeline b{font-size:11px}
+  .lux-six-day-timeline small{font-size:10px}
+  .lux-six-day-actions{align-items:flex-start;flex-direction:column;gap:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  .lux-reference-opening-banner,.lux-live-hero{animation:none!important}
+}
