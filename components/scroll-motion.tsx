@@ -82,12 +82,21 @@ export function ScrollMotion() {
       );
     });
 
-    // Detail pages get the same scroll-linked edge-to-edge photo reveal.
+    // Full-width page hero images reveal through the image itself. Keep the
+    // outer frame edge-to-edge; do not clip its edges during the scroll effect.
     gsap.utils.toArray<HTMLElement>("[data-gsap-page-expand]").forEach((element) => {
-      gsap.fromTo(element,
-        { clipPath: "inset(8% 7% 8% 7% round 15px)", scale: 1.015 },
+      const image = element.querySelector<HTMLElement>("img");
+      const target = element.classList.contains("marketing-page-hero-photo") || element.classList.contains("marketing-index-hero-photo")
+        ? image
+        : element;
+      if (!target) return;
+      gsap.fromTo(target,
+        target === image
+          ? { scale: 1.07, autoAlpha: 0.78, transformOrigin: "center center" }
+          : { clipPath: "inset(8% 7% 8% 7% round 15px)", scale: 1.015 },
         {
-          clipPath: "inset(0% 0% 0% 0% round 0px)", scale: 1, ease: "none",
+          ...(target === image ? { scale: 1, autoAlpha: 1 } : { clipPath: "inset(0% 0% 0% 0% round 0px)", scale: 1 }),
+          ease: "none",
           scrollTrigger: {
             trigger: element,
             start: "top 90%",
