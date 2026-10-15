@@ -13,8 +13,8 @@ const heroSlides = [
     title: "INSPECT BEFORE",
     accent: "HANDOVER.",
     description: "A structured new-car handover check for visible paint and panel condition, cabin finish, accessible functions and delivery documents.",
-    image: "https://htcms-prod-images.s3.ap-south-1.amazonaws.com/htmobile1/hyundai_new-verna/images/colours_hyundai-verna_titan-grey_1920x1033.jpg",
-    alt: "Hyundai Verna in Titan Grey for new vehicle pre-delivery inspection",
+    image: "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/fad6e2f9-5ecd-460d-a37b-53ce7f3b6bfb.png",
+    alt: "Glossy black Toyota Fortuner SUV in a bright professional vehicle inspection workshop",
     cta: "Explore New Vehicle PDI",
     href: "/services/new-car-pdi"
   },
