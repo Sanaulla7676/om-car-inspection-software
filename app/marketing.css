@@ -1536,7 +1536,7 @@ html{scroll-behavior:smooth}
 @media(max-width:760px){
   .lux-scroll-expand-story{height:101svh!important}
   .lux-scroll-expand-sticky{top:71px!important;height:calc(100svh - 71px)!important;min-height:320px!important}
-  .lux-reference-opening-banner{aspect-ratio:1090 / 315}
+  .lux-reference-opening-banner{aspect-ratio:1092 / 340}
   .lux-reference-opening-banner img{object-fit:contain}
   .lux-six-day-masterclass{padding:40px 18px}
   .lux-six-day-visual{height:clamp(245px,67vw,350px)}
