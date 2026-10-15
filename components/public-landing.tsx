@@ -221,6 +221,7 @@ export default function PublicLanding() {
             <span><ShieldCheck size={15} /> Evidence-led reporting</span>
             <span><GraduationCap size={16} /> Practical PDI coaching</span>
           </div>
+          </div>
           )}
         </section>
 
