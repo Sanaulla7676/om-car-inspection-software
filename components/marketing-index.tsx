@@ -24,8 +24,8 @@ export function MarketingIndexPage({ kind, pages }: { kind: "service" | "guide";
           <div className="marketing-page-hero-photo marketing-index-hero-photo" data-gsap-page-expand>
             <img
               src={isGuide
-                ? "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/9ded0ab3-2c6c-4815-b563-d0a46c973a66.png"
-                : "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/af834010-4b06-4bb8-9ed5-9f42b14c3220.png"}
+                ? "https://img.indianautosblog.com/2021/01/23/2020-mahindra-thar-review-680b.jpg"
+                : "https://htcms-prod-images.s3.ap-south-1.amazonaws.com/htmobile1/hyundai_new-verna/images/colours_hyundai-verna_titan-grey_1920x1033.jpg"}
               alt={isGuide ? "Vehicle inspection coaching in a workshop" : "Luxury SUV in a bright showroom"}
               fetchPriority="high"
             />
