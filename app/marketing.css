@@ -1399,3 +1399,31 @@ html{scroll-behavior:smooth}
 @media(prefers-reduced-motion:reduce){
   .lux-scroll-expand-sticky .lux-hero-fullbleed>img.lux-hero-previous-image{display:none!important}
 }
+
+
+
+/* Tighten the intro to match the reference pacing: title first, image close behind. */
+.luxury-home .lux-editorial-hero{padding-top:clamp(12px,1.5vw,20px)!important}
+.luxury-home .lux-editorial-hero-head{padding-bottom:15px!important;gap:clamp(22px,4vw,60px)!important}
+.luxury-home .lux-race-eyebrow{margin-bottom:16px!important}
+.luxury-home .lux-slide-kicker{margin-bottom:6px!important;font-size:10px!important}
+.luxury-home .lux-racing-title{font-size:clamp(50px,5.8vw,84px)!important;line-height:.87!important;letter-spacing:-.03em!important}
+.luxury-home .lux-racing-title .lux-racing-accent{margin-top:5px!important;font-size:.78em!important;line-height:.92!important;letter-spacing:-.025em!important}
+.luxury-home .lux-editorial-headline-side>p{font-size:12px!important;line-height:1.75!important;margin-bottom:12px!important}
+.luxury-home .lux-editorial-headline-side .lux-button{min-height:41px!important}
+.luxury-home .lux-hero-carousel-controls{margin-bottom:-14px!important;position:relative;z-index:5}
+.luxury-home .lux-carousel-tabs button{background:rgba(255,255,255,.96)!important;box-shadow:0 4px 12px rgba(24,31,35,.055)!important}
+.lux-scroll-expand-sticky .lux-hero-fullbleed{background:#f7f6f2!important}
+.lux-scroll-expand-sticky .lux-hero-fullbleed>img.lux-hero-active-image{object-fit:cover!important;object-position:center 51%!important}
+@media(max-width:760px){
+  .luxury-home .lux-editorial-hero{padding-top:18px!important}
+  .luxury-home .lux-editorial-hero-head{gap:11px!important;padding-bottom:12px!important}
+  .luxury-home .lux-race-eyebrow{margin-bottom:15px!important}
+  .luxury-home .lux-racing-title{font-size:clamp(43px,8.5vw,66px)!important;line-height:.88!important}
+  .luxury-home .lux-racing-title .lux-racing-accent{font-size:.78em!important}
+  .luxury-home .lux-hero-carousel-controls{margin-bottom:-8px!important}
+}
+@media(max-width:440px){
+  .luxury-home .lux-racing-title{font-size:clamp(39px,10vw,49px)!important}
+  .luxury-home .lux-editorial-headline-side>p{font-size:12px!important}
+}
