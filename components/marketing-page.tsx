@@ -97,7 +97,7 @@ export function MarketingPage({ content }: { content: MarketingPageContent }) {
 
         {isMasterclass && <section className="marketing-main-section" aria-labelledby="masterclass-schedule-heading">
           <div className="site-container-v2">
-            <div className="marketing-section-heading" data-reveal data-gsap-reveal><h2 id="masterclass-schedule-heading">The six-day learning path</h2><p>Confirm actual batch dates, fees, venue, equipment and delivery details before enrolling.</p></div>
+            <div className="marketing-section-heading" data-gsap-reveal><h2 id="masterclass-schedule-heading">The six-day learning path</h2><p>Confirm actual batch dates, fees, venue, equipment and delivery details before enrolling.</p></div>
             <div className="masterclass-schedule-grid">
               {trainingDays.map((day, index) => <article key={day[0]} className="masterclass-schedule-card site-spotlight" data-reveal data-reveal-delay={index * 55}><span>{day[0]}</span><div><h3>{day[1]}</h3><p>{day[2]}</p></div></article>)}
             </div>
@@ -106,14 +106,14 @@ export function MarketingPage({ content }: { content: MarketingPageContent }) {
 
         <section className="marketing-main-section" aria-labelledby="overview-heading">
           <div className="site-container-v2 marketing-two-col">
-            <article className="marketing-copy" data-reveal data-gsap-reveal>
+            <article className="marketing-copy" data-gsap-reveal>
               <p className="eyebrow"><span className="eyebrow-live-dot" /> {isGuide ? "UNDERSTAND THE DETAILS" : "PURPOSE AND SCOPE"}</p>
               <h2 id="overview-heading">{isGuide ? "What to look for and what it means" : "What this inspection covers"}</h2>
               <p>{content.overview}</p>
               <p>{isGuide ? "When evidence is incomplete, record the question that remains rather than treating an untested item as clear. Seek a qualified or authorised specialist for safety-critical, legal or technical matters beyond the agreed scope." : "The most useful inspection record distinguishes what was directly observed from what is suspected, and highlights items that need confirmation. Availability, price and specific deliverables are confirmed before the booking is final."}</p>
               <Link href={(isGuide ? (content.primaryHref || "/services") : "/book-inspection") as any} className="text-link-v2">{isGuide ? "Explore the relevant service" : "Discuss this service"} <ArrowRight size={14} /></Link>
             </article>
-            <aside className="marketing-check-panel site-spotlight" data-gsap-reveal data-gsap-reveal>
+            <aside className="marketing-check-panel site-spotlight" data-gsap-reveal>
               <h3>{isGuide ? "Checklist to keep in mind" : "What a structured review may cover"}</h3>
               <ul className="marketing-check-list">
                 {content.checks.map((check, index) => <li key={check}><span>{String(index + 1).padStart(2, "0")}</span><div>{check}</div></li>)}
