@@ -1429,3 +1429,15 @@ html{scroll-behavior:smooth}
   .luxury-home .lux-racing-title{font-size:clamp(39px,10vw,49px)!important}
   .luxury-home .lux-editorial-headline-side>p{font-size:12px!important}
 }
+
+
+
+/* Sticky nav fix: overflow:hidden on the page root was trapping sticky headers
+   inside a non-scrolling ancestor on service, guide and booking pages. */
+.marketing-site:not(.luxury-home),.booking-page{
+  overflow:clip!important;
+}
+.marketing-site:not(.luxury-home)>.site-header-v2.luxury-header,
+.booking-page>.site-header-v2.luxury-header{
+  position:sticky!important;top:8px!important;z-index:1400!important;
+}
