@@ -23,17 +23,60 @@ export function MarketingPage({ content }: { content: MarketingPageContent }) {
   const nearby = isGuide
     ? guidePages.filter((page) => page.slug !== content.slug).slice(0, 3)
     : servicePages.filter((page) => page.slug !== content.slug).slice(0, 3);
-  const heroImage = content.slug === "new-car-pdi"
-    ? "https://htcms-prod-images.s3.ap-south-1.amazonaws.com/htmobile1/hyundai_new-verna/images/colours_hyundai-verna_titan-grey_1920x1033.jpg"
-    : content.slug === "masterclass"
-      ? "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/2f1faea6-1140-4625-9abe-5ef915fdea93.png"
-      : (content.slug.includes("used-car") || content.slug.includes("pre-owned"))
-        ? "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/40087/thar-exterior-right-front-three-quarter-37.jpeg?isig=0&q=80"
-        : "https://cdn-s3.autocarindia.com/Mahindra/xuv700/_KMC0974.JPG";
-  const heroImageLabel = content.slug === "new-car-pdi" ? "NEW VEHICLE PDI"
-    : content.slug === "masterclass" ? "PDI COACHING & TRAINING"
-    : (content.slug.includes("used-car") || content.slug.includes("pre-owned")) ? "PRE-OWNED INSPECTION"
-    : isGuide ? "VEHICLE INSPECTION GUIDE" : "VEHICLE INSPECTION";
+const PAGE_HERO_IMAGES: Record<string, { image: string; label: string; alt: string }> = {
+  "used-car-inspection": { image: "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/40087/thar-exterior-right-front-three-quarter-37.jpeg?isig=0&q=80", label: "PRE-OWNED VEHICLE INSPECTION", alt: "Mahindra Thar displayed for used-vehicle inspection" },
+  "new-car-pdi": { image: "https://htcms-prod-images.s3.ap-south-1.amazonaws.com/htmobile1/hyundai_new-verna/images/colours_hyundai-verna_titan-grey_1920x1033.jpg", label: "NEW VEHICLE PDI", alt: "Hyundai Verna in a bright vehicle showroom" },
+  "used-car-pdi": { image: "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/40087/thar-exterior-right-front-three-quarter-37.jpeg?isig=0&q=80", label: "PRE-OWNED VEHICLE PDI", alt: "Mahindra Thar for pre-owned PDI" },
+  "pre-purchase-inspection": { image: "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/178525/glc-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80", label: "PRE-PURCHASE INSPECTION", alt: "Mercedes-Benz GLC in a clean vehicle bay" },
+  "vehicle-diagnostics": { image: "https://cdn-s3.autocarindia.com/Mahindra/xuv700/_KMC0974.JPG", label: "VEHICLE DIAGNOSTICS", alt: "Mahindra XUV700 in an automotive inspection setting" },
+  "inspection-report": { image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1400&q=90", label: "INSPECTION REPORTS", alt: "Vehicle inspection report and documentation" },
+  "vehicle-condition-assessment": { image: "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/178525/glc-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80", label: "VEHICLE CONDITION ASSESSMENT", alt: "Vehicle condition assessment example vehicle" },
+  "fleet-vehicle-inspection": { image: "https://cdn-s3.autocarindia.com/Mahindra/xuv700/_KMC0974.JPG", label: "FLEET VEHICLE INSPECTION", alt: "Mahindra XUV700 representing fleet inspection" },
+  "dealer-inspection-support": { image: "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/936fcbb7-1c2c-420f-ab93-c8a897dfb549.png", label: "DEALER INSPECTION SUPPORT", alt: "Toyota Fortuner in a professional inspection workshop" },
+  "independent-car-inspection": { image: "https://htcms-prod-images.s3.ap-south-1.amazonaws.com/htmobile1/hyundai_new-verna/images/colours_hyundai-verna_titan-grey_1920x1033.jpg", label: "INDEPENDENT CAR INSPECTION", alt: "Hyundai Verna for independent vehicle inspection" },
+  "used-car-inspection-checklist": { image: "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/40087/thar-exterior-right-front-three-quarter-37.jpeg?isig=0&q=80", label: "USED-CAR INSPECTION CHECKLIST", alt: "Mahindra Thar for used-car checklist" },
+  "new-car-pdi-checklist": { image: "https://htcms-prod-images.s3.ap-south-1.amazonaws.com/htmobile1/hyundai_new-verna/images/colours_hyundai-verna_titan-grey_1920x1033.jpg", label: "NEW-CAR PDI CHECKLIST", alt: "Hyundai Verna for new-car delivery checks" },
+  "tyre-and-wheel-checks": { image: "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/178525/glc-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80", label: "TYRE & WHEEL CHECKS", alt: "Mercedes-Benz GLC with visible wheels and tyres" },
+  "paint-and-bodywork-checks": { image: "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/936fcbb7-1c2c-420f-ab93-c8a897dfb549.png", label: "PAINT & BODYWORK CHECKS", alt: "Toyota Fortuner reflecting body-panel condition" },
+  "engine-bay-inspection-guide": { image: "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/18971d42-3c84-4532-b232-c7a29e9ac3dd.png", label: "ENGINE-BAY INSPECTION", alt: "Vehicle under inspection in a workshop" },
+  "underbody-inspection-checks": { image: "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/40087/thar-exterior-right-front-three-quarter-37.jpeg?isig=0&q=80", label: "UNDERBODY INSPECTION", alt: "Mahindra Thar for underbody inspection context" },
+  "road-test-observations": { image: "https://cdn-s3.autocarindia.com/Mahindra/xuv700/_KMC0974.JPG", label: "ROAD-TEST OBSERVATIONS", alt: "Mahindra XUV700 representing vehicle assessment" },
+  "documents-and-vehicle-identity": { image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1400&q=90", label: "DOCUMENTS & VEHICLE IDENTITY", alt: "Vehicle inspection documentation and report" },
+  "understanding-obd-codes": { image: "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/18971d42-3c84-4532-b232-c7a29e9ac3dd.png", label: "UNDERSTANDING OBD CODES", alt: "Automotive inspection in a workshop" },
+  "what-goes-in-inspection-report": { image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1400&q=90", label: "WHAT GOES IN A REPORT", alt: "Vehicle inspection report paperwork" },
+  "how-long-does-inspection-take": { image: "https://htcms-prod-images.s3.ap-south-1.amazonaws.com/htmobile1/hyundai_new-verna/images/colours_hyundai-verna_titan-grey_1920x1033.jpg", label: "INSPECTION TIMING", alt: "Hyundai Verna being prepared for inspection" },
+  "inspection-vs-regular-service": { image: "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/178525/glc-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80", label: "INSPECTION VS SERVICE", alt: "Mercedes-Benz GLC in a professional vehicle bay" },
+  "used-car-buying-checklist": { image: "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/40087/thar-exterior-right-front-three-quarter-37.jpeg?isig=0&q=80", label: "USED-CAR BUYING CHECKLIST", alt: "Mahindra Thar before a used-car purchase" },
+  "accident-damage-signs": { image: "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/936fcbb7-1c2c-420f-ab93-c8a897dfb549.png", label: "ACCIDENT-DAMAGE SIGNS", alt: "Toyota Fortuner shown for exterior condition review" },
+  "water-damage-signs": { image: "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/40087/thar-exterior-right-front-three-quarter-37.jpeg?isig=0&q=80", label: "WATER-DAMAGE SIGNS", alt: "Mahindra Thar for condition inspection guidance" },
+  "how-to-review-vehicle-photos": { image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1400&q=90", label: "REVIEWING VEHICLE PHOTOS", alt: "Vehicle inspection photography and reporting" },
+  "vehicle-inspection-scoring-explained": { image: "https://cdn-s3.autocarindia.com/Mahindra/xuv700/_KMC0974.JPG", label: "INSPECTION SCORING", alt: "Mahindra XUV700 for inspection scoring context" },
+  "how-to-prepare-car-for-pdi": { image: "https://htcms-prod-images.s3.ap-south-1.amazonaws.com/htmobile1/hyundai_new-verna/images/colours_hyundai-verna_titan-grey_1920x1033.jpg", label: "PREPARE FOR PDI", alt: "Hyundai Verna in a bright inspection environment" },
+  "inspection-for-first-time-buyers": { image: "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/936fcbb7-1c2c-420f-ab93-c8a897dfb549.png", label: "FIRST-TIME BUYER GUIDE", alt: "Toyota Fortuner before purchase inspection" },
+  "car-inspector-career-guide": { image: "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/18971d42-3c84-4532-b232-c7a29e9ac3dd.png", label: "CAR INSPECTOR CAREER", alt: "Hands-on automotive inspection training" },
+  "pre-delivery-inspection-basics": { image: "https://htcms-prod-images.s3.ap-south-1.amazonaws.com/htmobile1/hyundai_new-verna/images/colours_hyundai-verna_titan-grey_1920x1033.jpg", label: "PRE-DELIVERY INSPECTION BASICS", alt: "Hyundai Verna for pre-delivery inspection basics" },
+  "visual-inspection-limits": { image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1400&q=90", label: "VISUAL INSPECTION LIMITS", alt: "Vehicle inspection report and documentation" },
+  "vehicle-inspection-photo-checklist": { image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1400&q=90", label: "PHOTO EVIDENCE CHECKLIST", alt: "Vehicle inspection photo and report documentation" },
+  "service-history-review": { image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1400&q=90", label: "SERVICE HISTORY REVIEW", alt: "Automotive records and report review" },
+  "brakes-and-suspension-observations": { image: "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/178525/glc-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80", label: "BRAKES & SUSPENSION", alt: "Mercedes-Benz GLC for vehicle-system inspection" },
+  "interior-and-electrical-checks": { image: "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/18971d42-3c84-4532-b232-c7a29e9ac3dd.png", label: "INTERIOR & ELECTRICAL CHECKS", alt: "Automotive inspection in a professional workshop" },
+  "inspection-priority-levels": { image: "https://cdn-s3.autocarindia.com/Mahindra/xuv700/_KMC0974.JPG", label: "INSPECTION PRIORITY LEVELS", alt: "Mahindra XUV700 for inspection evaluation" },
+  "preparing-for-independent-inspection": { image: "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/936fcbb7-1c2c-420f-ab93-c8a897dfb549.png", label: "PREPARE FOR INDEPENDENT INSPECTION", alt: "Toyota Fortuner before inspection" },
+  "vehicle-inspection-for-fleet-managers": { image: "https://cdn-s3.autocarindia.com/Mahindra/xuv700/_KMC0974.JPG", label: "FLEET INSPECTION FOR MANAGERS", alt: "Mahindra XUV700 for fleet inspection" },
+  "masterclass": { image: "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/2f1faea6-1140-4625-9abe-5ef915fdea93.png", label: "PDI COACHING & TRAINING", alt: "Hands-on vehicle PDI masterclass training" },
+  "about": { image: "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/18971d42-3c84-4532-b232-c7a29e9ac3dd.png", label: "ABOUT OMKAR INSPECTION", alt: "Professional automotive inspection workshop" },
+  "contact": { image: "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/936fcbb7-1c2c-420f-ab93-c8a897dfb549.png", label: "CONTACT OMKAR INSPECTION", alt: "Toyota Fortuner in an inspection workshop" },
+  "faq": { image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1400&q=90", label: "VEHICLE INSPECTION FAQ", alt: "Vehicle inspection reporting and documentation" },
+};
+
+const DEFAULT_PAGE_HERO = {
+  image: "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/936fcbb7-1c2c-420f-ab93-c8a897dfb549.png",
+  label: "VEHICLE INSPECTION",
+  alt: "Toyota Fortuner in a professional inspection workshop"
+};
+  const pageHero = PAGE_HERO_IMAGES[content.slug] || DEFAULT_PAGE_HERO;
+  const heroImage = pageHero.image;
+  const heroImageLabel = pageHero.label;
   const breadcrumbs = [
     { label: "Home", href: "/" },
     { label: isGuide ? "Guides" : (content.kind === "static" ? "Explore" : "Services"), href: isGuide ? "/guides" : (content.kind === "static" ? "/" : "/services") },
@@ -90,7 +133,7 @@ export function MarketingPage({ content }: { content: MarketingPageContent }) {
             </div>
           </div>
           <div className={"marketing-page-hero-photo" + (content.slug === "masterclass" ? " marketing-masterclass-banner" : "")} data-gsap-page-expand>
-            <img src={heroImage} alt={heroImageLabel + " visual"} fetchPriority="high" />
+            <img src={heroImage} alt={pageHero.alt} fetchPriority="high" />
             {content.slug !== "masterclass" && <div className="marketing-page-photo-label"><span>{heroImageLabel}</span><b>{content.title}</b></div>}
           </div>
         </section>
