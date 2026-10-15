@@ -135,7 +135,7 @@ export default function PublicLanding() {
                   <p className="lux-service-short">{service.short}</p>
                   <p className="lux-service-text">{service.text}</p>
                   <ul>{service.bullets.map((bullet) => <li key={bullet}><Check size={13} /> {bullet}</li>)}</ul>
-                  <Link href={service.href} className="lux-round-link" aria-label={"Explore " + service.title}><ArrowRight size={18} /></Link>
+                  <Link href={service.href as any} className="lux-round-link" aria-label={"Explore " + service.title}><ArrowRight size={18} /></Link>
                 </div>
                 <div className="lux-service-photo"><img src={service.image} alt="" loading="lazy" /></div>
               </article>
