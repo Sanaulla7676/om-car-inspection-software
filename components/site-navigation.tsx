@@ -10,7 +10,7 @@ const links = [
   { label: "New Vehicle PDI", href: "/services/new-car-pdi" },
   { label: "Pre-Owned PDI", href: "/services/used-car-inspection" },
   { label: "PDI Coaching", href: "/masterclass" },
-  { label: "Valuation", href: "/#valuation" },
+  { label: "Valuation", href: "/#valuation-reports" },
   { label: "Reports", href: "/services/inspection-report" }
 ];
 
@@ -30,7 +30,7 @@ export function SiteNavigation() {
           <span className="capsule-glass-highlight" aria-hidden="true" />
           {links.map((item) => {
             const hashless = item.href.split("#")[0];
-            const active = item.href === "/" ? pathname === "/" : hashless ? pathname === hashless || pathname.startsWith(hashless + "/") : false;
+            const active = item.href === "/" ? pathname === "/" : item.href.includes("#") ? false : pathname === hashless || pathname.startsWith(hashless + "/");
             return (
               <Link
                 href={item.href as any}
