@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowRight, Menu, X, Search, UserRound, PhoneCall, MessageCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const links = [
   { label: "Home", href: "/" },
@@ -17,6 +17,22 @@ const links = [
 export function SiteNavigation() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [enquiryInView, setEnquiryInView] = useState(false);
+
+  useEffect(() => {
+    const targets = Array.from(document.querySelectorAll<HTMLElement>("#vehicle-inquiry, .lux-coaching-enquiry"));
+    if (!targets.length || !("IntersectionObserver" in window)) return;
+    const visibleTargets = new Set<Element>();
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) visibleTargets.add(entry.target);
+        else visibleTargets.delete(entry.target);
+      });
+      setEnquiryInView(visibleTargets.size > 0);
+    }, { threshold: 0.08, rootMargin: "0px 0px -8% 0px" });
+    targets.forEach((target) => observer.observe(target));
+    return () => observer.disconnect();
+  }, [pathname]);
 
   return (
     <>
@@ -55,7 +71,7 @@ export function SiteNavigation() {
         </button>
       </header>
 
-      <div className="lux-floating-contact" aria-label="Contact OMKAR Car Inspection">
+      <div className={"lux-floating-contact" + (enquiryInView ? " is-hidden-for-enquiry" : "")} aria-label="Contact OMKAR Car Inspection">
         <a className="lux-floating-whatsapp" href="https://wa.me/918880339999?text=Hello%20OMKAR%20Car%20Inspection%2C%20I%20would%20like%20to%20enquire%20about%20your%20services." target="_blank" rel="noopener noreferrer" aria-label="Chat with OMKAR on WhatsApp">
           <MessageCircle size={19} strokeWidth={2.4} />
           <span>WhatsApp</span>
