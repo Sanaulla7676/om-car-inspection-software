@@ -986,7 +986,7 @@ html{scroll-behavior:smooth}
 .lux-carousel-status>span:first-child{color:#a97625}
 .lux-carousel-status i{width:44px;height:1px;background:linear-gradient(90deg,#c18d3b 0 38%,#e3e5e5 38%);display:block}
 .lux-hero-fullbleed{position:relative;width:100%;height:clamp(365px,58svh,715px);min-height:360px;overflow:hidden;background:#efeee9;isolation:isolate;animation:luxPhotoStageIn .9s cubic-bezier(.18,.72,.2,1) both}
-.lux-hero-fullbleed>img{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;object-position:center 50%;filter:none!important;opacity:1!important;transform:scale(1.005);animation:luxPhotoResolve 1.05s cubic-bezier(.18,.72,.2,1) both}
+.lux-hero-fullbleed>img:not(.lux-hero-previous-image){position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;object-position:center 50%;filter:none!important;opacity:1!important;transform:scale(1.005);animation:luxPhotoResolve 1.05s cubic-bezier(.18,.72,.2,1) both}
 .lux-hero-fullbleed:after{content:none!important;display:none!important}
 .lux-image-caption{position:absolute;left:clamp(18px,4.5vw,72px);bottom:clamp(18px,3vw,38px);display:flex;align-items:center;gap:11px;max-width:min(420px,calc(100% - 36px));padding:13px 17px;border:1px solid rgba(255,255,255,.9);border-radius:15px;background:rgba(255,255,255,.93);box-shadow:0 9px 25px rgba(18,25,31,.10);backdrop-filter:blur(18px);color:#20262b}
 .lux-image-caption-marker{width:31px;height:31px;display:grid;place-items:center;flex:0 0 31px;border-radius:50%;background:#fff1d2;color:#a8792d}
@@ -1390,10 +1390,12 @@ html{scroll-behavior:smooth}
    stable frame/current image so its animation does not detach when the source swaps. */
 .lux-scroll-expand-sticky .lux-hero-fullbleed>img.lux-hero-active-image{z-index:1!important;opacity:1!important}
 .lux-scroll-expand-sticky .lux-hero-fullbleed>img.lux-hero-previous-image{
-  z-index:2!important;opacity:0!important;transform:scale(1.01);animation:none!important;
-  transition:opacity .68s cubic-bezier(.2,.65,.2,1)!important;pointer-events:none
+  z-index:2!important;opacity:0;transform:scale(1.01);animation:none;transition:none;pointer-events:none
 }
-.lux-scroll-expand-sticky .lux-hero-fullbleed>img.lux-hero-previous-image.is-fading{opacity:1!important}
+.lux-scroll-expand-sticky .lux-hero-fullbleed>img.lux-hero-previous-image.is-fading{
+  animation:luxHeroOldImageFade .68s cubic-bezier(.2,.65,.2,1) both!important
+}
+@keyframes luxHeroOldImageFade{from{opacity:1}to{opacity:0}}
 .lux-scroll-expand-sticky .lux-scroll-expanded-copy{z-index:3}
 .lux-scroll-expand-sticky .lux-hero-image-index{z-index:4}
 @media(prefers-reduced-motion:reduce){
