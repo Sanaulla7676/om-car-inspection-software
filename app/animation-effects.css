@@ -1,0 +1,164 @@
+/* 80 purposeful interaction-triggered effects. Inventory: ANIMATION_EFFECTS_INVENTORY.md */
+@media (prefers-reduced-motion:no-preference) {
+.lux-sync-slide-nav button:nth-child(1):hover{animation:omFx01 350ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx01{0%{transform:translate3d(0,0,0)}42%{transform:translate3d(0,-2.64px,0)}100%{transform:translate3d(0,0,0)}}
+.lux-sync-slide-nav button:nth-child(2):hover{animation:omFx02 420ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx02{0%{transform:translate3d(0,0,0)}40%{transform:translate3d(2.2px,0,0)}100%{transform:translate3d(0,0,0)}}
+.lux-sync-slide-nav button:nth-child(3):hover{animation:omFx03 490ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx03{0%{transform:scale(1)}45%{transform:scale(1.18)}100%{transform:scale(1)}}
+.lux-sync-slide-nav button:focus-visible{animation:omFx04 315ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx04{0%{transform:rotate(0deg)}38%{transform:rotate(1.32deg)}74%{transform:rotate(-0.66deg)}100%{transform:rotate(0deg)}}
+.lux-car-hero-primary:hover{animation:omFx05 385ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx05{0%{filter:brightness(1)}45%{filter:brightness(1.16)}100%{filter:brightness(1)}}
+.lux-car-hero-secondary:hover{animation:omFx06 455ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx06{0%{box-shadow:0 0 0 rgba(193,150,69,0)}45%{box-shadow:0 0 0 7px rgba(193,150,69,.11)}100%{box-shadow:0 0 0 rgba(193,150,69,0)}}
+.lux-car-hero-primary:hover svg{animation:omFx07 280ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx07{0%{transform:translate3d(0,0,0) scale(1)}35%{transform:translate3d(0,-0.99px,0) scale(1.015)}100%{transform:translate3d(0,0,0) scale(1)}}
+.lux-car-hero-secondary:hover svg{animation:omFx08 350ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx08{0%{filter:blur(.7px);opacity:.88}50%{filter:blur(0);opacity:1}100%{filter:blur(0);opacity:1}}
+.lux-sync-counter:hover{animation:omFx09 420ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx09{0%{transform:translate3d(0,0,0)}25%{transform:translate3d(-0.55px,0,0)}65%{transform:translate3d(1.1px,0,0)}100%{transform:translate3d(0,0,0)}}
+.lux-car-hero-proof svg:hover{animation:omFx10 490ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx10{0%{letter-spacing:0}45%{letter-spacing:0.220em}100%{letter-spacing:0}}
+.luxury-brand:hover .lux-brand-logo-img{animation:omFx11 315ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx11{0%{transform:scale(1);opacity:1}30%{transform:scale(.99);opacity:.9}75%{transform:scale(1.015);opacity:1}100%{transform:scale(1)}}
+.luxury-nav-link:nth-of-type(1):hover{animation:omFx12 385ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx12{0%{transform:rotateY(0deg)}45%{transform:rotateY(3.5200000000000005deg)}100%{transform:rotateY(0deg)}}
+.luxury-nav-link:nth-of-type(2):hover{animation:omFx13 455ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx13{0%{transform:translateY(0)}50%{transform:translateY(0.66px)}100%{transform:translateY(0)}}
+.luxury-nav-link:nth-of-type(3):hover{animation:omFx14 280ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx14{0%{transform:scaleX(1);transform-origin:left center}45%{transform:scaleX(1.19);transform-origin:left center}100%{transform:scaleX(1);transform-origin:left center}}
+.luxury-nav-link:nth-of-type(4):hover{animation:omFx15 350ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx15{0%{transform:skewX(0deg)}40%{transform:skewX(1.21deg)}100%{transform:skewX(0deg)}}
+.luxury-nav-link:nth-of-type(5):hover{animation:omFx16 420ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx16{0%{transform:translate3d(0,0,0);filter:drop-shadow(0 0 0 rgba(193,150,69,0))}50%{transform:translate3d(0,-0.99px,0);filter:drop-shadow(0 3px 4px rgba(193,150,69,.18))}100%{transform:translate3d(0,0,0);filter:drop-shadow(0 0 0 rgba(193,150,69,0))}}
+.luxury-nav-link:nth-of-type(6):hover{animation:omFx17 490ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx17{0%{transform:translate3d(0,0,0)}42%{transform:translate3d(0,-1.54px,0)}100%{transform:translate3d(0,0,0)}}
+.lux-header-icon[aria-label="Explore services"]:hover{animation:omFx18 315ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx18{0%{transform:translate3d(0,0,0)}40%{transform:translate3d(1.1px,0,0)}100%{transform:translate3d(0,0,0)}}
+.lux-header-icon[aria-label="Open sign-in"]:hover{animation:omFx19 385ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx19{0%{transform:scale(1)}45%{transform:scale(1.26)}100%{transform:scale(1)}}
+.lux-header-login:hover{animation:omFx20 455ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx20{0%{transform:rotate(0deg)}38%{transform:rotate(2.2deg)}74%{transform:rotate(-1.1deg)}100%{transform:rotate(0deg)}}
+.site-mobile-toggle:hover{animation:omFx21 280ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx21{0%{filter:brightness(1)}45%{filter:brightness(1.10)}100%{filter:brightness(1)}}
+.lux-floating-whatsapp:hover{animation:omFx22 350ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx22{0%{box-shadow:0 0 0 rgba(193,150,69,0)}45%{box-shadow:0 0 0 4px rgba(193,150,69,.11)}100%{box-shadow:0 0 0 rgba(193,150,69,0)}}
+.lux-floating-call:hover{animation:omFx23 420ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx23{0%{transform:translate3d(0,0,0) scale(1)}35%{transform:translate3d(0,-1.4300000000000002px,0) scale(1.015)}100%{transform:translate3d(0,0,0) scale(1)}}
+.site-scroll-progress:hover #site-scroll-progress-fill{animation:omFx24 490ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx24{0%{filter:blur(.7px);opacity:.88}50%{filter:blur(0);opacity:1}100%{filter:blur(0);opacity:1}}
+.lux-inspection-type-option:nth-child(1):hover{animation:omFx25 315ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx25{0%{transform:translate3d(0,0,0)}25%{transform:translate3d(-0.99px,0,0)}65%{transform:translate3d(1.98px,0,0)}100%{transform:translate3d(0,0,0)}}
+.lux-inspection-type-option:nth-child(2):hover{animation:omFx26 385ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx26{0%{letter-spacing:0}45%{letter-spacing:0.128em}100%{letter-spacing:0}}
+.lux-inspection-type-option.is-selected .lux-inspection-type-check{animation:omFx27 455ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx27{0%{transform:scale(1);opacity:1}30%{transform:scale(.99);opacity:.9}75%{transform:scale(1.015);opacity:1}100%{transform:scale(1)}}
+.lux-vehicle-entry:focus-within{animation:omFx28 280ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx28{0%{transform:rotateY(0deg)}45%{transform:rotateY(5.28deg)}100%{transform:rotateY(0deg)}}
+.lux-vehicle-entry > button:hover{animation:omFx29 350ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx29{0%{transform:translateY(0)}50%{transform:translateY(1.1px)}100%{transform:translateY(0)}}
+.lux-vehicle-suggestions > div > button:nth-child(1):hover{animation:omFx30 420ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx30{0%{transform:scaleX(1);transform-origin:left center}45%{transform:scaleX(1.12);transform-origin:left center}100%{transform:scaleX(1);transform-origin:left center}}
+.lux-vehicle-suggestions > div > button:nth-child(2):hover{animation:omFx31 490ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx31{0%{transform:skewX(0deg)}40%{transform:skewX(0.66deg)}100%{transform:skewX(0deg)}}
+.lux-vehicle-suggestions > div > button:nth-child(3):hover{animation:omFx32 315ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx32{0%{transform:translate3d(0,0,0);filter:drop-shadow(0 0 0 rgba(193,150,69,0))}50%{transform:translate3d(0,-1.4300000000000002px,0);filter:drop-shadow(0 3px 4px rgba(193,150,69,.18))}100%{transform:translate3d(0,0,0);filter:drop-shadow(0 0 0 rgba(193,150,69,0))}}
+.lux-vehicle-suggestions > div > button:nth-child(4):hover{animation:omFx33 385ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx33{0%{transform:translate3d(0,0,0)}42%{transform:translate3d(0,-2.42px,0)}100%{transform:translate3d(0,0,0)}}
+.lux-vehicle-suggestions > div > button:nth-child(5):hover{animation:omFx34 455ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx34{0%{transform:translate3d(0,0,0)}40%{transform:translate3d(1.98px,0,0)}100%{transform:translate3d(0,0,0)}}
+.lux-date-trigger:hover{animation:omFx35 280ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx35{0%{transform:scale(1)}45%{transform:scale(1.15)}100%{transform:scale(1)}}
+.lux-date-trigger[aria-expanded="true"]{animation:omFx36 350ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx36{0%{transform:rotate(0deg)}38%{transform:rotate(1.1deg)}74%{transform:rotate(-0.55deg)}100%{transform:rotate(0deg)}}
+.lux-calendar-header > button:first-child:hover{animation:omFx37 420ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx37{0%{filter:brightness(1)}45%{filter:brightness(1.15)}100%{filter:brightness(1)}}
+.lux-calendar-header > button:last-child:hover{animation:omFx38 490ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx38{0%{box-shadow:0 0 0 rgba(193,150,69,0)}45%{box-shadow:0 0 0 7px rgba(193,150,69,.11)}100%{box-shadow:0 0 0 rgba(193,150,69,0)}}
+.lux-calendar-grid:not(.lux-calendar-weekdays) > button:nth-of-type(1):not(:disabled):hover{animation:omFx39 315ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx39{0%{transform:translate3d(0,0,0) scale(1)}35%{transform:translate3d(0,-0.8800000000000001px,0) scale(1.015)}100%{transform:translate3d(0,0,0) scale(1)}}
+.lux-calendar-grid:not(.lux-calendar-weekdays) > button:nth-of-type(2):not(:disabled):hover{animation:omFx40 385ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx40{0%{filter:blur(.7px);opacity:.88}50%{filter:blur(0);opacity:1}100%{filter:blur(0);opacity:1}}
+.lux-calendar-grid:not(.lux-calendar-weekdays) > button:nth-of-type(3):not(:disabled):hover{animation:omFx41 455ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx41{0%{transform:translate3d(0,0,0)}25%{transform:translate3d(-1.4300000000000002px,0,0)}65%{transform:translate3d(2.8600000000000003px,0,0)}100%{transform:translate3d(0,0,0)}}
+.lux-calendar-grid:not(.lux-calendar-weekdays) > button:nth-of-type(4):not(:disabled):hover{animation:omFx42 280ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx42{0%{letter-spacing:0}45%{letter-spacing:0.202em}100%{letter-spacing:0}}
+.lux-calendar-grid:not(.lux-calendar-weekdays) > button:nth-of-type(5):not(:disabled):hover{animation:omFx43 350ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx43{0%{transform:scale(1);opacity:1}30%{transform:scale(.99);opacity:.9}75%{transform:scale(1.015);opacity:1}100%{transform:scale(1)}}
+.lux-calendar-grid:not(.lux-calendar-weekdays) > button:nth-of-type(6):not(:disabled):hover{animation:omFx44 420ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx44{0%{transform:rotateY(0deg)}45%{transform:rotateY(3.08deg)}100%{transform:rotateY(0deg)}}
+.lux-calendar-grid:not(.lux-calendar-weekdays) > button:nth-of-type(7):not(:disabled):hover{animation:omFx45 490ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx45{0%{transform:translateY(0)}50%{transform:translateY(0.55px)}100%{transform:translateY(0)}}
+.lux-calendar-grid > button.is-selected{animation:omFx46 315ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx46{0%{transform:scaleX(1);transform-origin:left center}45%{transform:scaleX(1.18);transform-origin:left center}100%{transform:scaleX(1);transform-origin:left center}}
+.lux-calendar-grid > button.is-today{animation:omFx47 385ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx47{0%{transform:skewX(0deg)}40%{transform:skewX(1.1deg)}100%{transform:skewX(0deg)}}
+.lux-calendar-footer > button:hover{animation:omFx48 455ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx48{0%{transform:translate3d(0,0,0);filter:drop-shadow(0 0 0 rgba(193,150,69,0))}50%{transform:translate3d(0,-0.8800000000000001px,0);filter:drop-shadow(0 3px 4px rgba(193,150,69,.18))}100%{transform:translate3d(0,0,0);filter:drop-shadow(0 0 0 rgba(193,150,69,0))}}
+.lux-inquiry-extra summary:hover{animation:omFx49 280ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx49{0%{transform:translate3d(0,0,0)}42%{transform:translate3d(0,-1.32px,0)}100%{transform:translate3d(0,0,0)}}
+.lux-inquiry-extra[open] summary{animation:omFx50 350ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx50{0%{transform:translate3d(0,0,0)}40%{transform:translate3d(2.8600000000000003px,0,0)}100%{transform:translate3d(0,0,0)}}
+.lux-inspection-field input[name="customer"]:focus{animation:omFx51 420ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx51{0%{transform:scale(1)}45%{transform:scale(1.24)}100%{transform:scale(1)}}
+.lux-inspection-field input[name="phone"]:focus{animation:omFx52 490ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx52{0%{transform:rotate(0deg)}38%{transform:rotate(1.98deg)}74%{transform:rotate(-0.99deg)}100%{transform:rotate(0deg)}}
+.lux-inspection-field input[name="vehicle"]:focus{animation:omFx53 315ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx53{0%{filter:brightness(1)}45%{filter:brightness(1.09)}100%{filter:brightness(1)}}
+.lux-inspection-field input[name="city"]:focus{animation:omFx54 385ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx54{0%{box-shadow:0 0 0 rgba(193,150,69,0)}45%{box-shadow:0 0 0 3px rgba(193,150,69,.11)}100%{box-shadow:0 0 0 rgba(193,150,69,0)}}
+.lux-inquiry-extra-fields input[name="registration"]:focus{animation:omFx55 455ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx55{0%{transform:translate3d(0,0,0) scale(1)}35%{transform:translate3d(0,-1.32px,0) scale(1.015)}100%{transform:translate3d(0,0,0) scale(1)}}
+.lux-inquiry-extra-fields input[name="notes"]:focus{animation:omFx56 280ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx56{0%{filter:blur(.7px);opacity:.88}50%{filter:blur(0);opacity:1}100%{filter:blur(0);opacity:1}}
+.lux-inspection-submit:hover{animation:omFx57 350ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx57{0%{transform:translate3d(0,0,0)}25%{transform:translate3d(-0.8800000000000001px,0,0)}65%{transform:translate3d(1.7600000000000002px,0,0)}100%{transform:translate3d(0,0,0)}}
+.lux-inspection-submit:active{animation:omFx58 420ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx58{0%{letter-spacing:0}45%{letter-spacing:0.110em}100%{letter-spacing:0}}
+.lux-inquiry-icon:hover{animation:omFx59 490ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx59{0%{transform:scale(1);opacity:1}30%{transform:scale(.99);opacity:.9}75%{transform:scale(1.015);opacity:1}100%{transform:scale(1)}}
+.lux-inquiry-status[role="status"]{animation:omFx60 315ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx60{0%{transform:rotateY(0deg)}45%{transform:rotateY(4.84deg)}100%{transform:rotateY(0deg)}}
+.lux-model-card:nth-child(1):hover{animation:omFx61 385ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx61{0%{transform:translateY(0)}50%{transform:translateY(0.99px)}100%{transform:translateY(0)}}
+.lux-model-card:nth-child(2):hover{animation:omFx62 455ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx62{0%{transform:scaleX(1);transform-origin:left center}45%{transform:scaleX(1.10);transform-origin:left center}100%{transform:scaleX(1);transform-origin:left center}}
+.lux-model-card:nth-child(3):hover{animation:omFx63 280ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx63{0%{transform:skewX(0deg)}40%{transform:skewX(0.55deg)}100%{transform:skewX(0deg)}}
+.lux-model-card:nth-child(4):hover{animation:omFx64 350ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx64{0%{transform:translate3d(0,0,0);filter:drop-shadow(0 0 0 rgba(193,150,69,0))}50%{transform:translate3d(0,-1.32px,0);filter:drop-shadow(0 3px 4px rgba(193,150,69,.18))}100%{transform:translate3d(0,0,0);filter:drop-shadow(0 0 0 rgba(193,150,69,0))}}
+.lux-model-card:nth-child(5):hover{animation:omFx65 420ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx65{0%{transform:translate3d(0,0,0)}42%{transform:translate3d(0,-2.2px,0)}100%{transform:translate3d(0,0,0)}}
+.lux-model-card:nth-child(1):hover .lux-model-image img{animation:omFx66 490ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx66{0%{transform:translate3d(0,0,0)}40%{transform:translate3d(1.7600000000000002px,0,0)}100%{transform:translate3d(0,0,0)}}
+.lux-model-card:nth-child(2):hover .lux-model-image img{animation:omFx67 315ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx67{0%{transform:scale(1)}45%{transform:scale(1.13)}100%{transform:scale(1)}}
+.lux-model-card:nth-child(3):hover .lux-model-image img{animation:omFx68 385ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx68{0%{transform:rotate(0deg)}38%{transform:rotate(2.8600000000000003deg)}74%{transform:rotate(-1.4300000000000002deg)}100%{transform:rotate(0deg)}}
+.lux-model-card:nth-child(4):hover .lux-model-image img{animation:omFx69 455ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx69{0%{filter:brightness(1)}45%{filter:brightness(1.13)}100%{filter:brightness(1)}}
+.lux-model-card:nth-child(5):hover .lux-model-image img{animation:omFx70 280ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx70{0%{box-shadow:0 0 0 rgba(193,150,69,0)}45%{box-shadow:0 0 0 6px rgba(193,150,69,.11)}100%{box-shadow:0 0 0 rgba(193,150,69,0)}}
+.lux-service-card:nth-child(1):hover{animation:omFx71 350ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx71{0%{transform:translate3d(0,0,0) scale(1)}35%{transform:translate3d(0,-0.77px,0) scale(1.015)}100%{transform:translate3d(0,0,0) scale(1)}}
+.lux-service-card:nth-child(2):hover{animation:omFx72 420ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx72{0%{filter:blur(.7px);opacity:.88}50%{filter:blur(0);opacity:1}100%{filter:blur(0);opacity:1}}
+.lux-service-card:nth-child(3):hover{animation:omFx73 490ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx73{0%{transform:translate3d(0,0,0)}25%{transform:translate3d(-1.32px,0,0)}65%{transform:translate3d(2.64px,0,0)}100%{transform:translate3d(0,0,0)}}
+.lux-service-card:nth-child(4):hover{animation:omFx74 315ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx74{0%{letter-spacing:0}45%{letter-spacing:0.183em}100%{letter-spacing:0}}
+.lux-process-step:nth-child(1):hover{animation:omFx75 385ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx75{0%{transform:scale(1);opacity:1}30%{transform:scale(.99);opacity:.9}75%{transform:scale(1.015);opacity:1}100%{transform:scale(1)}}
+.lux-process-step:nth-child(2):hover{animation:omFx76 455ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx76{0%{transform:rotateY(0deg)}45%{transform:rotateY(2.64deg)}100%{transform:rotateY(0deg)}}
+.lux-process-step:nth-child(3):hover{animation:omFx77 280ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx77{0%{transform:translateY(0)}50%{transform:translateY(1.4300000000000002px)}100%{transform:translateY(0)}}
+.lux-process-step:nth-child(4):hover{animation:omFx78 350ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx78{0%{transform:scaleX(1);transform-origin:left center}45%{transform:scaleX(1.16);transform-origin:left center}100%{transform:scaleX(1);transform-origin:left center}}
+.masterclass-schedule-card:nth-child(odd):hover{animation:omFx79 420ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx79{0%{transform:skewX(0deg)}40%{transform:skewX(0.99deg)}100%{transform:skewX(0deg)}}
+.related-card:hover{animation:omFx80 490ms cubic-bezier(.2,.75,.2,1) both}
+@keyframes omFx80{0%{transform:translate3d(0,0,0);filter:drop-shadow(0 0 0 rgba(193,150,69,0))}50%{transform:translate3d(0,-0.77px,0);filter:drop-shadow(0 3px 4px rgba(193,150,69,.18))}100%{transform:translate3d(0,0,0);filter:drop-shadow(0 0 0 rgba(193,150,69,0))}}
+}
+@media(prefers-reduced-motion:reduce){.lux-sync-slide-nav button:nth-child(1):hover{animation:none!important}.lux-sync-slide-nav button:nth-child(2):hover{animation:none!important}.lux-sync-slide-nav button:nth-child(3):hover{animation:none!important}.lux-sync-slide-nav button:focus-visible{animation:none!important}.lux-car-hero-primary:hover{animation:none!important}.lux-car-hero-secondary:hover{animation:none!important}.lux-car-hero-primary:hover svg{animation:none!important}.lux-car-hero-secondary:hover svg{animation:none!important}.lux-sync-counter:hover{animation:none!important}.lux-car-hero-proof svg:hover{animation:none!important}.luxury-brand:hover .lux-brand-logo-img{animation:none!important}.luxury-nav-link:nth-of-type(1):hover{animation:none!important}.luxury-nav-link:nth-of-type(2):hover{animation:none!important}.luxury-nav-link:nth-of-type(3):hover{animation:none!important}.luxury-nav-link:nth-of-type(4):hover{animation:none!important}.luxury-nav-link:nth-of-type(5):hover{animation:none!important}.luxury-nav-link:nth-of-type(6):hover{animation:none!important}.lux-header-icon[aria-label="Explore services"]:hover{animation:none!important}.lux-header-icon[aria-label="Open sign-in"]:hover{animation:none!important}.lux-header-login:hover{animation:none!important}.site-mobile-toggle:hover{animation:none!important}.lux-floating-whatsapp:hover{animation:none!important}.lux-floating-call:hover{animation:none!important}.site-scroll-progress:hover #site-scroll-progress-fill{animation:none!important}.lux-inspection-type-option:nth-child(1):hover{animation:none!important}.lux-inspection-type-option:nth-child(2):hover{animation:none!important}.lux-inspection-type-option.is-selected .lux-inspection-type-check{animation:none!important}.lux-vehicle-entry:focus-within{animation:none!important}.lux-vehicle-entry > button:hover{animation:none!important}.lux-vehicle-suggestions > div > button:nth-child(1):hover{animation:none!important}.lux-vehicle-suggestions > div > button:nth-child(2):hover{animation:none!important}.lux-vehicle-suggestions > div > button:nth-child(3):hover{animation:none!important}.lux-vehicle-suggestions > div > button:nth-child(4):hover{animation:none!important}.lux-vehicle-suggestions > div > button:nth-child(5):hover{animation:none!important}.lux-date-trigger:hover{animation:none!important}.lux-date-trigger[aria-expanded="true"]{animation:none!important}.lux-calendar-header > button:first-child:hover{animation:none!important}.lux-calendar-header > button:last-child:hover{animation:none!important}.lux-calendar-grid:not(.lux-calendar-weekdays) > button:nth-of-type(1):not(:disabled):hover{animation:none!important}.lux-calendar-grid:not(.lux-calendar-weekdays) > button:nth-of-type(2):not(:disabled):hover{animation:none!important}.lux-calendar-grid:not(.lux-calendar-weekdays) > button:nth-of-type(3):not(:disabled):hover{animation:none!important}.lux-calendar-grid:not(.lux-calendar-weekdays) > button:nth-of-type(4):not(:disabled):hover{animation:none!important}.lux-calendar-grid:not(.lux-calendar-weekdays) > button:nth-of-type(5):not(:disabled):hover{animation:none!important}.lux-calendar-grid:not(.lux-calendar-weekdays) > button:nth-of-type(6):not(:disabled):hover{animation:none!important}.lux-calendar-grid:not(.lux-calendar-weekdays) > button:nth-of-type(7):not(:disabled):hover{animation:none!important}.lux-calendar-grid > button.is-selected{animation:none!important}.lux-calendar-grid > button.is-today{animation:none!important}.lux-calendar-footer > button:hover{animation:none!important}.lux-inquiry-extra summary:hover{animation:none!important}.lux-inquiry-extra[open] summary{animation:none!important}.lux-inspection-field input[name="customer"]:focus{animation:none!important}.lux-inspection-field input[name="phone"]:focus{animation:none!important}.lux-inspection-field input[name="vehicle"]:focus{animation:none!important}.lux-inspection-field input[name="city"]:focus{animation:none!important}.lux-inquiry-extra-fields input[name="registration"]:focus{animation:none!important}.lux-inquiry-extra-fields input[name="notes"]:focus{animation:none!important}.lux-inspection-submit:hover{animation:none!important}.lux-inspection-submit:active{animation:none!important}.lux-inquiry-icon:hover{animation:none!important}.lux-inquiry-status[role="status"]{animation:none!important}.lux-model-card:nth-child(1):hover{animation:none!important}.lux-model-card:nth-child(2):hover{animation:none!important}.lux-model-card:nth-child(3):hover{animation:none!important}.lux-model-card:nth-child(4):hover{animation:none!important}.lux-model-card:nth-child(5):hover{animation:none!important}.lux-model-card:nth-child(1):hover .lux-model-image img{animation:none!important}.lux-model-card:nth-child(2):hover .lux-model-image img{animation:none!important}.lux-model-card:nth-child(3):hover .lux-model-image img{animation:none!important}.lux-model-card:nth-child(4):hover .lux-model-image img{animation:none!important}.lux-model-card:nth-child(5):hover .lux-model-image img{animation:none!important}.lux-service-card:nth-child(1):hover{animation:none!important}.lux-service-card:nth-child(2):hover{animation:none!important}.lux-service-card:nth-child(3):hover{animation:none!important}.lux-service-card:nth-child(4):hover{animation:none!important}.lux-process-step:nth-child(1):hover{animation:none!important}.lux-process-step:nth-child(2):hover{animation:none!important}.lux-process-step:nth-child(3):hover{animation:none!important}.lux-process-step:nth-child(4):hover{animation:none!important}.masterclass-schedule-card:nth-child(odd):hover{animation:none!important}.related-card:hover{animation:none!important}}
