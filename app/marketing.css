@@ -1382,3 +1382,20 @@ html{scroll-behavior:smooth}
 @media(prefers-reduced-motion:reduce){
   .lux-model-card,.lux-model-image img{transition:none!important}
 }
+
+
+
+/* Hero crossfade: previous India-market vehicle fades away while the new vehicle,
+   headline and service target resolve together. The scroll-scrub remains on the
+   stable frame/current image so its animation does not detach when the source swaps. */
+.lux-scroll-expand-sticky .lux-hero-fullbleed>img.lux-hero-active-image{z-index:1!important;opacity:1!important}
+.lux-scroll-expand-sticky .lux-hero-fullbleed>img.lux-hero-previous-image{
+  z-index:2!important;opacity:0!important;transform:scale(1.01);animation:none!important;
+  transition:opacity .68s cubic-bezier(.2,.65,.2,1)!important;pointer-events:none
+}
+.lux-scroll-expand-sticky .lux-hero-fullbleed>img.lux-hero-previous-image.is-fading{opacity:1!important}
+.lux-scroll-expand-sticky .lux-scroll-expanded-copy{z-index:3}
+.lux-scroll-expand-sticky .lux-hero-image-index{z-index:4}
+@media(prefers-reduced-motion:reduce){
+  .lux-scroll-expand-sticky .lux-hero-fullbleed>img.lux-hero-previous-image{display:none!important}
+}
