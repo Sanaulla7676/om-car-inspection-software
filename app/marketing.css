@@ -723,3 +723,227 @@ html{scroll-behavior:smooth}
   .lux-footer-col>a{font-size:9px}
 }
 @media(prefers-reduced-motion:reduce){.luxury-home *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+
+
+/* -------------------------------------------------------------------------
+   REFINED PUBLIC SITE SYSTEM
+   Inspired by the supplied STRADA interaction patterns, recoloured to a
+   restrained white / graphite / champagne-gold inspection brand.
+   ------------------------------------------------------------------------- */
+.marketing-site{font-family:Inter,"Avenir Next",Aptos,"Segoe UI",Arial,sans-serif!important;color:#151b22}
+.marketing-site h1,.marketing-site h2,.marketing-site h3,.marketing-site h4,
+.marketing-site .site-brand-mark,.marketing-site .site-brand-copy,
+.marketing-site .marketing-hero-title,.marketing-site .marketing-index-hero h1,
+.marketing-site .marketing-copy h2,.marketing-site .marketing-index-card h2,
+.marketing-site .marketing-section-heading h2,.marketing-site .marketing-page-bottom-cta h2{
+  font-family:Inter,"Avenir Next",Aptos,"Segoe UI",Arial,sans-serif!important;
+  font-stretch:normal!important;text-transform:none;
+}
+.marketing-site:not(.luxury-home){background:#fff!important;color:#151b22!important}
+.marketing-site:not(.luxury-home) main{background:#fff}
+.marketing-site:not(.luxury-home) .marketing-hero,
+.marketing-site:not(.luxury-home) .marketing-index-hero{
+  position:relative;isolation:isolate;overflow:hidden;
+  background:linear-gradient(120deg,#fff 0%,#fff 60%,#fbf7ef 100%)!important;
+  color:#151b22!important;border-bottom:1px solid #f0ece4;
+}
+.marketing-site:not(.luxury-home) .marketing-hero:before,
+.marketing-site:not(.luxury-home) .marketing-hero:after{content:none!important;display:none!important}
+.marketing-site:not(.luxury-home) .marketing-hero-content{position:relative;z-index:1}
+.marketing-site:not(.luxury-home) .breadcrumbs{color:#87909a!important}
+.marketing-site:not(.luxury-home) .breadcrumbs a:hover{color:#9b6b1d!important}
+.marketing-site:not(.luxury-home) .eyebrow,
+.marketing-site:not(.luxury-home) .eyebrow-on-dark{color:#737d87!important}
+.marketing-site:not(.luxury-home) .eyebrow-live-dot{background:#c9943b!important;box-shadow:0 0 0 4px rgba(201,148,59,.13)!important}
+.marketing-site:not(.luxury-home) .marketing-hero-title,
+.marketing-site:not(.luxury-home) .marketing-index-hero h1{
+  color:#13191f!important;font-size:clamp(39px,5.3vw,76px)!important;
+  font-weight:780!important;line-height:1.04!important;letter-spacing:-.055em!important;
+}
+.marketing-site:not(.luxury-home) .marketing-hero-title span,
+.marketing-site:not(.luxury-home) .marketing-index-hero h1 span,
+.marketing-site:not(.luxury-home) .marketing-copy h2 span,
+.marketing-site:not(.luxury-home) .marketing-faq-shell h2 span{
+  color:#b7812d!important;
+  background:none!important;-webkit-text-fill-color:#b7812d!important;
+}
+.marketing-site:not(.luxury-home) .marketing-hero-tagline{color:#4d5862!important;font-size:clamp(14px,1.4vw,17px)!important;line-height:1.7!important}
+.marketing-site:not(.luxury-home) .marketing-hero-intro,
+.marketing-site:not(.luxury-home) .marketing-index-hero>div>p:not(.eyebrow){color:#6b7580!important;font-size:13px!important;line-height:1.85!important}
+.marketing-site:not(.luxury-home) .marketing-hero-meta{
+  background:rgba(255,255,255,.92)!important;border-color:#ece2d0!important;
+  color:#18212a!important;box-shadow:0 15px 36px rgba(35,35,30,.055),inset 0 1px #fff!important;
+}
+.marketing-site:not(.luxury-home) .marketing-hero-meta .meta-kicker{color:#a87526!important}
+.marketing-site:not(.luxury-home) .marketing-hero-meta strong{color:#17202a!important;font-family:Inter,"Avenir Next",Arial,sans-serif!important;font-size:21px!important;letter-spacing:-.035em}
+.marketing-site:not(.luxury-home) .marketing-hero-meta p{color:#707a83!important}
+.marketing-site:not(.luxury-home) .button-bright{
+  border:1px solid #e5c37f!important;
+  background:linear-gradient(125deg,#fff0c9,#d8aa55)!important;
+  color:#292013!important;box-shadow:0 7px 18px rgba(163,118,41,.14),inset 0 1px rgba(255,255,255,.9)!important;
+}
+.marketing-site:not(.luxury-home) .button-bright:hover{background:linear-gradient(125deg,#ffedbf,#d2a04b)!important;box-shadow:0 11px 22px rgba(163,118,41,.2)!important}
+.marketing-site:not(.luxury-home) .button-glass{
+  border:1px solid #e3e6e9!important;background:#fff!important;color:#303b44!important;
+  box-shadow:0 5px 15px rgba(20,30,40,.055)!important;backdrop-filter:none!important;
+}
+.marketing-site:not(.luxury-home) .button-glass:hover{background:#fbf8f2!important;border-color:#e2c992!important}
+.marketing-site:not(.luxury-home) .marketing-main-section{background:#fff!important}
+.marketing-site:not(.luxury-home) .marketing-copy h2,
+.marketing-site:not(.luxury-home) .marketing-section-heading h2,
+.marketing-site:not(.luxury-home) .marketing-faq-shell h2,
+.marketing-site:not(.luxury-home) .marketing-page-bottom-cta h2{
+  color:#151b22!important;font-weight:780!important;letter-spacing:-.05em!important;line-height:1.1!important;
+}
+.marketing-site:not(.luxury-home) .marketing-copy>p,
+.marketing-site:not(.luxury-home) .marketing-check-list li,
+.marketing-site:not(.luxury-home) .marketing-index-card p{color:#66717b!important}
+.marketing-site:not(.luxury-home) .marketing-check-panel,
+.marketing-site:not(.luxury-home) .marketing-index-card,
+.marketing-site:not(.luxury-home) .related-card,
+.marketing-site:not(.luxury-home) .masterclass-schedule-card{
+  border-color:#e9ecef!important;background:linear-gradient(160deg,#fff,#fdfcf9)!important;
+  box-shadow:0 8px 23px rgba(25,35,44,.035)!important;
+}
+.marketing-site:not(.luxury-home) .marketing-check-list li>span,
+.marketing-site:not(.luxury-home) .masterclass-schedule-card>span,
+.marketing-site:not(.luxury-home) .index-card-number{background:#fff4df!important;color:#97661d!important}
+.marketing-site:not(.luxury-home) .marketing-index-card h2,
+.marketing-site:not(.luxury-home) .marketing-check-panel h3,
+.marketing-site:not(.luxury-home) .related-card h3{color:#18212a!important;letter-spacing:-.04em!important}
+.marketing-site:not(.luxury-home) .marketing-index-card:hover,
+.marketing-site:not(.luxury-home) .related-card:hover{border-color:#dbc28f!important}
+.marketing-site:not(.luxury-home) .marketing-page-bottom-cta{
+  padding:34px 0 40px!important;background:#fff!important;color:#17202a!important;
+}
+.marketing-site:not(.luxury-home) .marketing-page-bottom-cta-inner{
+  padding:clamp(24px,4vw,42px)!important;border:1px solid #ead9b9!important;
+  border-radius:24px!important;background:linear-gradient(115deg,#fffaf0,#fff 78%)!important;
+}
+.marketing-site:not(.luxury-home) .marketing-page-bottom-cta p{color:#6d7780!important}
+.marketing-site:not(.luxury-home) .faq-item-v2{border-color:#eceff1!important}
+.marketing-site:not(.luxury-home) .faq-item-v2 summary{color:#27313a!important}
+.marketing-site:not(.luxury-home) .faq-item-v2 summary i{border-color:#e3e6e9!important}
+.marketing-site:not(.luxury-home) .faq-item-v2 summary i:before,
+.marketing-site:not(.luxury-home) .faq-item-v2 summary i:after{background:#ad7928!important}
+.marketing-site:not(.luxury-home) .marketing-related-section{border-top:1px solid #f0f1f2}
+.marketing-site:not(.luxury-home) .text-link-v2,
+.marketing-site:not(.luxury-home) .index-card-link{color:#96691f!important}
+
+/* Cleaner brand type and separated sign-in action */
+.luxury-header .site-brand-copy{display:none!important}
+.lux-brand-word{font-family:Inter,"Avenir Next",Arial,sans-serif!important;font-weight:800!important;letter-spacing:-.055em!important}
+.lux-brand-car{font-family:Inter,"Avenir Next",Arial,sans-serif!important;font-size:23px!important;font-weight:500!important}
+.lux-header-login{min-height:38px!important;font-size:11px!important;letter-spacing:-.01em}
+.luxury-nav-link{font-weight:650!important;letter-spacing:-.015em}
+.luxury-nav-link.is-current{background:#fff3d7!important;border-color:#ecd7a9!important;color:#624416!important}
+.lux-header-icon{color:#4a525a!important}
+
+/* Updated selectable PDI / pre-owned / coaching path */
+.lux-hero-copy{padding-left:clamp(10px,2.4vw,31px)!important;padding-right:clamp(12px,2vw,28px)!important}
+.lux-eyebrow{color:#7c838a!important;font-size:9px!important;letter-spacing:.19em!important;font-weight:750!important;margin-bottom:12px!important}
+.lux-journey-selector{display:flex;flex-wrap:wrap;gap:5px;max-width:100%;padding:4px;margin:0 0 22px;border:1px solid #e9e6e0;border-radius:999px;background:rgba(250,249,246,.9);box-shadow:inset 0 1px #fff}
+.lux-journey-selector button{appearance:none;border:1px solid transparent;border-radius:999px;background:transparent;color:#5c646b;min-height:35px;padding:8px 13px;font-family:Inter,"Avenir Next",Arial,sans-serif;font-size:10px;font-weight:700;line-height:1.1;white-space:nowrap;transition:background .22s ease,color .22s ease,box-shadow .22s ease,transform .22s ease}
+.lux-journey-selector button:hover{background:#fff;color:#17202a;transform:translateY(-1px)}
+.lux-journey-selector button.is-active{border-color:#e7cf9c;background:linear-gradient(135deg,#fff7e7,#f4e4bf);color:#664817;box-shadow:0 3px 9px rgba(148,104,29,.09)}
+.lux-hero-copy-dynamic{animation:luxCopyEnter .38s cubic-bezier(.2,.75,.2,1) both;min-height:222px}
+.lux-journey-eyebrow{margin:0 0 9px;color:#85827a;font-size:9px;font-weight:800;letter-spacing:.15em}
+.lux-hero h1{margin:0!important;font-family:Inter,"Avenir Next",Aptos,"Segoe UI",Arial,sans-serif!important;font-size:clamp(36px,4vw,59px)!important;font-weight:820!important;line-height:1.02!important;letter-spacing:-.058em!important;color:#151b22!important}
+.lux-hero h1 span{display:block;max-width:100%;background:none!important;-webkit-text-fill-color:currentColor!important}
+.lux-hero h1 .lux-hero-title-main{color:#151b22!important;-webkit-text-fill-color:#151b22!important;letter-spacing:-.057em!important}
+.lux-hero h1 .lux-hero-title-accent{margin-top:3px;color:#b7812d!important;-webkit-text-fill-color:#b7812d!important;font-size:.86em!important;line-height:1.08!important;letter-spacing:-.05em!important}
+.lux-hero-description{max-width:480px!important;margin:15px 0 15px!important;font-size:12px!important;line-height:1.75!important;color:#59646e!important}
+.lux-hero-details{display:grid;gap:8px;margin:0 0 19px}
+.lux-hero-details>span{display:flex;align-items:flex-start;gap:7px;color:#4e5862;font-size:10px;line-height:1.45}
+.lux-hero-details svg{flex:0 0 14px;color:#b78230;margin-top:1px}
+.lux-hero-actions{gap:8px!important}
+.lux-hero-actions .lux-button{min-height:42px;padding:0 15px;font-size:10px;letter-spacing:-.01em}
+.lux-button-gold{border-color:#e5c581!important;background:linear-gradient(135deg,#fff0c9,#d9aa55)!important;color:#2f2415!important;box-shadow:0 6px 15px rgba(174,124,40,.15)!important}
+.lux-button-white{border-color:#e7e9eb!important;background:#fff!important;color:#2a343d!important;box-shadow:0 4px 12px rgba(22,33,43,.045)!important}
+.lux-hero-footnote{font-size:9px!important;color:#81878d!important;margin-top:13px!important}
+.lux-hero-footnote svg{color:#ba8734!important}
+.lux-hero-visual{min-height:410px!important;height:auto;border:1px solid #e5d3ad!important;border-radius:28px!important;background:#f0efeb!important;overflow:hidden!important;animation:luxVisualEnter .7s cubic-bezier(.18,.78,.22,1) both}
+.lux-hero-visual>img{object-position:center 50%!important;animation:luxCarSettle .7s cubic-bezier(.18,.78,.22,1) both;filter:saturate(.9)!important}
+.lux-hero-fade{background:linear-gradient(0deg,rgba(20,25,30,.42),transparent 35%,rgba(255,255,255,.08))!important}
+.lux-hero-image-label{position:absolute;left:14px;bottom:14px;display:flex;align-items:center;gap:10px;max-width:calc(100% - 28px);padding:12px 15px;border:1px solid rgba(255,255,255,.8);border-radius:15px;background:rgba(255,255,255,.93);box-shadow:0 9px 26px rgba(18,25,31,.11);backdrop-filter:blur(15px)}
+.lux-hero-image-dot{display:block;width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:#c18b35;box-shadow:0 0 0 4px rgba(193,139,53,.14)}
+.lux-hero-image-label b,.lux-hero-image-label small{display:block}
+.lux-hero-image-label b{color:#1b242c;font-size:9px;font-weight:850;letter-spacing:.13em}
+.lux-hero-image-label small{margin-top:4px;color:#65707a;font-size:10px;line-height:1.35}
+.lux-hero-image-count{position:absolute;top:15px;right:15px;display:flex;align-items:center;gap:7px;padding:9px 11px;border:1px solid rgba(255,255,255,.8);border-radius:999px;background:rgba(255,255,255,.88);color:#5b4b30;box-shadow:0 4px 14px rgba(18,25,31,.065);font-size:8px;font-weight:800;letter-spacing:.12em;backdrop-filter:blur(12px)}
+.lux-hero-image-count svg{color:#ad7b2d}
+@keyframes luxCopyEnter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes luxVisualEnter{from{opacity:0;transform:translateY(9px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes luxCarSettle{from{opacity:.55;transform:scale(1.035)}to{opacity:1;transform:scale(1.01)}}
+
+/* White / graphite / gold only: no mint or green accent blocks */
+.luxury-home .lux-service-card{border-color:#ece7de!important;background:#fff!important}
+.luxury-home .lux-service-card:before{background:linear-gradient(145deg,#fff,#fffaf1 100%)!important}
+.luxury-home .lux-service-card.lux-service-featured{border-color:#dfc58f!important;box-shadow:0 10px 25px rgba(154,111,38,.075)!important}
+.lux-service-icon,.lux-strength-icon,.lux-workflow-icon,.lux-proof-strip>div>span,.lux-expectation-card>span{
+  background:linear-gradient(140deg,#fff8e8,#f4e5c7)!important;color:#a8782a!important;border-color:#eee0c1!important;
+}
+.lux-service-card li svg,.lux-about-points>div>span,.lux-hero-footnote svg{color:#b5822e!important}
+.lux-service-photo:after{background:linear-gradient(90deg,rgba(255,255,255,.28),transparent 42%),linear-gradient(0deg,rgba(255,255,255,.18),transparent)!important}
+.lux-service-heading h2{font-family:Inter,"Avenir Next",Arial,sans-serif!important;letter-spacing:-.04em!important}
+.lux-proof-strip>div>span{border:1px solid #eee0c1!important}
+.lux-about-signature{font-family:Inter,"Avenir Next",Arial,sans-serif!important;font-size:12px!important;font-style:normal!important;font-weight:850!important;letter-spacing:.16em!important;color:#9a6d26!important}
+.lux-about-signature small{font-size:8px!important;font-weight:650!important;letter-spacing:.12em!important}
+.lux-coaching-band{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(22px,4vw,55px);align-items:center;width:min(1280px,calc(100% - 44px));margin:5px auto 0;padding:24px;border:1px solid #e9dfcb;border-radius:23px;background:linear-gradient(110deg,#fffaf0,#fff 65%);box-shadow:0 9px 26px rgba(29,38,44,.035);overflow:hidden}
+.lux-coaching-visual{position:relative;min-width:0;height:clamp(240px,28vw,355px);border-radius:16px;overflow:hidden;background:#efeee9}
+.lux-coaching-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:61% 40%;transition:transform .55s cubic-bezier(.2,.75,.2,1)}
+.lux-coaching-band:hover .lux-coaching-visual img{transform:scale(1.025)}
+.lux-photo-caption{position:absolute;left:12px;bottom:12px;padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.9);color:#56482f;font-size:8px;font-weight:800;letter-spacing:.1em;backdrop-filter:blur(12px)}
+.lux-coaching-copy{padding:8px 8px 8px 0}
+.lux-coaching-copy h2{margin:0;color:#151b22;font-size:clamp(25px,3.2vw,39px);font-weight:800;line-height:1.1;letter-spacing:-.055em}
+.lux-coaching-copy>p:not(.lux-eyebrow){max-width:540px;color:#66717b;font-size:12px;line-height:1.8;margin:14px 0}
+.lux-coaching-points{display:grid;gap:9px;margin:17px 0 22px}
+.lux-coaching-points span{display:flex;align-items:flex-start;gap:8px;color:#3d4852;font-size:10px;line-height:1.5}
+.lux-coaching-points svg{color:#ad7b2d;flex:0 0 14px}
+.luxury-home .lux-service-card .lux-round-link{border-color:#e8dfcd!important;background:rgba(255,255,255,.96)!important;color:#1e2730!important}
+.luxury-home .lux-section-heading h2{font-family:Inter,"Avenir Next",Arial,sans-serif!important;letter-spacing:-.055em!important;font-weight:800!important}
+.luxury-home .lux-section-heading h2 em{color:#b7812d!important}
+.luxury-home .lux-workflow-connector{border-color:#dfc58f!important;color:#ad7b2d!important}
+.luxury-home .lux-workflow-step.tone-blue .lux-workflow-icon,
+.luxury-home .lux-workflow-step.tone-mint .lux-workflow-icon,
+.luxury-home .lux-workflow-step.tone-violet .lux-workflow-icon,
+.luxury-home .lux-workflow-step.tone-rose .lux-workflow-icon{border-color:#ead9b4!important;background:#fffaf0!important;color:#a8782a!important}
+.luxury-home .lux-workflow-step .lux-workflow-icon>span{background:#b98631!important;color:#fff!important}
+.luxury-home .lux-about-points>div>span{background:#fff3d7!important;color:#ad792c!important}
+.lux-final-cta{border-color:#e7d6b5!important;background:linear-gradient(115deg,#fff8e9,#fff 75%)!important}
+.lux-final-cta .lux-eyebrow{color:#8a744f!important}
+.lux-final-actions .lux-button-white{background:#fff!important;color:#26313a!important;border-color:#e5e8ea!important}
+
+/* Header density at laptop widths; menu stays comfortable on mobile */
+@media(max-width:1100px){
+  .luxury-header{gap:7px!important;padding-right:9px!important}
+  .luxury-brand{flex-basis:112px!important;min-width:105px!important}
+  .lux-brand-word{font-size:18px!important}
+  .luxury-nav-link{padding:8px 7px!important;font-size:9px!important}
+  .lux-header-actions{gap:4px!important}
+  .lux-header-icon:first-child{display:none!important}
+  .lux-header-login{padding:0 10px!important}
+}
+@media(max-width:780px){
+  .lux-hero-copy-dynamic{min-height:0}
+  .lux-journey-selector{width:100%;margin-bottom:17px}
+  .lux-journey-selector button{flex:1 1 auto;min-width:0;padding:9px 8px;font-size:9px}
+  .lux-hero h1{font-size:clamp(35px,8.1vw,53px)!important}
+  .lux-hero-visual{height:clamp(245px,56vw,350px)!important;min-height:0!important}
+  .lux-hero-image-count{top:10px;right:10px;font-size:7px;padding:8px}
+  .lux-coaching-band{grid-template-columns:1fr;width:calc(100% - 24px);padding:13px;gap:17px;margin-top:0}
+  .lux-coaching-visual{height:clamp(230px,58vw,330px)}
+  .lux-coaching-copy{padding:0 6px 9px}
+}
+@media(max-width:420px){
+  .lux-journey-selector{border-radius:16px;display:grid;grid-template-columns:1fr;gap:3px}
+  .lux-journey-selector button{width:100%;text-align:left;padding:11px 13px;border-radius:11px;font-size:10px}
+  .lux-hero h1{font-size:36px!important}
+  .lux-hero-actions{align-items:stretch;flex-direction:column}
+  .lux-hero-actions .lux-button{width:100%}
+}
+@media(prefers-reduced-motion:reduce){
+  .lux-hero-copy-dynamic,.lux-hero-visual,.lux-hero-visual>img{animation:none!important}
+  .lux-coaching-visual img{transition:none!important}
+}
