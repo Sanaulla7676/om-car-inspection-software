@@ -1845,7 +1845,7 @@ html{scroll-behavior:smooth}
 .lux-car-image-hero.lux-synchronized-hero .lux-sync-copy{
   animation:luxSyncedCopyResolve .58s cubic-bezier(.18,.75,.2,1) both;
 }
-@keyframes luxSyncedCopyResolve{from{opacity:0;filter:blur(5px);transform:translate3d(0,12px,0)}to{opacity:1;filter:blur(0);transform:translate3d(0,0,0)}}
+@keyframes luxSyncedCopyResolve{from{opacity:0;filter:blur(5px);transform:translate3d(0,calc(-50% + 12px),0)}to{opacity:1;filter:blur(0);transform:translate3d(0,-50%,0)}}
 .lux-car-image-hero.lux-synchronized-hero .lux-sync-kicker{
   margin:0 0 10px;color:#6b7377;font:800 clamp(8px,.7vw,10px)/1.4 "DM Sans",Arial,sans-serif;letter-spacing:.13em;text-transform:uppercase;
 }
