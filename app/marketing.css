@@ -1761,3 +1761,60 @@ html{scroll-behavior:smooth}
 @media(prefers-reduced-motion:reduce){
   .lux-car-hero-eyebrow,.lux-car-hero-title-line,.lux-car-hero-description,.lux-car-hero-actions,.lux-car-hero-proof,.lux-car-image-hero .lux-car-hero-frame>img{animation:none!important;filter:none!important;transform:none!important;opacity:1!important}
 }
+
+
+
+/* Official OMKAR gold turbo logo supplied by the business. */
+.lux-brand-logo-img{
+  display:block;width:clamp(94px,8.6vw,126px)!important;height:auto!important;max-height:46px;
+  object-fit:contain;object-position:left center;flex:0 0 auto;filter:none!important;
+}
+.luxury-brand{min-width:0!important}
+.lux-footer-logo{display:inline-flex;align-items:flex-start;width:auto!important;max-width:180px}
+.lux-footer-logo-img{display:block;width:clamp(132px,13vw,170px);height:auto;max-height:66px;object-fit:contain;object-position:left center}
+.lux-footer-contact .lux-footer-phone{display:flex;align-items:center;gap:7px;color:#8a929a!important;font-size:11px!important}
+.lux-footer-contact .lux-footer-phone a{color:#d4ab60!important;font-weight:850;text-decoration:none}
+.lux-footer-contact .lux-footer-phone a:hover{text-decoration:underline}
+
+/* Persistent, thumb-friendly direct contact actions for all public pages. */
+.lux-floating-contact{
+  position:fixed;right:clamp(12px,2vw,26px);
+  bottom:calc(18px + env(safe-area-inset-bottom,0px));
+  z-index:1800;display:flex;flex-direction:column;align-items:stretch;gap:9px;
+  width:max-content;max-width:calc(100vw - 24px);pointer-events:none;
+}
+.lux-floating-contact a{
+  pointer-events:auto;display:flex;align-items:center;justify-content:flex-start;gap:10px;
+  min-height:48px;padding:0 17px;border-radius:999px;
+  font:800 11px/1 "DM Sans",Arial,sans-serif;text-decoration:none!important;white-space:nowrap;
+  box-shadow:0 8px 24px rgba(19,28,34,.2);transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;
+}
+.lux-floating-contact a:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(19,28,34,.24);filter:saturate(1.05)}
+.lux-floating-contact a:focus-visible{outline:3px solid #c89a4c;outline-offset:3px}
+.lux-floating-contact .lux-floating-whatsapp{
+  color:#fff!important;background:#168b51;border:1px solid #31a76d;
+}
+.lux-floating-contact .lux-floating-call{
+  color:#231a0d!important;background:linear-gradient(135deg,#ffe8ad,#d8a94f);
+  border:1px solid #d4a34d;
+}
+.lux-floating-contact a svg{flex:0 0 auto}
+.lux-floating-contact .lux-floating-call b{font-weight:900;letter-spacing:.015em}
+@media(max-width:1050px){
+  .lux-brand-logo-img{width:100px!important;max-height:41px}
+}
+@media(max-width:760px){
+  .lux-brand-logo-img{width:92px!important;max-height:36px}
+  .lux-footer-logo-img{width:145px;max-height:58px}
+  .lux-floating-contact{right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));gap:8px}
+  .lux-floating-contact a{min-height:45px;padding:0 13px;gap:8px;font-size:10px;box-shadow:0 6px 19px rgba(19,28,34,.21)}
+  .lux-floating-contact a svg{width:17px;height:17px}
+}
+@media(max-width:390px){
+  .lux-brand-logo-img{width:82px!important;max-height:33px}
+  .lux-floating-contact{right:9px;bottom:calc(10px + env(safe-area-inset-bottom,0px))}
+  .lux-floating-contact a{min-height:42px;padding:0 11px;font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+  .lux-floating-contact a{transition:none!important}
+}
