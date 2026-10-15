@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AutoInspect Pro — Vehicle Inspection Platform</title>
+<style>
+:root{
+  --bg:#f5f7fb; --card:#fff; --text:#172033; --muted:#6b7280; --line:#e6eaf0;
+  --primary:#0f172a; --accent:#d4a74a; --success:#16835b; --warn:#c98718; --danger:#c54747;
+  --info:#2563eb; --soft:#f8fafc; --shadow:0 12px 35px rgba(15,23,42,.07);
+  --radius:16px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.app{display:flex;min-height:100vh}
+.sidebar{width:260px;background:#0f172a;color:#fff;position:sticky;top:0;height:100vh;padding:22px 16px;overflow:auto}
+.brand{display:flex;gap:12px;align-items:center;padding:8px 10px 22px;border-bottom:1px solid rgba(255,255,255,.1)}
+.brand-mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#f1cb7b,#a87818);display:grid;place-items:center;color:#111;font-weight:900}
+.brand h1{font-size:16px;margin:0}.brand small{color:#aab4c7}
+.nav{padding-top:14px}.nav button{width:100%;background:none;border:0;color:#c8d0dd;text-align:left;padding:11px 12px;border-radius:10px;margin:3px 0}
+.nav button:hover,.nav button.active{background:rgba(255,255,255,.08);color:#fff}
+.nav-section{font-size:10px;text-transform:uppercase;letter-spacing:.15em;color:#7d8aa0;padding:15px 12px 6px}
+.content{flex:1;min-width:0}
+.topbar{height:74px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:20}
+.topbar .left{display:flex;align-items:center;gap:10px}.hamb{display:none}
+.page{padding:28px;max-width:1600px;margin:auto}
+.section-title{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:18px}
+.section-title h2{margin:0;font-size:24px}.section-title p{margin:5px 0 0;color:var(--muted)}
+.grid{display:grid;gap:16px}.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+.stat{display:flex;justify-content:space-between;gap:12px}.stat .num{font-size:28px;font-weight:800;margin-top:8px}.label{color:var(--muted);font-size:13px}.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);padding:6px 9px;border-radius:999px;font-size:12px;background:#fff}
+.chip.success{color:var(--success);background:#ecfdf5;border-color:#c5f1df}.chip.warn{color:var(--warn);background:#fff8eb;border-color:#f1d9ab}.chip.danger{color:var(--danger);background:#fff1f1;border-color:#f2c7c7}.chip.info{color:var(--info);background:#eff6ff;border-color:#cfe0ff}
+.btn{border:1px solid var(--line);background:#fff;color:var(--text);border-radius:10px;padding:10px 14px;font-weight:650}.btn:hover{filter:brightness(.98)}
+.btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}.btn.gold{background:#d4a74a;color:#151515;border-color:#d4a74a}.btn.success{background:var(--success);color:#fff;border-color:var(--success)}.btn.danger{background:var(--danger);color:#fff;border-color:var(--danger)}.btn.ghost{background:transparent}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+table{width:100%;border-collapse:collapse}th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}th{color:#677185;font-weight:700;background:#fbfcfe}
+input,select,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;outline:none}
+input:focus,select:focus,textarea:focus{border-color:#9aa9bf;box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+label{font-size:12px;color:#657085;display:block;margin:0 0 6px}.field{margin-bottom:13px}
+.form-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.form-grid .span-2{grid-column:span 2}.form-grid .span-4{grid-column:1/-1}
+.empty{padding:30px;color:var(--muted);text-align:center}.muted{color:var(--muted)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap}.toolbar input{max-width:320px}
+.badge-count{min-width:22px;height:22px;border-radius:999px;background:#ef4444;color:#fff;display:grid;place-items:center;font-size:11px}
+.hero{display:flex;align-items:center;justify-content:space-between;gap:18px;background:linear-gradient(135deg,#0f172a,#1f2c45);color:#fff;border-radius:18px;padding:22px 24px;margin-bottom:20px}.hero p{color:#bac4d5;margin:8px 0 0}.hero .score{font-size:38px;font-weight:900;color:#f1cb7b}
+.progress{height:8px;background:#edf1f6;border-radius:99px;overflow:hidden}.progress > div{height:100%;background:#d4a74a}
+.stepper{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.step{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:#768195;font-size:12px}.step.active{background:#0f172a;color:#fff;border-color:#0f172a}.step.done{background:#ecfdf5;color:#16835b;border-color:#c5f1df}
+.inspect-layout{display:grid;grid-template-columns:1fr 320px;gap:16px}.sticky-card{position:sticky;top:94px;align-self:start}
+.check-section{border:1px solid var(--line);border-radius:14px;margin-bottom:13px;overflow:hidden;background:#fff}.check-head{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;background:#fafbfc;border-bottom:1px solid var(--line)}.check-head strong{font-size:14px}.check-body{padding:12px}.item-row{display:grid;grid-template-columns:1fr 170px 130px 120px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #f0f2f5}.item-row:last-child{border-bottom:0}.item-name{font-weight:650;font-size:13px}.item-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.photo-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.photo-slot{border:1.5px dashed #cdd4df;border-radius:12px;min-height:130px;padding:10px;display:flex;flex-direction:column;justify-content:space-between;background:#fbfcfe}.photo-slot .thumb{height:86px;border-radius:9px;background:linear-gradient(145deg,#edf1f5,#fafafa);display:grid;place-items:center;color:#9ba5b5;font-size:28px}.photo-slot.attached{border-style:solid;background:#f8fffb}
+.vehicle-map{display:grid;grid-template-columns:100px 1fr 100px;gap:9px;align-items:center;max-width:580px;margin:auto}.car-center{border:3px solid #cfd6df;border-radius:90px;padding:35px 0;background:linear-gradient(180deg,#f8fafc,#eef2f7);text-align:center}.panel-btn{border:1px solid #cfd6df;border-radius:10px;padding:10px;background:#fff;font-size:11px}.panel-btn.selected{background:#0f172a;color:#fff;border-color:#0f172a}
+.timeline{border-left:2px solid #e5e7eb;margin-left:8px;padding-left:18px}.timeline-item{position:relative;margin-bottom:20px}.timeline-item:before{content:"";position:absolute;left:-25px;top:2px;width:10px;height:10px;border-radius:50%;background:#d4a74a}
+.kpi-list{display:flex;gap:10px;flex-wrap:wrap}.kpi{padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;min-width:120px}.kpi strong{font-size:18px;display:block}.kpi span{font-size:11px;color:var(--muted)}
+.tabs{display:flex;gap:5px;border-bottom:1px solid var(--line);margin-bottom:16px;overflow:auto}.tab{border:0;background:none;padding:10px 12px;color:#728095;border-bottom:2px solid transparent;white-space:nowrap}.tab.active{color:#0f172a;border-bottom-color:#d4a74a;font-weight:700}
+.modal{position:fixed;inset:0;background:rgba(3,8,20,.54);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.modal.show{display:flex}.modal-box{background:#fff;border-radius:18px;max-width:900px;width:100%;max-height:90vh;overflow:auto;padding:22px}.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}
+.toast{position:fixed;right:20px;bottom:20px;background:#0f172a;color:#fff;padding:12px 14px;border-radius:10px;display:none;z-index:70;box-shadow:var(--shadow)}
+.report-page{max-width:900px;margin:auto;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);padding:38px;border-radius:14px}.report-header{display:flex;justify-content:space-between;gap:18px;border-bottom:2px solid #0f172a;padding-bottom:16px}.report-logo{width:54px;height:54px;border-radius:13px;background:#0f172a;color:#f1cb7b;display:grid;place-items:center;font-weight:900}.report-title{font-size:24px;font-weight:850}.report-section{margin-top:24px}.report-section h4{margin:0 0 10px;font-size:14px}.report-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.report-box{border:1px solid var(--line);border-radius:10px;padding:10px}.report-box small{display:block;color:var(--muted);font-size:10px;margin-bottom:3px}.report-box strong{font-size:13px}.signatures{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:25px}.signature-line{border-top:1px solid #777;padding-top:6px;font-size:11px;color:var(--muted)}
+.footer-note{font-size:11px;color:var(--muted);margin-top:20px}
+.hide{display:none!important}
+@media(max-width:1150px){.grid-4{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:repeat(2,1fr)}.inspect-layout{grid-template-columns:1fr}.sticky-card{position:static}}
+@media(max-width:820px){.sidebar{display:none}.hamb{display:block}.page{padding:18px}.topbar{padding:0 16px}.grid-3,.grid-2,.grid-4{grid-template-columns:1fr}.item-row{grid-template-columns:1fr}.photo-grid{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr}.form-grid .span-2,.form-grid .span-4{grid-column:auto}.vehicle-map{grid-template-columns:70px 1fr 70px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">AI</div>
+      <div><h1>AutoInspect Pro</h1><small>Inspection Operations</small></div>
+    </div>
+    <div class="nav">
+      <div class="nav-section">Workspace</div>
+      <button data-page="dashboard" class="active">⌂ Dashboard</button>
+      <button data-page="inspections">▣ Inspections <span class="badge-count" style="float:right">4</span></button>
+      <button data-page="vehicles">🚗 Vehicles</button>
+      <button data-page="customers">◉ Customers</button>
+      <button data-page="reports">▤ Reports</button>
+      <button data-page="reinspections">↻ Re-inspections</button>
+      <button data-page="newinspection" class="gold-nav">＋ New Inspection</button>
+      <div class="nav-section">Management</div>
+      <button data-page="inspectors">◌ Inspectors</button>
+      <button data-page="templates">☷ Templates</button>
+      <button data-page="faults">⚠ Fault Library</button>
+      <button data-page="scoring">◈ Scoring Rules</button>
+      <button data-page="analytics">▥ Analytics</button>
+      <button data-page="settings">⚙ Settings</button>
+      <button data-page="audit">⌁ Audit Logs</button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <header class="topbar">
+      <div class="left">
+        <button class="btn ghost hamb" onclick="toggleMobileNav()">☰</button>
+        <div><strong id="pageCrumb">Dashboard</strong><div class="label">Wednesday, 16 September 2026</div></div>
+      </div>
+      <div class="btn-row">
+        <span class="chip success">● Online</span>
+        <button class="btn" onclick="openNotifications()">Notifications <span class="badge-count" style="display:inline-grid;vertical-align:middle;margin-left:5px">3</span></button>
+        <button class="btn" onclick="showToast('Profile menu opened')">SA</button>
+      </div>
+    </header>
+
+    <div class="page">
+      <section id="page-dashboard" class="pageview">
+        <div class="hero">
+          <div><h2 style="margin:0;font-size:26px">Inspection Command Center</h2><p>Capture vehicle evidence fast, keep every finding traceable, and generate polished reports without repetitive typing.</p></div>
+          <div style="text-align:right"><div class="label" style="color:#bac4d5">Today's completed</div><div class="score">18</div></div>
+        </div>
+        <div class="grid grid-4">
+          <div class="card stat"><div><div class="label">Today's Inspections</div><div class="num">24</div></div><span class="chip info">+8%</span></div>
+          <div class="card stat"><div><div class="label">Pending</div><div class="num">4</div></div><span class="chip warn">Action</span></div>
+          <div class="card stat"><div><div class="label">Re-inspections</div><div class="num">6</div></div><span class="chip">2 today</span></div>
+          <div class="card stat"><div><div class="label">Reports Ready</div><div class="num">18</div></div><span class="chip success">Healthy</span></div>
+        </div>
+
+        <div class="grid grid-3" style="margin-top:16px">
+          <div class="card" style="grid-column:span 2">
+            <div class="section-title"><div><h2 style="font-size:17px">Today's inspection queue</h2><p>Live operational view</p></div><button class="btn primary" onclick="navigate('newinspection')">＋ New Inspection</button></div>
+            <table>
+              <thead><tr><th>Inspection</th><th>Vehicle</th><th>Type</th><th>Inspector</th><th>Status</th><th></th></tr></thead>
+              <tbody>
+                <tr><td><strong>INS-2026-00184</strong><div class="label">10:05 AM</div></td><td>Hyundai Creta • KA01AB1234</td><td>Used Car</td><td>Arun</td><td><span class="chip success">Completed</span></td><td><button class="btn" onclick="openReport('INS-2026-00184')">View</button></td></tr>
+                <tr><td><strong>INS-2026-00185</strong><div class="label">11:20 AM</div></td><td>Tata Nexon EV • KA05MX4455</td><td>Re-inspection</td><td>Farhan</td><td><span class="chip warn">In Review</span></td><td><button class="btn" onclick="navigate('inspections')">Open</button></td></tr>
+                <tr><td><strong>INS-2026-00186</strong><div class="label">12:10 PM</div></td><td>Mahindra XUV700 • KA03PK9001</td><td>Used Car</td><td>Rahul</td><td><span class="chip info">In Progress</span></td><td><button class="btn" onclick="navigate('newinspection')">Resume</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="section-title"><div><h2 style="font-size:17px">Quick actions</h2><p>Field-friendly shortcuts</p></div></div>
+            <div class="btn-row">
+              <button class="btn primary" style="width:100%" onclick="navigate('newinspection')">Start new inspection</button>
+              <button class="btn" style="width:100%" onclick="navigate('reinspections')">Continue re-inspection</button>
+              <button class="btn" style="width:100%" onclick="navigate('reports')">Open latest report</button>
+              <button class="btn" style="width:100%" onclick="showToast('Offline cache synced successfully')">↻ Sync offline data</button>
+            </div>
+            <div style="margin-top:16px;padding:13px;border:1px solid #c5f1df;background:#ecfdf5;border-radius:12px">
+              <strong style="font-size:13px">Offline mode ready</strong>
+              <div class="label" style="margin-top:4px">7 draft actions are cached locally. Last cloud sync 2 min ago.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-3" style="margin-top:16px">
+          <div class="card">
+            <div class="section-title"><div><h2 style="font-size:17px">Inspection quality</h2><p>Completion health</p></div></div>
+            <div class="kpi-list"><div class="kpi"><strong>97%</strong><span>Required fields</span></div><div class="kpi"><strong>92%</strong><span>Photo coverage</span></div><div class="kpi"><strong>14m</strong><span>Avg time</span></div></div>
+          </div>
+          <div class="card">
+            <div class="section-title"><div><h2 style="font-size:17px">Top faults</h2><p>Last 30 inspections</p></div></div>
+            <div class="timeline">
+              <div class="timeline-item"><strong>Exterior scratches</strong><div class="label">18 findings</div></div>
+              <div class="timeline-item"><strong>Tyre wear</strong><div class="label">13 findings</div></div>
+              <div class="timeline-item"><strong>AC / HVAC observations</strong><div class="label">9 findings</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-title"><div><h2 style="font-size:17px">Re-inspection alerts</h2><p>Items that need follow-up</p></div></div>
+            <div class="timeline">
+              <div class="timeline-item"><strong>KA05MX4455</strong><div class="label">Rear bumper repair • due today</div></div>
+              <div class="timeline-item"><strong>KA02TJ7788</strong><div class="label">Tyres replaced • verification pending</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-inspections" class="pageview hide">
+        <div class="section-title"><div><h2>Inspections</h2><p>Track every inspection from draft to shared report.</p></div><button class="btn primary" onclick="navigate('newinspection')">＋ New Inspection</button></div>
+        <div class="card">
+          <div class="toolbar" style="margin-bottom:12px"><input placeholder="Search ID, registration, VIN, customer…" oninput="filterTable(this,'inspectionTable')" /><select><option>All statuses</option><option>Draft</option><option>In Progress</option><option>In Review</option><option>Completed</option></select><select><option>All types</option><option>New Car</option><option>Used Car</option><option>Re-inspection</option></select></div>
+          <table id="inspectionTable"><thead><tr><th>Inspection ID</th><th>Vehicle</th><th>Customer</th><th>Type</th><th>Inspector</th><th>Status</th><th>Score</th><th>Report</th></tr></thead>
+          <tbody>
+            <tr><td>INS-2026-00184</td><td>Hyundai Creta<br><span class="label">KA01AB1234</span></td><td>Sameer Khan</td><td>Used Car</td><td>Arun</td><td><span class="chip success">Completed</span></td><td><strong>82</strong></td><td><button class="btn" onclick="openReport('INS-2026-00184')">PDF Preview</button></td></tr>
+            <tr><td>INS-2026-00185</td><td>Tata Nexon EV<br><span class="label">KA05MX4455</span></td><td>Imran Ali</td><td>Re-inspection</td><td>Farhan</td><td><span class="chip warn">In Review</span></td><td><strong>78</strong></td><td><button class="btn" onclick="navigate('reinspections')">Compare</button></td></tr>
+            <tr><td>INS-2026-00186</td><td>Mahindra XUV700<br><span class="label">KA03PK9001</span></td><td>Prakash</td><td>Used Car</td><td>Rahul</td><td><span class="chip info">In Progress</span></td><td>—</td><td><button class="btn" onclick="navigate('newinspection')">Resume</button></td></tr>
+            <tr><td>INS-2026-00187</td><td>Maruti Baleno<br><span class="label">KA51MN2222</span></td><td>Ayesha</td><td>New Car</td><td>Arun</td><td><span class="chip">Draft</span></td><td>—</td><td><button class="btn" onclick="navigate('newinspection')">Open</button></td></tr>
+          </tbody></table>
+        </div>
+      </section>
+
+      <section id="page-vehicles" class="pageview hide">
+        <div class="section-title"><div><h2>Vehicle Registry</h2><p>Every vehicle gets a traceable inspection history.</p></div><button class="btn primary" onclick="openVehicleModal()">＋ Add Vehicle</button></div>
+        <div class="card">
+          <div class="toolbar" style="margin-bottom:12px"><input placeholder="Search registration / VIN / make / model…" oninput="filterTable(this,'vehicleTable')" /></div>
+          <table id="vehicleTable"><thead><tr><th>Vehicle</th><th>Registration</th><th>VIN</th><th>Type</th><th>Odometer</th><th>Last score</th><th>History</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Hyundai Creta</strong><br><span class="label">2023 • Petrol • Automatic • White</span></td><td>KA01AB1234</td><td>MAKBB123456789012</td><td>Used</td><td>42,560 km</td><td><strong>82</strong></td><td><button class="btn" onclick="openVehicleHistory('KA01AB1234')">Open</button></td></tr>
+            <tr><td><strong>Tata Nexon EV</strong><br><span class="label">2024 • EV • Automatic • Blue</span></td><td>KA05MX4455</td><td>MATNEXEV20240123</td><td>Used</td><td>21,104 km</td><td><strong>78</strong></td><td><button class="btn" onclick="openVehicleHistory('KA05MX4455')">Open</button></td></tr>
+          </tbody></table>
+        </div>
+      </section>
+
+      <section id="page-customers" class="pageview hide">
+        <div class="section-title"><div><h2>Customers</h2><p>Buyer, seller, dealer and fleet contact records.</p></div><button class="btn primary" onclick="showToast('Customer form opened')">＋ Add Customer</button></div>
+        <div class="card"><table><thead><tr><th>Customer</th><th>Phone</th><th>Role</th><th>Vehicles</th><th>Last inspection</th><th></th></tr></thead>
+        <tbody>
+          <tr><td><strong>Sameer Khan</strong><div class="label">sameer@example.com</div></td><td>+91 98XXXXXX10</td><td>Buyer</td><td>1</td><td>16 Sep 2026</td><td><button class="btn">View</button></td></tr>
+          <tr><td><strong>Imran Ali</strong><div class="label">dealer account</div></td><td>+91 97XXXXXX20</td><td>Dealer</td><td>8</td><td>16 Sep 2026</td><td><button class="btn">View</button></td></tr>
+        </tbody></table></div>
+      </section>
+
+      <section id="page-reinspections" class="pageview hide">
+        <div class="section-title"><div><h2>Re-inspections</h2><p>Compare previous findings against current condition without starting from scratch.</p></div></div>
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="section-title"><div><h2 style="font-size:17px">Open re-inspection</h2><p>INS-2026-00185 • Tata Nexon EV • KA05MX4455</p></div><span class="chip warn">2 open findings</span></div>
+            <div class="kpi-list" style="margin-bottom:14px"><div class="kpi"><strong>71</strong><span>Previous score</span></div><div class="kpi"><strong>78</strong><span>Current score</span></div><div class="kpi"><strong>3/5</strong><span>Resolved</span></div></div>
+            <table><thead><tr><th>Item</th><th>Previous</th><th>Current</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Rear bumper</td><td>Scratch</td><td>Repaired</td><td><span class="chip success">Resolved</span></td></tr>
+              <tr><td>Tyre RR</td><td>Worn</td><td>New tyre</td><td><span class="chip success">Resolved</span></td></tr>
+              <tr><td>AC cooling</td><td>Weak</td><td>Improved</td><td><span class="chip warn">Verify</span></td></tr>
+              <tr><td>Front-left door</td><td>Good</td><td>Dent</td><td><span class="chip danger">New Fault</span></td></tr>
+            </tbody></table>
+            <div class="btn-row" style="margin-top:14px"><button class="btn primary" onclick="navigate('newinspection')">Continue inspection</button><button class="btn" onclick="openReport('INS-2026-00185')">Compare report</button></div>
+          </div>
+          <div class="card">
+            <h3 style="margin:0 0 8px">Re-inspection rules</h3>
+            <div class="field"><label>Carry forward unresolved items</label><select><option>Yes — prefill as open findings</option><option>No</option></select></div>
+            <div class="field"><label>Require fresh evidence photos</label><select><option>Only for changed findings</option><option>For every item</option></select></div>
+            <div class="field"><label>Versioning</label><select><option>Never overwrite previous reports</option></select></div>
+            <div class="field"><label>Due-date alerts</label><select><option>On due date + 24h before</option><option>On due date</option></select></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-reports" class="pageview hide">
+        <div class="section-title"><div><h2>Reports</h2><p>Branded, versioned and verifiable inspection outputs.</p></div><div class="btn-row"><button class="btn" onclick="showToast('Bulk export queued')">Export</button><button class="btn primary" onclick="openReport('INS-2026-00184')">Preview latest</button></div></div>
+        <div class="card"><table><thead><tr><th>Report</th><th>Vehicle</th><th>Version</th><th>Generated</th><th>Shared</th><th>Verify</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>INS-2026-00184</td><td>Hyundai Creta • KA01AB1234</td><td>v2</td><td>16 Sep 2026 10:22 AM</td><td><span class="chip success">WhatsApp + Email</span></td><td><span class="chip info">QR active</span></td><td><button class="btn" onclick="openReport('INS-2026-00184')">Open</button></td></tr>
+          <tr><td>INS-2026-00185</td><td>Tata Nexon EV • KA05MX4455</td><td>v1</td><td>16 Sep 2026 12:40 PM</td><td><span class="chip">Not shared</span></td><td><span class="chip info">QR active</span></td><td><button class="btn" onclick="openReport('INS-2026-00185')">Open</button></td></tr>
+        </tbody></table></div>
+      </section>
+
+      <section id="page-inspectors" class="pageview hide">
+        <div class="section-title"><div><h2>Inspectors & Roles</h2><p>Role-based access keeps field work simple and administration controlled.</p></div><button class="btn primary" onclick="showToast('Invite inspector dialog opened')">＋ Invite Inspector</button></div>
+        <div class="card"><table><thead><tr><th>Inspector</th><th>Role</th><th>Today</th><th>Avg. Time</th><th>Quality</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Arun Kumar</strong><div class="label">arun@autinspect.example</div></td><td>Inspector</td><td>8</td><td>13m</td><td>98%</td><td><span class="chip success">Active</span></td><td><button class="btn">Permissions</button></td></tr>
+          <tr><td><strong>Farhan S.</strong></td><td>Inspector</td><td>6</td><td>15m</td><td>95%</td><td><span class="chip success">Active</span></td><td><button class="btn">Permissions</button></td></tr>
+          <tr><td><strong>Admin User</strong></td><td>Admin</td><td>—</td><td>—</td><td>—</td><td><span class="chip success">Active</span></td><td><button class="btn">Permissions</button></td></tr>
+        </tbody></table></div>
+        <div class="grid grid-3" style="margin-top:16px">
+          <div class="card"><h3 style="margin-top:0">Inspector</h3><p class="muted">Create/edit assigned inspections, capture evidence, submit reports, review own history.</p></div>
+          <div class="card"><h3 style="margin-top:0">Reviewer</h3><p class="muted">Review findings, correct report data, approve final report, request changes.</p></div>
+          <div class="card"><h3 style="margin-top:0">Admin</h3><p class="muted">Full access to users, templates, faults, scoring, reports, settings and audit logs.</p></div>
+        </div>
+      </section>
+
+      <section id="page-templates" class="pageview hide">
+        <div class="section-title"><div><h2>Inspection Templates</h2><p>Configuration-driven templates avoid hardcoding vehicle-specific workflows.</p></div><button class="btn primary" onclick="showToast('New template created')">＋ New Template</button></div>
+        <div class="grid grid-3">
+          <div class="card"><h3 style="margin-top:0">Used Car — Standard</h3><div class="label">42 sections • 186 items</div><div class="progress" style="margin:12px 0"><div style="width:93%"></div></div><span class="chip success">Published</span><div class="btn-row" style="margin-top:12px"><button class="btn">Edit</button><button class="btn">Duplicate</button></div></div>
+          <div class="card"><h3 style="margin-top:0">New Car — PDI</h3><div class="label">29 sections • 124 items</div><div class="progress" style="margin:12px 0"><div style="width:86%"></div></div><span class="chip success">Published</span><div class="btn-row" style="margin-top:12px"><button class="btn">Edit</button><button class="btn">Duplicate</button></div></div>
+          <div class="card"><h3 style="margin-top:0">EV — Extended</h3><div class="label">48 sections • 214 items</div><div class="progress" style="margin:12px 0"><div style="width:100%"></div></div><span class="chip info">Draft</span><div class="btn-row" style="margin-top:12px"><button class="btn">Edit</button><button class="btn">Publish</button></div></div>
+        </div>
+      </section>
+
+      <section id="page-faults" class="pageview hide">
+        <div class="section-title"><div><h2>Fault Library</h2><p>Predefined findings keep field reports consistent and minimize typing.</p></div><button class="btn primary" onclick="showToast('Fault form opened')">＋ Add Fault</button></div>
+        <div class="card"><div class="toolbar" style="margin-bottom:12px"><input placeholder="Search fault…" oninput="filterTable(this,'faultTable')"><select><option>All systems</option><option>Exterior</option><option>Engine</option><option>Transmission</option><option>Electrical</option><option>Tyres</option></select></div>
+        <table id="faultTable"><thead><tr><th>Fault</th><th>System</th><th>Severity</th><th>Default description</th><th>Photo required</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>Oil leakage</td><td>Engine</td><td><span class="chip danger">Major</span></td><td>Visible oil leakage observed around engine area.</td><td>Yes</td><td><span class="chip success">Active</span></td><td><button class="btn">Edit</button></td></tr>
+          <tr><td>Exterior scratch</td><td>Body</td><td><span class="chip">Cosmetic</span></td><td>Surface scratches visible on inspected panel.</td><td>Recommended</td><td><span class="chip success">Active</span></td><td><button class="btn">Edit</button></td></tr>
+          <tr><td>Tyre wear</td><td>Tyres</td><td><span class="chip warn">Moderate</span></td><td>Tread wear is visible; replacement assessment recommended.</td><td>Yes</td><td><span class="chip success">Active</span></td><td><button class="btn">Edit</button></td></tr>
+        </tbody></table></div>
+      </section>
+
+      <section id="page-scoring" class="pageview hide">
+        <div class="section-title"><div><h2>Scoring Rules</h2><p>Deterministic scoring rules. AI can assist with language, not invent the final decision.</p></div><button class="btn primary" onclick="showToast('Scoring rule editor opened')">＋ Add Rule</button></div>
+        <div class="card">
+          <div class="grid grid-3">
+            <div><div class="label">Base score</div><div class="num" style="font-size:26px;font-weight:850;margin-top:5px">100</div></div>
+            <div><div class="label">Max penalty</div><div class="num" style="font-size:26px;font-weight:850;margin-top:5px">90</div></div>
+            <div><div class="label">Score bands</div><div class="num" style="font-size:26px;font-weight:850;margin-top:5px">5</div></div>
+          </div>
+          <div style="margin-top:18px"><table><thead><tr><th>Severity</th><th>Example</th><th>Penalty</th><th>Requires review</th><th>Enabled</th></tr></thead>
+          <tbody>
+            <tr><td>Cosmetic</td><td>Minor scratch</td><td>-1</td><td>No</td><td>Yes</td></tr>
+            <tr><td>Minor</td><td>Small trim issue</td><td>-3</td><td>No</td><td>Yes</td></tr>
+            <tr><td>Moderate</td><td>Tyre wear</td><td>-6</td><td>Optional</td><td>Yes</td></tr>
+            <tr><td>Major</td><td>Oil leakage</td><td>-10</td><td>Yes</td><td>Yes</td></tr>
+            <tr><td>Critical</td><td>Safety-critical failure</td><td>-20</td><td>Yes</td><td>Yes</td></tr>
+          </tbody></table></div>
+          <div style="margin-top:14px;padding:12px;border:1px solid #f1d9ab;background:#fff8eb;border-radius:12px;font-size:12px">Recommendation text is configurable. Final recommendation should follow the company's documented inspection methodology and reviewer controls.</div>
+        </div>
+      </section>
+
+      <section id="page-analytics" class="pageview hide">
+        <div class="section-title"><div><h2>Analytics</h2><p>Operational performance and recurring issue intelligence.</p></div><select style="width:auto"><option>Last 30 days</option><option>Last 7 days</option><option>Quarter</option></select></div>
+        <div class="grid grid-4">
+          <div class="card stat"><div><div class="label">Inspections</div><div class="num">486</div></div><span class="chip info">+12%</span></div>
+          <div class="card stat"><div><div class="label">Avg. completion time</div><div class="num">14m 18s</div></div><span class="chip success">-9%</span></div>
+          <div class="card stat"><div><div class="label">Avg. score</div><div class="num">81.6</div></div><span class="chip">Stable</span></div>
+          <div class="card stat"><div><div class="label">Reinspection rate</div><div class="num">18%</div></div><span class="chip warn">Watch</span></div>
+        </div>
+        <div class="grid grid-2" style="margin-top:16px">
+          <div class="card"><h3 style="margin-top:0">Inspection volume</h3><div style="height:220px;display:grid;align-items:end;grid-template-columns:repeat(12,1fr);gap:8px;padding-top:20px">
+            <script>/* chart bars populated below */</script>
+            <div style="height:34%;background:#0f172a;border-radius:7px 7px 0 0"></div><div style="height:49%;background:#0f172a;border-radius:7px 7px 0 0"></div><div style="height:42%;background:#0f172a;border-radius:7px 7px 0 0"></div><div style="height:60%;background:#0f172a;border-radius:7px 7px 0 0"></div><div style="height:65%;background:#0f172a;border-radius:7px 7px 0 0"></div><div style="height:53%;background:#0f172a;border-radius:7px 7px 0 0"></div><div style="height:72%;background:#0f172a;border-radius:7px 7px 0 0"></div><div style="height:68%;background:#0f172a;border-radius:7px 7px 0 0"></div><div style="height:82%;background:#0f172a;border-radius:7px 7px 0 0"></div><div style="height:74%;background:#0f172a;border-radius:7px 7px 0 0"></div><div style="height:90%;background:#0f172a;border-radius:7px 7px 0 0"></div><div style="height:83%;background:#0f172a;border-radius:7px 7px 0 0"></div>
+          </div></div>
+          <div class="card"><h3 style="margin-top:0">Common defect mix</h3><div class="kpi-list"><div class="kpi"><strong>27%</strong><span>Exterior</span></div><div class="kpi"><strong>21%</strong><span>Tyres</span></div><div class="kpi"><strong>17%</strong><span>Interior</span></div><div class="kpi"><strong>13%</strong><span>Electrical</span></div><div class="kpi"><strong>12%</strong><span>Mechanical</span></div><div class="kpi"><strong>10%</strong><span>Other</span></div></div></div>
+        </div>
+      </section>
+
+      <section id="page-settings" class="pageview hide">
+        <div class="section-title"><div><h2>Company Settings</h2><p>Branding, report defaults, integrations and operational rules.</p></div><button class="btn success" onclick="showToast('Settings saved')">Save changes</button></div>
+        <div class="tabs"><button class="tab active">Company</button><button class="tab">Report</button><button class="tab">Notifications</button><button class="tab">Integrations</button><button class="tab">Security</button></div>
+        <div class="card">
+          <div class="form-grid">
+            <div class="field"><label>Company name</label><input value="AutoInspect Pro" /></div>
+            <div class="field"><label>Support phone</label><input value="+91 90000 00000" /></div>
+            <div class="field"><label>Website</label><input value="https://autinspect.example" /></div>
+            <div class="field"><label>Report prefix</label><input value="INS-" /></div>
+            <div class="field span-2"><label>Address</label><input value="Bengaluru, Karnataka, India" /></div>
+            <div class="field"><label>Timezone</label><select><option>Asia/Kolkata</option></select></div>
+            <div class="field"><label>Default language</label><select><option>English</option><option>Kannada</option><option>Hindi</option></select></div>
+          </div>
+          <hr style="border:0;border-top:1px solid var(--line);margin:10px 0 18px">
+          <div class="grid grid-3">
+            <label class="card" style="padding:12px"><input type="checkbox" checked style="width:auto"> Offline-first inspection mode</label>
+            <label class="card" style="padding:12px"><input type="checkbox" checked style="width:auto"> Autosave every action</label>
+            <label class="card" style="padding:12px"><input type="checkbox" checked style="width:auto"> QR report verification</label>
+            <label class="card" style="padding:12px"><input type="checkbox" checked style="width:auto"> Digital signatures</label>
+            <label class="card" style="padding:12px"><input type="checkbox" checked style="width:auto"> WhatsApp sharing</label>
+            <label class="card" style="padding:12px"><input type="checkbox" checked style="width:auto"> Email sharing</label>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-audit" class="pageview hide">
+        <div class="section-title"><div><h2>Audit Logs</h2><p>Every important change is traceable by user, time and action.</p></div><button class="btn" onclick="showToast('Audit export queued')">Export logs</button></div>
+        <div class="card"><table><thead><tr><th>Time</th><th>User</th><th>Action</th><th>Resource</th><th>Change</th></tr></thead>
+        <tbody>
+          <tr><td>16 Sep 10:19</td><td>Arun</td><td>Updated finding</td><td>INS-2026-00184</td><td>Rear bumper: Minor → Cosmetic</td></tr>
+          <tr><td>16 Sep 10:21</td><td>Arun</td><td>Uploaded photo</td><td>Rear bumper</td><td>IMG_1182.jpg</td></tr>
+          <tr><td>16 Sep 10:22</td><td>Admin</td><td>Generated report v2</td><td>INS-2026-00184</td><td>Report created</td></tr>
+          <tr><td>16 Sep 10:24</td><td>Admin</td><td>Shared report</td><td>INS-2026-00184</td><td>WhatsApp + email</td></tr>
+        </tbody></table></div>
+      </section>
+
+      <section id="page-newinspection" class="pageview hide">
+        <div class="section-title"><div><h2>New Vehicle Inspection</h2><p>Field-optimized inspection with automatic save, evidence capture and report generation.</p></div><div class="btn-row"><span class="chip success">● Autosaved 10 sec ago</span><span class="chip info">Offline ready</span></div></div>
+        <div class="stepper" id="stepper">
+          <div class="step active" data-step="1">1. Setup</div><div class="step" data-step="2">2. Vehicle</div><div class="step" data-step="3">3. Exterior</div><div class="step" data-step="4">4. Interior</div><div class="step" data-step="5">5. Mechanical</div><div class="step" data-step="6">6. Electrical</div><div class="step" data-step="7">7. Tyres</div><div class="step" data-step="8">8. Test Drive</div><div class="step" data-step="9">9. Faults</div><div class="step" data-step="10">10. Photos</div><div class="step" data-step="11">11. Summary</div></div>
+        <div id="inspectionStepContent"></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div class="modal-head"><h3 id="modalTitle" style="margin:0">Modal</h3><button class="btn" onclick="closeModal()">✕</button></div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const state = {
+  currentStep: 1,
+  selectedPanels: {},
+  photos: {},
+  vehicle: {registration:'KA01AB1234', vin:'MAKBB123456789012', make:'Hyundai', model:'Creta', variant:'SX(O)', year:'2023', fuel:'Petrol', transmission:'Automatic', color:'White', odometer:'42560'},
+  checks: {},
+  faults: [],
+  score: 82
+};
+
+const stepData = {
+1: ()=>`
+<div class="inspect-layout">
+  <div class="card">
+    <div class="section-title"><div><h2 style="font-size:18px">Inspection setup</h2><p>Choose the workflow and start with the minimum necessary typing.</p></div></div>
+    <div class="form-grid">
+      <div class="field"><label>Inspection type</label><select id="inspectionType"><option>Used Car</option><option>New Car — PDI</option><option>Re-inspection</option><option>Fleet</option><option>EV Extended</option></select></div>
+      <div class="field"><label>Inspector</label><select><option>Arun Kumar</option><option>Farhan S.</option><option>Rahul</option></select></div>
+      <div class="field"><label>Inspection ID</label><input value="INS-2026-00188" readonly></div>
+      <div class="field"><label>Inspection date/time</label><input value="16 Sep 2026 • 01:12 PM" readonly></div>
+      <div class="field span-2"><label>Customer</label><input value="Sameer Khan" placeholder="Search or create customer"></div>
+      <div class="field"><label>Customer type</label><select><option>Buyer</option><option>Seller</option><option>Dealer</option><option>Fleet</option></select></div>
+      <div class="field"><label>Priority</label><select><option>Normal</option><option>Express</option><option>High priority</option></select></div>
+    </div>
+    <div style="margin-top:6px;padding:13px;border:1px solid #cfe0ff;background:#eff6ff;border-radius:12px">
+      <strong>Smart setup</strong><div class="label" style="margin-top:4px">Registration number and VIN will be used to prefill vehicle data when the configured data provider is available. No image-based vehicle identity guess is required.</div>
+    </div>
+    <div class="btn-row" style="margin-top:16px"><button class="btn gold" onclick="demoLookup()">Lookup vehicle details</button><button class="btn" onclick="startFromReinspection()">Load previous inspection</button></div>
+  </div>
+  <div class="card sticky-card">
+    <h3 style="margin-top:0">Field controls</h3>
+    <div class="kpi-list"><div class="kpi"><strong>Auto</strong><span>Save</span></div><div class="kpi"><strong>Offline</strong><span>Cache</span></div><div class="kpi"><strong>Quick</strong><span>Tap input</span></div></div>
+    <hr style="border:0;border-top:1px solid var(--line);margin:15px 0">
+    <div class="label">Required before submission</div>
+    <div style="margin-top:9px">✓ Vehicle identity</div><div>✓ Required checklist items</div><div>✓ Required photos</div><div>✓ Final recommendation</div>
+  </div>
+</div>`,
+2: ()=>`
+<div class="card">
+  <div class="section-title"><div><h2 style="font-size:18px">Vehicle identity</h2><p>Scan or enter the registration/VIN once. Everything else can be prefilled.</p></div><span class="chip success">Prefill ready</span></div>
+  <div class="form-grid">
+    <div class="field"><label>Registration number</label><input id="reg" value="${state.vehicle.registration}" oninput="autoLookupPreview()"></div>
+    <div class="field"><label>VIN / Chassis number</label><input id="vin" value="${state.vehicle.vin}"></div>
+    <div class="field"><label>Make</label><input value="${state.vehicle.make}"></div>
+    <div class="field"><label>Model</label><input value="${state.vehicle.model}"></div>
+    <div class="field"><label>Variant</label><input value="${state.vehicle.variant}"></div>
+    <div class="field"><label>Manufacturing year</label><input value="${state.vehicle.year}"></div>
+    <div class="field"><label>Fuel</label><select><option selected>${state.vehicle.fuel}</option><option>Diesel</option><option>EV</option><option>Hybrid</option></select></div>
+    <div class="field"><label>Transmission</label><select><option selected>${state.vehicle.transmission}</option><option>Manual</option><option>Automatic</option></select></div>
+    <div class="field"><label>Colour</label><input value="${state.vehicle.color}"></div>
+    <div class="field"><label>Odometer</label><input value="${state.vehicle.odometer}"></div>
+    <div class="field"><label>Engine number</label><input value="EN-CR-23-99101"></div>
+    <div class="field"><label>Ownership</label><select><option>1st owner</option><option>2nd owner</option><option>3+ owners</option></select></div>
+  </div>
+  <div class="grid grid-3" style="margin-top:10px">
+    <div class="card" style="padding:13px"><strong>📷 Scan VIN</strong><div class="label">Camera / OCR slot</div><button class="btn" style="margin-top:8px" onclick="showToast('VIN scanner opened in production build')">Open scanner</button></div>
+    <div class="card" style="padding:13px"><strong>▣ Registration lookup</strong><div class="label">Provider-backed lookup</div><button class="btn" style="margin-top:8px" onclick="demoLookup()">Run lookup</button></div>
+    <div class="card" style="padding:13px"><strong>🧾 Documents</strong><div class="label">RC / insurance / PUC</div><button class="btn" style="margin-top:8px" onclick="showToast('Document upload ready')">Upload documents</button></div>
+  </div>
+  <div class="btn-row" style="margin-top:16px"><button class="btn primary" onclick="nextStep()">Save & continue</button><button class="btn" onclick="showToast('Vehicle draft saved')">Save draft</button></div>
+</div>`,
+3: ()=>`
+<div class="inspect-layout">
+  <div class="card">
+    <div class="section-title"><div><h2 style="font-size:18px">Exterior + damage map</h2><p>Tap a panel, select condition, capture evidence. No repetitive typing.</p></div><span class="chip info">Photo slots: 8</span></div>
+    <div class="vehicle-map">
+      <div><button class="panel-btn" onclick="selectPanel(this,'Front Left Fender')">Front Left Fender</button></div>
+      <div class="car-center"><strong>FRONT</strong><div class="label" style="margin:7px 0">Vehicle map</div><div style="border:1px dashed #bdc6d2;padding:12px;border-radius:18px">Cabin</div></div>
+      <div><button class="panel-btn" onclick="selectPanel(this,'Front Right Fender')">Front Right Fender</button></div>
+      <div><button class="panel-btn" onclick="selectPanel(this,'Left Front Door')">Left Front Door</button></div>
+      <div><button class="panel-btn" onclick="selectPanel(this,'Bonnet')">Bonnet</button></div>
+      <div><button class="panel-btn" onclick="selectPanel(this,'Right Front Door')">Right Front Door</button></div>
+      <div><button class="panel-btn" onclick="selectPanel(this,'Left Rear Door')">Left Rear Door</button></div>
+      <div><button class="panel-btn" onclick="selectPanel(this,'Boot / Tailgate')">Boot / Tailgate</button></div>
+      <div><button class="panel-btn" onclick="selectPanel(this,'Right Rear Door')">Right Rear Door</button></div>
+      <div><button class="panel-btn" onclick="selectPanel(this,'Left Rear Quarter')">Left Rear Quarter</button></div>
+      <div><button class="panel-btn" onclick="selectPanel(this,'Rear Bumper')">Rear Bumper</button></div>
+      <div><button class="panel-btn" onclick="selectPanel(this,'Right Rear Quarter')">Right Rear Quarter</button></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="section-title"><div><h2 style="font-size:16px">Selected panel</h2><p id="selectedPanelText">Select any vehicle panel above.</p></div></div>
+      <div class="form-grid">
+        <div class="field"><label>Condition</label><select id="panelCondition"><option>Excellent</option><option>Good</option><option>Fair</option><option>Damaged</option><option>Missing</option><option>Repaired</option><option>Replaced</option></select></div>
+        <div class="field"><label>Damage type</label><select><option>None</option><option>Scratch</option><option>Dent</option><option>Repaint</option><option>Rust</option><option>Crack</option><option>Panel alignment</option></select></div>
+        <div class="field"><label>Severity</label><select><option>Cosmetic</option><option>Minor</option><option>Moderate</option><option>Major</option><option>Critical</option></select></div>
+        <div class="field"><label>Photo evidence</label><button class="btn" style="width:100%" onclick="simulatePhoto('selectedPanel')">📷 Take photo</button></div>
+      </div>
+      <div class="field"><label>Observation (optional)</label><textarea rows="2" placeholder="Only type when predefined options aren't enough…"></textarea></div>
+      <div class="btn-row"><button class="btn primary" onclick="savePanel()">Save panel finding</button><button class="btn" onclick="annotatePhoto()">Annotate evidence</button></div>
+    </div>
+  </div>
+  <div class="card sticky-card">
+    <h3 style="margin-top:0">Exterior checklist</h3>
+    ${compactChecks(['Headlights','Fog lamps','Windshield','ORVM left','ORVM right','Front bumper','Rear bumper','Tail lamps','Number plates','Parking sensors','Reverse camera','Panel gaps'])}
+    <div style="margin-top:12px"><span class="chip success">12 / 12 reviewed</span></div>
+  </div>
+</div>`,
+4: ()=>`
+<div class="card">
+  <div class="section-title"><div><h2 style="font-size:18px">Interior inspection</h2><p>Tap-select status and attach evidence only when useful.</p></div><span class="chip success">Auto-save active</span></div>
+  ${checkSection('Dashboard & Controls',['Instrument cluster','Warning lights','Infotainment','Reverse camera','AC controls','Steering controls','Horn','Airbag indicator','USB / charging ports','Speakers'],true)}
+  ${checkSection('Seats & Safety',['Driver seat','Passenger seat','Rear seats','Seat belts','Upholstery','Seat adjustment'],true)}
+  ${checkSection('Cabin & Trim',['Roof liner','Floor','Door trims','Dashboard','Center console','Boot interior','Sunroof (conditional)'],true)}
+  <div class="btn-row"><button class="btn primary" onclick="nextStep()">Save & continue</button></div>
+</div>`,
+5: ()=>`
+<div class="card">
+  <div class="section-title"><div><h2 style="font-size:18px">Mechanical inspection</h2><p>Structured findings for engine, transmission, suspension, steering and brakes.</p></div><span class="chip warn">2 observations</span></div>
+  ${checkSection('Engine',['Cold start','Engine noise','Oil leakage','Coolant leakage','Smoke','Mounting','Belts','Hoses','Battery','Fluid levels'],true)}
+  ${checkSection('Transmission & Clutch',['Gear shifting','Clutch operation','Automatic transmission behavior','Abnormal noise','Leakage'],true)}
+  ${checkSection('Suspension & Steering',['Front suspension','Rear suspension','Shock absorbers','Bushes','Ball joints','Steering response','Steering play','Alignment','Power steering'],true)}
+  ${checkSection('Braking',['Brake pedal','Brake response','Brake noise','Disc condition','Drum condition','ABS'],true)}
+  <div class="card" style="margin-top:8px;background:#fff8eb;border-color:#f1d9ab"><strong>OBD diagnostics</strong><div class="label" style="margin-top:4px">Manual code entry now; hardware integration can be added later.</div><div class="form-grid" style="margin-top:10px"><div class="field"><label>OBD scan</label><select><option>Not performed</option><option>Performed — no codes</option><option>Codes found</option></select></div><div class="field span-2"><label>Fault codes</label><input placeholder="e.g. P0420, U0100"></div><div class="field"><label>ECU status</label><select><option>Not assessed</option><option>Normal</option><option>Attention required</option></select></div></div></div>
+  <div class="btn-row" style="margin-top:14px"><button class="btn primary" onclick="nextStep()">Save & continue</button></div>
+</div>`,
+6: ()=>`
+<div class="card">
+  <div class="section-title"><div><h2 style="font-size:18px">Electrical inspection</h2><p>Working, partial, not working or not tested.</p></div></div>
+  ${checkSection('Lighting',['Headlights','Tail lamps','Indicators','Fog lamps','Brake lights','Reverse lights','Interior lights'],true)}
+  ${checkSection('Electrical systems',['Battery','Alternator','Power windows','Central locking','ORVM','Sunroof','Infotainment','Parking sensors','Cameras','ADAS (conditional)'],true)}
+  <div class="card" style="margin-top:8px"><h3 style="margin:0 0 8px;font-size:15px">Status policy</h3><div class="kpi-list"><div class="kpi"><strong>Working</strong><span>Normal operation</span></div><div class="kpi"><strong>Partial</strong><span>Limited function</span></div><div class="kpi"><strong>Not working</strong><span>Fault</span></div><div class="kpi"><strong>Not tested</strong><span>Cannot assess</span></div></div></div>
+  <div class="btn-row" style="margin-top:14px"><button class="btn primary" onclick="nextStep()">Save & continue</button></div>
+</div>`,
+7: ()=>`
+<div class="card">
+  <div class="section-title"><div><h2 style="font-size:18px">Tyre inspection</h2><p>Record each wheel consistently, including tread, size, brand and replacement assessment.</p></div></div>
+  <table><thead><tr><th>Position</th><th>Brand</th><th>Size</th><th>Tread / Wear</th><th>Condition</th><th>Photo</th></tr></thead>
+  <tbody>
+    ${['Front Left','Front Right','Rear Left','Rear Right','Spare'].map(p=>`<tr><td><strong>${p}</strong></td><td><input value="${p==='Spare'?'MRF':'Michelin'}"></td><td><input value="215/60 R17"></td><td><select><option>Good</option><option>Fair</option><option>Worn</option><option>Critical</option></select></td><td><select><option>Good</option><option>Uneven wear</option><option>Sidewall damage</option><option>Replace</option></select></td><td><button class="btn" onclick="simulatePhoto('${p}')">📷</button></td></tr>`).join('')}
+  </tbody></table>
+  <div class="grid grid-2" style="margin-top:14px">
+    <div class="card" style="padding:13px"><strong>Tyre notes</strong><textarea rows="2" style="margin-top:8px" placeholder="Age, visible wear pattern, spare condition…"></textarea></div>
+    <div class="card" style="padding:13px"><strong>Replacement recommendation</strong><select style="margin-top:8px"><option>None</option><option>Monitor</option><option>Replace 1–2 tyres</option><option>Replace all</option></select></div>
+  </div>
+  <div class="btn-row" style="margin-top:14px"><button class="btn primary" onclick="nextStep()">Save & continue</button></div>
+</div>`,
+8: ()=>`
+<div class="card">
+  <div class="section-title"><div><h2 style="font-size:18px">Test drive</h2><p>Capture road behavior separately from static inspection.</p></div><span class="chip info">Optional by template</span></div>
+  ${checkSection('Driving behavior',['Cold start','Acceleration','Gear shifting','Braking','Steering','Suspension','Noise','Vibration','Clutch','Transmission'],false)}
+  ${checkSection('Road behavior',['Straight-line stability','Cornering','Braking behavior','Abnormal sounds','Pulling / drift'],false)}
+  <div class="form-grid"><div class="field"><label>Distance tested</label><input value="8.2 km"></div><div class="field"><label>Road conditions</label><select><option>Mixed city + highway</option><option>City</option><option>Highway</option><option>Parking lot only</option></select></div><div class="field"><label>Test result</label><select><option>Passed</option><option>Passed with observations</option><option>Further evaluation required</option><option>Not recommended</option></select></div><div class="field"><label>Video evidence</label><button class="btn" style="width:100%" onclick="showToast('Drive video capture slot ready')">🎥 Record</button></div></div>
+  <div class="field"><label>Drive notes</label><textarea rows="3" placeholder="Only enter unusual observations…"></textarea></div>
+  <div class="btn-row"><button class="btn primary" onclick="nextStep()">Save & continue</button></div>
+</div>`,
+9: ()=>`
+<div class="grid grid-2">
+  <div class="card">
+    <div class="section-title"><div><h2 style="font-size:18px">Fault library</h2><p>Tap predefined issues instead of typing them repeatedly.</p></div><button class="btn" onclick="showToast('Custom fault dialog opened')">＋ Custom</button></div>
+    <div class="toolbar" style="margin-bottom:12px"><input placeholder="Search fault" oninput="filterFaultChoices(this)"></div>
+    <div id="faultChoices" class="grid grid-2">
+      ${faultChoice('Oil leakage','Engine','Major')}${faultChoice('Coolant leakage','Engine','Major')}${faultChoice('Exterior scratch','Body','Cosmetic')}${faultChoice('Dent','Body','Minor')}${faultChoice('Panel repaint','Body','Moderate')}${faultChoice('Tyre wear','Tyres','Moderate')}${faultChoice('AC cooling weak','HVAC','Minor')}${faultChoice('Warning light','Electrical','Major')}${faultChoice('Brake noise','Brakes','Moderate')}${faultChoice('Steering play','Steering','Major')}${faultChoice('Cracked windshield','Glass','Major')}${faultChoice('Battery weak','Electrical','Moderate')}
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-title"><div><h2 style="font-size:18px">Selected faults</h2><p>Descriptions can be generated from structured selections.</p></div></div>
+    <div id="faultList"><div class="empty">No faults selected yet.</div></div>
+    <div class="field" style="margin-top:12px"><label>AI-assisted summary draft</label><textarea rows="4" id="aiSummary">The vehicle is generally in good condition. Selected observations will be converted into a consistent report summary after review.</textarea></div>
+    <div class="btn-row"><button class="btn" onclick="generateSummary()">Generate summary draft</button><button class="btn primary" onclick="nextStep()">Continue</button></div>
+  </div>
+</div>`,
+10: ()=>`
+<div class="card">
+  <div class="section-title"><div><h2 style="font-size:18px">Evidence & document capture</h2><p>Photos stay linked to inspection section + component, with original evidence preserved.</p></div><span class="chip success">8 / 12 required slots</span></div>
+  <div class="photo-grid">
+    ${['Front overview','Rear overview','Left side','Right side','Odometer','VIN / chassis','Front-left damage','Rear bumper damage','Engine bay','Tyre RR','Interior dashboard','Documents'].map((x,i)=>photoSlot(x,i)).join('')}
+  </div>
+  <div class="grid grid-3" style="margin-top:14px">
+    <div class="card" style="padding:13px"><strong>Original file</strong><div class="label">Retain original evidence image</div></div>
+    <div class="card" style="padding:13px"><strong>Compression</strong><div class="label">Optimize report copy without replacing original</div></div>
+    <div class="card" style="padding:13px"><strong>Metadata</strong><div class="label">Time, inspector, inspection, category; GPS only when enabled and appropriate</div></div>
+  </div>
+  <div class="btn-row" style="margin-top:14px"><button class="btn" onclick="openCameraMock()">📷 Open camera capture</button><button class="btn" onclick="annotatePhoto()">✎ Annotate selected photo</button><button class="btn primary" onclick="nextStep()">Save evidence & continue</button></div>
+</div>`,
+11: ()=>`
+<div class="inspect-layout">
+  <div class="card">
+    <div class="section-title"><div><h2 style="font-size:18px">Inspection summary</h2><p>Review before final report generation.</p></div><span class="chip warn">Reviewer check recommended</span></div>
+    <div class="grid grid-3">
+      <div class="card" style="padding:14px"><div class="label">Overall score</div><div style="font-size:32px;font-weight:900;margin-top:4px">${state.score}<span style="font-size:15px;color:var(--muted)"> / 100</span></div></div>
+      <div class="card" style="padding:14px"><div class="label">Major issues</div><div style="font-size:32px;font-weight:900;margin-top:4px">2</div></div>
+      <div class="card" style="padding:14px"><div class="label">Required photos</div><div style="font-size:32px;font-weight:900;margin-top:4px">12/12</div></div>
+    </div>
+    <div class="report-section"><h4>Category score</h4><table><thead><tr><th>Category</th><th>Score</th><th>Findings</th></tr></thead><tbody>
+      ${[['Exterior',84,3],['Interior',91,1],['Mechanical',76,2],['Electrical',88,1],['Tyres',79,2],['Test Drive',85,1]].map(x=>`<tr><td>${x[0]}</td><td><strong>${x[1]}</strong></td><td>${x[2]}</td></tr>`).join('')}
+    </tbody></table></div>
+    <div class="report-section"><h4>Recommendation</h4><select><option>Suitable with repairs</option><option>Suitable</option><option>Further evaluation required</option><option>Not recommended</option></select></div>
+    <div class="report-section"><h4>Reviewer comments</h4><textarea rows="3" placeholder="Final reviewer note…"></textarea></div>
+    <div class="btn-row" style="margin-top:14px"><button class="btn" onclick="showToast('Inspection submitted for review')">Submit for review</button><button class="btn primary" onclick="openReport('INS-2026-00188')">Generate report preview</button><button class="btn gold" onclick="generatePdfDemo()">Generate PDF</button></div>
+  </div>
+  <div class="card sticky-card">
+    <h3 style="margin-top:0">Pre-flight checklist</h3>
+    <div class="timeline"><div class="timeline-item"><strong>Vehicle identity</strong><div class="label">Complete</div></div><div class="timeline-item"><strong>Checklist</strong><div class="label">All required items reviewed</div></div><div class="timeline-item"><strong>Faults</strong><div class="label">2 major • 5 minor</div></div><div class="timeline-item"><strong>Photos</strong><div class="label">12 required captured</div></div><div class="timeline-item"><strong>Recommendation</strong><div class="label">Selected</div></div><div class="timeline-item"><strong>Signature</strong><div class="label">Inspector + customer</div></div><div class="timeline-item"><strong>QR verification</strong><div class="label">Will be generated</div></div></div>
+  </div>
+</div>`
+};
+
+function compactChecks(items){return items.map(x=>`<div style="padding:8px 0;border-bottom:1px solid #f0f2f5;font-size:12px;display:flex;justify-content:space-between"><span>${x}</span><span class="chip success" style="padding:3px 7px">Good</span></div>`).join('')}
+function checkSection(title,items,photos){return `<div class="check-section"><div class="check-head"><strong>${title}</strong><span class="chip">Tap to select</span></div><div class="check-body">${items.map((x,i)=>`<div class="item-row"><div><div class="item-name">${x}</div><div class="item-sub">${i%3===0?'Required':'Optional / conditional'}</div></div><select><option>Good</option><option>Excellent</option><option>Fair</option><option>Poor</option><option>Damaged</option><option>Working</option><option>Partial</option><option>Not working</option><option>Not tested</option></select><select><option>No fault</option><option>Cosmetic</option><option>Minor</option><option>Moderate</option><option>Major</option><option>Critical</option></select><button class="btn" onclick="simulatePhoto('${title}-${x}')">📷 Photo</button></div>`).join('')}</div></div>`}
+function faultChoice(name,system,severity){return `<button class="card fault-choice" data-name="${name.toLowerCase()}" style="text-align:left;padding:12px" onclick="addFault('${name}','${system}','${severity}')"><strong>${name}</strong><div class="label">${system} • ${severity}</div></button>`}
+function photoSlot(name,i){return `<div class="photo-slot ${state.photos[i]?'attached':''}" id="photo-${i}"><div class="thumb">${state.photos[i]?'✓':'📷'}</div><div><strong style="font-size:12px">${name}</strong><div class="label">${i<8?'Required':'Optional / conditional'}</div></div><button class="btn" style="margin-top:7px" onclick="simulatePhoto(${i})">${state.photos[i]?'Retake':'Capture'}</button></div>`}
+
+function renderInspectionStep(){
+  document.getElementById('inspectionStepContent').innerHTML = stepData[state.currentStep]();
+  document.querySelectorAll('.step').forEach(el=>{
+    const s=+el.dataset.step; el.classList.toggle('active',s===state.currentStep); el.classList.toggle('done',s<state.currentStep);
+  });
+}
+function nextStep(){ if(state.currentStep<11){state.currentStep++; renderInspectionStep();} else {openReport('INS-2026-00188');} window.scrollTo({top:0,behavior:'smooth'}); }
+function prevStep(){ if(state.currentStep>1){state.currentStep--;renderInspectionStep();}}
+function selectPanel(btn,name){document.querySelectorAll('.panel-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');state.selectedPanels.current=name;document.getElementById('selectedPanelText').textContent=name;}
+function savePanel(){showToast(`Saved ${state.selectedPanels.current||'panel'} finding`)}
+function simulatePhoto(key){state.photos[key]=true;showToast('Photo captured and linked to the correct inspection item');if(state.currentStep===10)renderInspectionStep();}
+function annotatePhoto(){showToast('Annotation mode opened: circle, arrow and note tools');}
+function openCameraMock(){showToast('Camera capture opened. Production build would use device camera APIs.');}
+function demoLookup(){state.vehicle={...state.vehicle,make:'Hyundai',model:'Creta',variant:'SX(O)',year:'2023',fuel:'Petrol',transmission:'Automatic',color:'White',odometer:'42560'};showToast('Vehicle details prefetched from configured provider (demo data)');}
+function autoLookupPreview(){showToast('Lookup suggestion updated')}
+function startFromReinspection(){state.currentStep=2;renderInspectionStep();showToast('Previous inspection findings carried forward');}
+function addFault(name,system,severity){state.faults.push({name,system,severity});renderFaults();showToast(`${name} added`)}
+function renderFaults(){const el=document.getElementById('faultList');if(!el)return;el.innerHTML=state.faults.length?state.faults.map((f,i)=>`<div class="card" style="padding:11px;margin-bottom:8px"><div style="display:flex;justify-content:space-between;gap:10px"><div><strong>${f.name}</strong><div class="label">${f.system}</div></div><span class="chip ${f.severity==='Major'||f.severity==='Critical'?'danger':f.severity==='Moderate'?'warn':''}">${f.severity}</span></div><div style="font-size:12px;margin-top:7px">${defaultFaultText(f.name)}</div><button class="btn" style="margin-top:8px" onclick="state.faults.splice(${i},1);renderFaults()">Remove</button></div>`).join(''):`<div class="empty">No faults selected yet.</div>`}
+function defaultFaultText(n){const map={\"Oil leakage\":\"Visible oil leakage observed around engine area. Mechanical assessment is recommended.\",\"Coolant leakage\":\"Coolant leakage observed in engine bay. Further mechanical inspection is recommended.\",\"Exterior scratch\":\"Visible surface scratches observed on the inspected body panel.\",\"Dent\":\"Visible dent observed on the inspected panel. Repair assessment may be required.\",\"Panel repaint\":\"Paint finish differs from surrounding panel; repainting may be present.\",\"Tyre wear\":\"Tread wear observed. Replacement assessment is recommended based on remaining life.\",\"AC cooling weak\":\"Air-conditioning cooling performance observed as below expected level.\",\"Warning light\":\"Warning indicator observed on instrument cluster. Diagnostic assessment is recommended.\",\"Brake noise\":\"Brake noise reported/observed during inspection.\",\"Steering play\":\"Steering play observed. Further steering-system assessment is recommended.\",\"Cracked windshield\":\"Crack visible on windshield; replacement assessment is recommended.\",\"Battery weak\":\"Battery performance may require testing or replacement assessment.\"};return map[n]||'Observation recorded during inspection.'}
+function generateSummary(){const n=state.faults.length;document.getElementById('aiSummary').value=`The vehicle is generally in ${n>3?'fair':'good'} condition with ${n} recorded observations. Key findings should be reviewed with the customer, and any major or safety-related observations should be evaluated before purchase or delivery.`;showToast('Summary draft generated from structured findings')}
+function filterFaultChoices(input){const q=input.value.toLowerCase();document.querySelectorAll('.fault-choice').forEach(el=>el.classList.toggle('hide',!el.dataset.name.includes(q)))}
+function filterTable(input,id){const q=input.value.toLowerCase();document.querySelectorAll(`#${id} tbody tr`).forEach(tr=>tr.classList.toggle('hide',!tr.innerText.toLowerCase().includes(q)))}
+function navigate(page){
+  document.querySelectorAll('.pageview').forEach(p=>p.classList.add('hide'));
+  const target=document.getElementById('page-'+page);if(target)target.classList.remove('hide');
+  document.querySelectorAll('.nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+  document.getElementById('pageCrumb').textContent=page==='newinspection'?'New Inspection':page.charAt(0).toUpperCase()+page.slice(1);
+  if(page==='newinspection'){state.currentStep=1;renderInspectionStep();}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function openReport(id){
+  const html=`
+    <div class="report-page">
+      <div class="report-header">
+        <div style="display:flex;gap:14px;align-items:center"><div class="report-logo">AI</div><div><div class="report-title">Vehicle Inspection Report</div><div class="label">AutoInspect Pro • Professional Inspection Services</div></div></div>
+        <div style="text-align:right"><strong>${id}</strong><div class="label">Version 2 • Verified report</div></div>
+      </div>
+      <div class="report-section"><div class="report-grid">
+        <div class="report-box"><small>Vehicle</small><strong>Hyundai Creta SX(O)</strong></div><div class="report-box"><small>Registration</small><strong>KA01AB1234</strong></div><div class="report-box"><small>VIN</small><strong>MAKBB123456789012</strong></div>
+        <div class="report-box"><small>Year</small><strong>2023</strong></div><div class="report-box"><small>Fuel / Transmission</small><strong>Petrol / Automatic</strong></div><div class="report-box"><small>Odometer</small><strong>42,560 km</strong></div>
+      </div></div>
+      <div class="report-section"><h4>Overall assessment</h4><div style="display:flex;align-items:center;gap:14px"><div style="font-size:44px;font-weight:900">82<span style="font-size:15px;color:#777">/100</span></div><div><strong>Suitable with repairs</strong><div class="label">2 major • 5 minor • 3 cosmetic findings</div></div></div></div>
+      <div class="report-section"><h4>Category scores</h4><table><thead><tr><th>Category</th><th>Score</th><th>Summary</th></tr></thead><tbody>
+        <tr><td>Exterior</td><td>84</td><td>Minor scratches and one panel repair observation.</td></tr><tr><td>Interior</td><td>91</td><td>Generally good condition.</td></tr><tr><td>Mechanical</td><td>76</td><td>Two findings require attention.</td></tr><tr><td>Electrical</td><td>88</td><td>Systems largely functional.</td></tr><tr><td>Tyres</td><td>79</td><td>Wear observed on rear tyres.</td></tr><tr><td>Test Drive</td><td>85</td><td>Passed with observations.</td></tr>
+      </tbody></table></div>
+      <div class="report-section"><h4>Key findings</h4><div class="card" style="padding:12px"><div class="kpi-list"><span class="chip danger">Oil leakage • Major</span><span class="chip warn">Tyre wear • Moderate</span><span class="chip">Exterior scratch • Cosmetic</span><span class="chip warn">AC cooling weak • Minor</span></div></div></div>
+      <div class="report-section"><h4>Evidence</h4><div class="photo-grid">${['Front overview','Rear overview','Rear bumper damage','Odometer','VIN / chassis','Engine bay','Tyre RR','Dashboard'].map(x=>`<div class="photo-slot attached"><div class="thumb">📷</div><strong style="font-size:11px">${x}</strong></div>`).join('')}</div></div>
+      <div class="report-section"><h4>Vehicle history</h4><div class="timeline"><div class="timeline-item"><strong>12 Sep 2026 • Initial inspection</strong><div class="label">Score 71 • 7 findings</div></div><div class="timeline-item"><strong>16 Sep 2026 • Current inspection</strong><div class="label">Score 82 • Improvements noted</div></div></div></div>
+      <div class="signatures"><div><div style="height:50px"></div><div class="signature-line">Inspector signature • Arun Kumar</div></div><div><div style="height:50px"></div><div class="signature-line">Customer acknowledgement • Sameer Khan</div></div></div>
+      <div class="footer-note">Report verification QR: INS-2026-00184 • Scan to verify report version and status. This report records observed condition at the time of inspection and does not replace an independent specialist assessment where required.</div>
+    </div>`;
+  openModal(`Report Preview — ${id}`,html+`<div class="btn-row" style="margin-top:16px"><button class="btn gold" onclick="generatePdfDemo()">Generate PDF</button><button class="btn" onclick="shareReport()">Share via WhatsApp</button><button class="btn" onclick="shareReport('email')">Share by Email</button><button class="btn" onclick="showToast('Report URL copied')">Copy verification link</button></div>`);
+}
+function generatePdfDemo(){showToast('PDF generation queued. In production this opens the downloadable branded report.')}
+function shareReport(channel='whatsapp'){showToast(`Report prepared for ${channel==='whatsapp'?'WhatsApp':'email'} sharing`)}
+function openNotifications(){openModal('Notifications',`<div class="timeline"><div class="timeline-item"><strong>Re-inspection due today</strong><div class="label">Tata Nexon EV • KA05MX4455</div></div><div class="timeline-item"><strong>Report review requested</strong><div class="label">INS-2026-00185</div></div><div class="timeline-item"><strong>Offline sync completed</strong><div class="label">7 actions uploaded successfully</div></div></div>`)}
+function openVehicleModal(){openModal('Add vehicle',`<div class="form-grid"><div class="field"><label>Registration</label><input value="KA02XY7777"></div><div class="field"><label>VIN</label><input placeholder="Scan or enter VIN"></div><div class="field"><label>Make</label><input value="Toyota"></div><div class="field"><label>Model</label><input value="Innova Crysta"></div></div><div class="btn-row"><button class="btn primary" onclick="closeModal();showToast('Vehicle created')">Create vehicle</button></div>`)}
+function openVehicleHistory(reg){openModal(`Vehicle history — ${reg}`,`<div class="kpi-list"><div class="kpi"><strong>3</strong><span>Inspections</span></div><div class="kpi"><strong>79</strong><span>Latest score</span></div><div class="kpi"><strong>1</strong><span>Open issue</span></div></div><div class="timeline" style="margin-top:18px"><div class="timeline-item"><strong>12 Sep 2026</strong><div class="label">Initial inspection • Score 71</div></div><div class="timeline-item"><strong>16 Sep 2026</strong><div class="label">Re-inspection • Score 78</div></div><div class="timeline-item"><strong>20 Sep 2026</strong><div class="label">Final check • Score 79</div></div></div>`)}
+function openModal(title,body){document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=body;document.getElementById('modal').classList.add('show')}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';clearTimeout(window._toast);window._toast=setTimeout(()=>t.style.display='none',2800)}
+function toggleMobileNav(){document.querySelector('.sidebar').style.display=document.querySelector('.sidebar').style.display==='block'?'none':'block'}
+document.querySelectorAll('.nav button[data-page]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.page)))
+document.querySelectorAll('.step').forEach(s=>s.addEventListener('click',()=>{const n=+s.dataset.step;if(n<=state.currentStep){state.currentStep=n;renderInspectionStep()}}))
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()})
+renderInspectionStep();
+</script>
+</body>
+</html>

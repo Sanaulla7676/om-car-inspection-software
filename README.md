@@ -73,3 +73,11 @@ npm run build
 ```
 
 The repository also contains GitHub Actions CI configuration for those checks.
+
+
+## Public website and mock admin
+
+- / is the public OM Car Inspection website: animated rotating hero copy, responsive navigation, service sections, six-day practical curriculum and public video references.
+- /book-inspection and /book-masterclass open a WhatsApp enquiry with the entered details. They do not create or confirm a reservation in a database.
+- /admin is a temporary, password-free mock preview that embeds public/admin-mock.html, the standalone sample inspection UI. Its records are demo data.
+- The production application remains on its existing application routes and its Supabase-authenticated dashboard layout is not disabled by this mock. Do not put real customer data in the public mock admin panel.

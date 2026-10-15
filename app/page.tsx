@@ -1,2 +1,2 @@
-import { redirect } from "next/navigation";
-export default function Home() { redirect("/dashboard"); }
+import { PublicLanding } from "@/components/public-landing";
+export default function HomePage() { return <PublicLanding />; }
