@@ -1655,3 +1655,109 @@ html{scroll-behavior:smooth}
 .marketing-site:not(.luxury-home) .marketing-page-hero-photo.marketing-masterclass-banner{
   transform:none!important;will-change:clip-path!important;
 }
+
+
+
+/* Hero refinement: keep the image width edge-to-edge, reduce only its displayed
+   height by 10%, and soften only the left edge behind animated copy. */
+.lux-car-image-hero{width:100%!important;margin:0!important;padding:0!important;overflow:hidden!important;background:#f6f5f0}
+.lux-car-image-hero .lux-reference-opening-banner.lux-car-hero-frame{
+  position:relative!important;width:100%!important;max-width:none!important;margin:0!important;padding:0!important;
+  aspect-ratio:1680 / 864!important;overflow:hidden!important;border:0!important;border-radius:0!important;
+  background:#eeece7;isolation:isolate;
+}
+.lux-car-image-hero .lux-car-hero-frame>img{
+  position:absolute!important;inset:0!important;z-index:0!important;display:block!important;
+  width:100%!important;height:100%!important;object-fit:cover!important;object-position:center 52%!important;
+  padding:0!important;filter:none!important;transform:scale(1.005);animation:luxCarHeroPhotoIn 1.15s cubic-bezier(.2,.75,.18,1) both;
+}
+.lux-car-image-hero .lux-car-hero-frame:after{
+  content:"";position:absolute;z-index:1;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,
+    rgba(255,255,255,.98) 0%,
+    rgba(255,255,255,.96) 14%,
+    rgba(255,255,255,.88) 20%,
+    rgba(255,255,255,.65) 25%,
+    rgba(255,255,255,.28) 31%,
+    rgba(255,255,255,.06) 38%,
+    rgba(255,255,255,0) 42%);
+}
+.lux-car-hero-copy{
+  position:absolute;z-index:2;left:clamp(20px,5.2vw,76px);top:50%;width:min(38%,510px);
+  transform:translateY(-50%);padding:0;color:#151a1f;
+}
+.lux-car-hero-eyebrow{
+  display:flex;align-items:center;gap:8px;margin:0 0 15px;
+  color:#566169;font:800 clamp(8px,.72vw,10px)/1.3 "DM Sans",Arial,sans-serif;
+  letter-spacing:.17em;text-transform:uppercase;
+  animation:luxCarTextBlurReveal .7s .04s cubic-bezier(.2,.8,.2,1) both;
+}
+.lux-car-hero-eyebrow>span{display:inline-block;width:21px;height:2px;background:#bb8732;flex:0 0 21px}
+.lux-car-hero-title{
+  margin:0!important;display:grid;gap:0;
+  font:900 clamp(39px,4.1vw,62px)/.89 "Barlow Condensed","Arial Narrow",Impact,sans-serif!important;
+  letter-spacing:-.035em!important;text-transform:uppercase;color:#11171b!important;
+}
+.lux-car-hero-title-line{display:block;overflow:hidden;animation:luxCarTextBlurReveal .78s cubic-bezier(.2,.8,.2,1) both}
+.lux-car-title-line-one{animation-delay:.13s}
+.lux-car-title-line-two{animation-delay:.27s}
+.lux-car-hero-title em{font-style:normal;color:#ba842e}
+.lux-car-hero-description{
+  max-width:440px;margin:15px 0 18px;color:#475158;
+  font:500 clamp(11px,.95vw,14px)/1.75 "DM Sans",Arial,sans-serif;
+  animation:luxCarTextBlurReveal .7s .4s cubic-bezier(.2,.8,.2,1) both;
+}
+.lux-car-hero-description strong{color:#242b30;font-weight:800}
+.lux-car-hero-actions{display:flex;align-items:center;flex-wrap:wrap;gap:9px;animation:luxCarTextBlurReveal .7s .53s cubic-bezier(.2,.8,.2,1) both}
+.lux-car-hero-primary,.lux-car-hero-secondary{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;
+  padding:0 14px;border-radius:999px;font:800 10px/1.2 "DM Sans",Arial,sans-serif;
+  text-decoration:none!important;transition:transform .22s,box-shadow .22s,background .22s,border-color .22s;
+}
+.lux-car-hero-primary{border:1px solid #c49548;background:linear-gradient(135deg,#ffedc6,#d9ac5c);color:#231b0e!important;box-shadow:0 5px 13px rgba(124,88,30,.13)}
+.lux-car-hero-primary:hover{transform:translateY(-2px);box-shadow:0 9px 20px rgba(124,88,30,.2)}
+.lux-car-hero-secondary{border:1px solid rgba(63,70,73,.3);background:rgba(255,255,255,.7);color:#343b40!important;backdrop-filter:blur(8px)}
+.lux-car-hero-secondary:hover{transform:translateY(-2px);border-color:#c69a50;background:#fffaf0}
+.lux-car-hero-proof{
+  display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin:17px 0 0;
+  color:#667078;font:800 8px/1.5 "DM Sans",Arial,sans-serif;letter-spacing:.085em;
+  animation:luxCarTextBlurReveal .7s .64s cubic-bezier(.2,.8,.2,1) both;
+}
+.lux-car-hero-proof>span{width:3px;height:3px;border-radius:50%;background:#b8832f;flex:0 0 3px}
+@keyframes luxCarTextBlurReveal{
+  from{opacity:0;filter:blur(8px);transform:translate3d(0,17px,0)}
+  to{opacity:1;filter:blur(0);transform:translate3d(0,0,0)}
+}
+@keyframes luxCarHeroPhotoIn{from{opacity:.65;transform:scale(1.025)}to{opacity:1;transform:scale(1.005)}}
+.lux-car-hero-primary:focus-visible,.lux-car-hero-secondary:focus-visible{outline:2px solid #a8792b;outline-offset:3px}
+@media(max-width:900px){
+  .lux-car-hero-copy{left:24px;width:min(44%,455px)}
+  .lux-car-hero-title{font-size:clamp(36px,5.2vw,50px)!important}
+  .lux-car-hero-description{font-size:11px;line-height:1.65;margin:12px 0 14px}
+  .lux-car-hero-proof{font-size:7px;gap:5px}
+}
+@media(max-width:620px){
+  .lux-car-image-hero .lux-reference-opening-banner.lux-car-hero-frame{aspect-ratio:1680 / 864!important}
+  .lux-car-image-hero .lux-car-hero-frame>img{object-position:57% center!important}
+  .lux-car-image-hero .lux-car-hero-frame:after{
+    background:linear-gradient(90deg,rgba(255,255,255,.97) 0%,rgba(255,255,255,.9) 30%,rgba(255,255,255,.64) 45%,rgba(255,255,255,.16) 68%,rgba(255,255,255,0) 78%);
+  }
+  .lux-car-hero-copy{left:16px;top:50%;width:67%;max-width:310px;padding-right:5px}
+  .lux-car-hero-eyebrow{font-size:7px;margin-bottom:9px;letter-spacing:.11em;gap:6px}
+  .lux-car-hero-eyebrow>span{width:13px;flex-basis:13px}
+  .lux-car-hero-title{font-size:clamp(27px,7.5vw,36px)!important;line-height:.9!important;letter-spacing:-.025em!important}
+  .lux-car-hero-description{font-size:9px;line-height:1.45;margin:9px 0 10px;max-width:260px}
+  .lux-car-hero-actions{gap:6px}
+  .lux-car-hero-primary,.lux-car-hero-secondary{min-height:32px;padding:0 9px;font-size:8px;gap:5px}
+  .lux-car-hero-primary svg{width:12px;height:12px}
+  .lux-car-hero-proof{font-size:6px;gap:4px;margin-top:9px;letter-spacing:.04em}
+}
+@media(max-width:390px){
+  .lux-car-hero-copy{left:12px;width:70%}
+  .lux-car-hero-title{font-size:26px!important}
+  .lux-car-hero-description{max-width:230px}
+  .lux-car-hero-secondary{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .lux-car-hero-eyebrow,.lux-car-hero-title-line,.lux-car-hero-description,.lux-car-hero-actions,.lux-car-hero-proof,.lux-car-image-hero .lux-car-hero-frame>img{animation:none!important;filter:none!important;transform:none!important;opacity:1!important}
+}
