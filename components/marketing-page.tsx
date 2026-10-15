@@ -26,7 +26,7 @@ export function MarketingPage({ content }: { content: MarketingPageContent }) {
   const heroImage = content.slug === "new-car-pdi"
     ? "https://htcms-prod-images.s3.ap-south-1.amazonaws.com/htmobile1/hyundai_new-verna/images/colours_hyundai-verna_titan-grey_1920x1033.jpg"
     : content.slug === "masterclass"
-      ? "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/9ded0ab3-2c6c-4815-b563-d0a46c973a66.png"
+      ? "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/2f1faea6-1140-4625-9abe-5ef915fdea93.png"
       : (content.slug.includes("used-car") || content.slug.includes("pre-owned"))
         ? "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/40087/thar-exterior-right-front-three-quarter-37.jpeg?isig=0&q=80"
         : "https://cdn-s3.autocarindia.com/Mahindra/xuv700/_KMC0974.JPG";
@@ -89,9 +89,9 @@ export function MarketingPage({ content }: { content: MarketingPageContent }) {
               </aside>
             </div>
           </div>
-          <div className="marketing-page-hero-photo" data-gsap-page-expand>
+          <div className={"marketing-page-hero-photo" + (content.slug === "masterclass" ? " marketing-masterclass-banner" : "")} data-gsap-page-expand>
             <img src={heroImage} alt={heroImageLabel + " visual"} fetchPriority="high" />
-            <div className="marketing-page-photo-label"><span>{heroImageLabel}</span><b>{content.title}</b></div>
+            {content.slug !== "masterclass" && <div className="marketing-page-photo-label"><span>{heroImageLabel}</span><b>{content.title}</b></div>}
           </div>
         </section>
 
