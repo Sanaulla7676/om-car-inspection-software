@@ -145,15 +145,6 @@ export default function PublicLanding() {
     window.setTimeout(() => setPaused(false), 8000);
   }
 
-  return () => window.clearInterval(timer);
-  }, [paused, activeSlide]);
-
-  function chooseSlide(index: number) {
-    setActiveSlide(index);
-    setPaused(true);
-    window.setTimeout(() => setPaused(false), 8000);
-  }
-
   return (
     <div className="marketing-site home-page luxury-home luxury-motion-site">
       <ScrollMotion />
