@@ -2038,3 +2038,11 @@ html{scroll-behavior:smooth}
   .lux-sync-progress>span,.lux-calendar-popover{animation:none!important}
   .lux-sync-slide-nav button,.lux-inspection-type-option{transition:none!important}
 }
+
+
+
+/* Mobile calendar anchoring: open upward when the date field sits near the bottom edge. */
+.lux-calendar-popover.is-above{
+  top:auto!important;
+  bottom:calc(100% + 7px)!important;
+}
