@@ -138,7 +138,7 @@ export function VehicleInspectionInquiryBar() {
             <label htmlFor="lux-vehicle-model"><span>Vehicle make & model *</span></label>
             <div className="lux-vehicle-entry">
               <CarFront size={17} aria-hidden="true" />
-              <input id="lux-vehicle-model" name="vehicle" value={vehicle} onChange={(event) => setVehicle(event.target.value)} onFocus={() => setVehiclePickerOpen(true)} required minLength={2} autoComplete="off" placeholder="e.g. Toyota Fortuner" aria-expanded={vehiclePickerOpen} aria-controls="lux-vehicle-suggestions" />
+              <input id="lux-vehicle-model" name="vehicle" value={vehicle} onChange={(event) => { setVehicle(event.target.value); if (event.target.value.trim()) setVehiclePickerOpen(false); }} onFocus={() => { if (!vehicle.trim()) setVehiclePickerOpen(true); }} required minLength={2} autoComplete="off" placeholder="e.g. Toyota Fortuner" aria-expanded={vehiclePickerOpen} aria-controls="lux-vehicle-suggestions" />
               <button type="button" aria-label="Choose an example vehicle" aria-expanded={vehiclePickerOpen} onClick={() => setVehiclePickerOpen((open) => !open)}><Search size={16} /></button>
             </div>
             {vehiclePickerOpen && <div className="lux-vehicle-suggestions" id="lux-vehicle-suggestions" role="dialog" aria-label="Vehicle make and model examples">
