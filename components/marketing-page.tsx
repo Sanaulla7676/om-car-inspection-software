@@ -24,12 +24,12 @@ export function MarketingPage({ content }: { content: MarketingPageContent }) {
     ? guidePages.filter((page) => page.slug !== content.slug).slice(0, 3)
     : servicePages.filter((page) => page.slug !== content.slug).slice(0, 3);
   const heroImage = content.slug === "new-car-pdi"
-    ? "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/af834010-4b06-4bb8-9ed5-9f42b14c3220.png"
+    ? "https://htcms-prod-images.s3.ap-south-1.amazonaws.com/htmobile1/hyundai_new-verna/images/colours_hyundai-verna_titan-grey_1920x1033.jpg"
     : content.slug === "masterclass"
       ? "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/9ded0ab3-2c6c-4815-b563-d0a46c973a66.png"
       : (content.slug.includes("used-car") || content.slug.includes("pre-owned"))
-        ? "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/fd170dfd-8d3f-4205-9b9c-5cc1fa429cfb.png"
-        : "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/af834010-4b06-4bb8-9ed5-9f42b14c3220.png";
+        ? "https://img.indianautosblog.com/2021/01/23/2020-mahindra-thar-review-680b.jpg"
+        : "https://cdn-s3.autocarindia.com/Mahindra/xuv700/_KMC0974.JPG";
   const heroImageLabel = content.slug === "new-car-pdi" ? "NEW VEHICLE PDI"
     : content.slug === "masterclass" ? "PDI COACHING & TRAINING"
     : (content.slug.includes("used-car") || content.slug.includes("pre-owned")) ? "PRE-OWNED INSPECTION"
