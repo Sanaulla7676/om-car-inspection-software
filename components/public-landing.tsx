@@ -5,7 +5,7 @@ import { useState } from "react";
 import {
   ArrowDown, ArrowRight, BadgeCheck, Camera, CarFront, ChartNoAxesCombined,
   Check, CheckCircle2, ClipboardCheck, Clock3, FileCheck2, FileText,
-  Gauge, GraduationCap, HeartHandshake, ShieldCheck, Users, Wrench
+  Gauge, GraduationCap, HeartHandshake, ShieldCheck
 } from "lucide-react";
 import { SiteNavigation } from "@/components/site-navigation";
 import { SiteFooter } from "@/components/site-footer";
@@ -234,7 +234,7 @@ export default function PublicLanding() {
           <div className="lux-about-message">
             <p className="lux-eyebrow"><span /> OUR APPROACH</p>
             <h2>Clear observations. Useful evidence. Better-informed decisions.</h2>
-            <p>The goal is to document what was observed, keep the scope and limitations clear, and make important follow-up questions easy to see. No owner name or personal claim is assumed in this presentation.</p>
+            <p>The goal is to document what was observed, keep the scope and limitations clear, and make important follow-up questions easy to see.</p>
             <div className="lux-about-signature">OMKAR <small>Vehicle inspection · PDI coaching</small></div>
           </div>
           <div className="lux-about-points">
