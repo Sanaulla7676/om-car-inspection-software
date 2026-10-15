@@ -118,13 +118,34 @@ const workflow = [
 
 export default function PublicLanding() {
   const [activeSlide, setActiveSlide] = useState(0);
+  const [previousSlide, setPreviousSlide] = useState(0);
+  const [isChangingSlide, setIsChangingSlide] = useState(false);
   const [paused, setPaused] = useState(false);
   const slide = slides[activeSlide];
 
   useEffect(() => {
     if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setInterval(() => setActiveSlide((current) => (current + 1) % slides.length), 3000);
+    const timer = window.setInterval(() => {
+      setPreviousSlide(activeSlide);
+      setActiveSlide((current) => (current + 1) % slides.length);
+      setIsChangingSlide(true);
+      window.setTimeout(() => setIsChangingSlide(false), 680);
+    }, 3000);
     return () => window.clearInterval(timer);
+  }, [paused, activeSlide]);
+
+  function chooseSlide(index: number) {
+    if (index !== activeSlide) {
+      setPreviousSlide(activeSlide);
+      setActiveSlide(index);
+      setIsChangingSlide(true);
+      window.setTimeout(() => setIsChangingSlide(false), 680);
+    }
+    setPaused(true);
+    window.setTimeout(() => setPaused(false), 8000);
+  }
+
+  return () => window.clearInterval(timer);
   }, [paused, activeSlide]);
 
   function chooseSlide(index: number) {
@@ -169,7 +190,8 @@ export default function PublicLanding() {
           <div className="lux-scroll-expand-story" data-gsap-scroll-story>
             <div className="lux-scroll-expand-sticky">
               <div className="lux-hero-fullbleed" data-gsap-scroll-expand aria-label={slide.alt}>
-                <img src={slide.image} alt={slide.alt} fetchPriority="high" />
+                <img className="lux-hero-active-image" src={slide.image} alt={slide.alt} fetchPriority="high" />
+                {previousSlide !== activeSlide && <img className={"lux-hero-previous-image" + (isChangingSlide ? " is-fading" : "")} src={slides[previousSlide].image} alt="" aria-hidden="true" />}
                 <div className="lux-scroll-expanded-copy" data-gsap-scroll-copy>
                   <p>{slide.imageTag} <span> / {slide.index}</span></p>
                   <h2>{slide.accent}</h2>
