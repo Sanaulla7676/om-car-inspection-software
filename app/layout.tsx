@@ -10,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({children}:{children:React.ReactNode}){
-  return <html lang="en"><body><QueryProvider>{children}<PwaRegister/></body></html>;
+  return <html lang="en"><body><QueryProvider>{children}<PwaRegister/></QueryProvider></body></html>;
 }
