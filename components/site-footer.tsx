@@ -16,7 +16,7 @@ export function SiteFooter() {
           <h3>INSPECTION SERVICES</h3>
           <Link href="/services/new-car-pdi">New Vehicle PDI</Link>
           <Link href="/services/used-car-inspection">Old Vehicle PDA</Link>
-          <Link href="/#valuation">Vehicle valuation</Link>
+          <Link href="/#valuation-reports">Vehicle valuation</Link>
           <Link href="/services/inspection-report">Reports & documentation</Link>
           <Link href="/services">Explore all services <ArrowRight size={13} /></Link>
         </div>
