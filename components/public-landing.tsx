@@ -23,8 +23,8 @@ const slides = [
     tab: "New Vehicle PDI",
     kicker: "BEFORE THE KEYS ARE YOURS",
     title: "VEHICLE PDI",
-    accent: "BEFORE DELIVERY.",
-    description: "Pre-delivery checks for your new vehicle, with visible condition, accessible functions and handover items recorded in a structured report.",
+    accent: "INSPECT BEFORE HANDOVER.",
+    description: "A new-car handover check covering panel fit, paint, lights, cabin condition, accessible functions and delivery documents before sign-off.",
     cta: "Explore New Vehicle PDI",
     href: "/services/new-car-pdi",
     image: SUV_IMAGE,
@@ -37,9 +37,9 @@ const slides = [
     index: "02",
     tab: "Pre-Owned PDI / PDA",
     kicker: "BEFORE YOU COMMIT",
-    title: "PRE-OWNED CHECKS",
-    accent: "CLEARER DECISIONS.",
-    description: "Review visible body condition, cabin wear, tyres and accessible functions before committing to a pre-owned vehicle.",
+    title: "USED VEHICLE PDI",
+    accent: "KNOW THE CONDITION.",
+    description: "A pre-purchase vehicle condition review covering bodywork, paint, tyres, cabin wear and accessible functions, with findings recorded for your decision.",
     cta: "Explore Pre-Owned Inspection",
     href: "/services/used-car-inspection",
     image: SPORT_IMAGE,
@@ -53,8 +53,8 @@ const slides = [
     tab: "PDI Coaching",
     kicker: "LEARN THE INSPECTION METHOD",
     title: "PDI COACHING",
-    accent: "BUILT THROUGH PRACTICE.",
-    description: "Learn a repeatable vehicle-inspection sequence, condition marking, evidence capture and clear report writing through practical coaching.",
+    accent: "LEARN THE CHECKLIST.",
+    description: "Practical PDI coaching in inspection sequence, condition marking, evidence capture and writing a clear, structured vehicle report.",
     cta: "Explore PDI Coaching",
     href: "/masterclass",
     image: INSPECTION_IMAGE,
@@ -67,19 +67,19 @@ const slides = [
 const services = [
   {
     number: "01", label: "NEW VEHICLE", title: "New Vehicle PDI",
-    intro: "Check a new vehicle before accepting delivery.",
+    intro: "Inspect a factory-new vehicle before handover sign-off.",
     points: ["Exterior fit and finish", "Cabin and accessible functions", "Handover items and evidence"],
     href: "/services/new-car-pdi", image: SUV_IMAGE, icon: CarFront
   },
   {
     number: "02", label: "PRE-OWNED VEHICLE", title: "Pre-Owned PDI / PDA",
-    intro: "Document the observed condition before purchase.",
+    intro: "Record visible condition before you commit to a used vehicle.",
     points: ["Panels, paint, glass and lights", "Tyres, cabin and visible concerns", "Findings that need follow-up"],
     href: "/services/used-car-inspection", image: SPORT_IMAGE, icon: Gauge
   },
   {
     number: "03", label: "PRACTICAL LEARNING", title: "PDI Coaching",
-    intro: "Practise the steps used in a structured inspection.",
+    intro: "Learn a repeatable PDI checklist and evidence workflow.",
     points: ["Walk-through inspection sequence", "Condition codes and observation", "Evidence and report writing"],
     href: "/masterclass", image: INSPECTION_IMAGE, icon: GraduationCap
   },
@@ -155,13 +155,19 @@ export default function PublicLanding() {
             <div className="lux-carousel-status"><span>{slide.index}</span><i /><span>03</span></div>
           </div>
 
-          <div className="lux-hero-fullbleed" key={slide.id + "-image"} aria-label={slide.alt}>
-            <img src={slide.image} alt={slide.alt} fetchPriority="high" />
-            <div className="lux-image-caption">
-              <span className="lux-image-caption-marker"><Check size={15} /></span>
-              <div><b>{slide.imageTag}</b><small>{slide.imageNote}</small></div>
+          <div className="lux-scroll-expand-story" data-gsap-scroll-story>
+            <div className="lux-scroll-expand-sticky">
+              <div className="lux-hero-fullbleed" data-gsap-scroll-expand key={slide.id + "-image"} aria-label={slide.alt}>
+                <img src={slide.image} alt={slide.alt} fetchPriority="high" />
+                <div className="lux-scroll-expanded-copy" data-gsap-scroll-copy>
+                  <p>{slide.imageTag} <span> / {slide.index}</span></p>
+                  <h2>{slide.accent}</h2>
+                  <small>{slide.imageNote}</small>
+                  <Link href={slide.href as any}>{slide.cta} <ArrowRight size={15} /></Link>
+                </div>
+                <div className="lux-image-index">OM / {slide.index}</div>
+              </div>
             </div>
-            <div className="lux-image-index">OM / {slide.index}</div>
           </div>
           <div className="lux-hero-underbar">
             <span><BadgeCheck size={15} /> Clear scope before inspection</span>
@@ -172,8 +178,8 @@ export default function PublicLanding() {
 
         <section className="lux-service-section" id="services">
           <div className="lux-section-title-row" data-gsap-reveal>
-            <div><p className="lux-eyebrow"><span /> INSPECTION & LEARNING</p><h2>Choose what you need.</h2></div>
-            <p>Choose a service to see its scope, typical checks and the next step.</p>
+            <div><p className="lux-eyebrow"><span /> INSPECTION & LEARNING</p><h2>Vehicle PDI and coaching.</h2></div>
+            <p>New-car handover checks, pre-owned vehicle inspection, practical PDI coaching and reporting.</p>
           </div>
           <div className="lux-service-grid">
             {services.map((service) => {
@@ -201,7 +207,7 @@ export default function PublicLanding() {
         <section className="lux-worksheet-section" id="valuation-reports">
           <div className="lux-worksheet-copy" data-gsap-reveal>
             <p className="lux-eyebrow"><span /> INSPECTION WORKSHEET</p>
-            <h2>One inspection. Four clearly marked areas.</h2>
+            <h2>Four worksheet sections.</h2>
             <p>For valuation workflows, keep the findings grouped by the same worksheet references used in the form.</p>
             <Link href="/services/inspection-report" className="lux-button lux-button-white">See report details <ArrowRight size={15} /></Link>
           </div>
@@ -214,7 +220,7 @@ export default function PublicLanding() {
           <div className="lux-training-image" data-gsap-image><img src={INSPECTION_IMAGE} alt="An inspector checking vehicle body condition in a bright workshop" loading="lazy" /><div className="lux-training-photo-label">PRACTICAL PDI COACHING</div></div>
           <div className="lux-training-copy" data-gsap-reveal>
             <p className="lux-eyebrow"><span /> TRAINING & COACHING</p>
-            <h2>Learn the inspection sequence. Build your confidence through practice.</h2>
+            <h2>Learn the inspection process hands-on.</h2>
             <p>Coaching focuses on the practical workflow: where to look, how to record a finding, when to capture evidence and how to explain what could not be verified.</p>
             <div className="lux-training-list">
               <span><Check size={14} /> Exterior and interior checks</span>
@@ -228,7 +234,7 @@ export default function PublicLanding() {
         <section className="lux-process-section">
           <div className="lux-section-title-row" data-gsap-reveal>
             <div><p className="lux-eyebrow"><span /> THE WORKFLOW</p><h2>From check to report.</h2></div>
-            <p>Each stage has a purpose, from recording an observation to reviewing the final document.</p>
+            <p>Choose the service, complete the relevant checks, attach evidence and review the report.</p>
           </div>
           <div className="lux-process-grid">
             {workflow.map((item) => {
