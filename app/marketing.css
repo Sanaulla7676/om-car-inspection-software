@@ -955,7 +955,6 @@ html{scroll-behavior:smooth}
    Bright showroom visuals, condensed automotive display typography,
    scroll-triggered reveals and white / graphite / champagne-gold palette.
    ========================================================================= */
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap');
 .marketing-site{font-family:"DM Sans",Arial,sans-serif!important}
 .marketing-site h1,.marketing-site h2,.marketing-site h3,.lux-racing-title{font-family:"Barlow Condensed","Arial Narrow",Impact,sans-serif!important}
 .marketing-site .lux-eyebrow,.lux-enquiry-form,.lux-button,.lux-text-link,.lux-service-tag{font-family:"DM Sans",Arial,sans-serif!important}
