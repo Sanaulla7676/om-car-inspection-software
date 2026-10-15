@@ -2106,3 +2106,24 @@ html{scroll-behavior:smooth}
     object-position:center 50%!important;
   }
 }
+
+
+
+/* Preserve a consistent 80vh image frame on the coaching page too. */
+.marketing-site:not(.luxury-home) .marketing-page-hero-photo.marketing-masterclass-banner{
+  width:100vw!important;max-width:none!important;
+  height:min(80vh,800px)!important;min-height:500px!important;max-height:800px!important;
+  aspect-ratio:auto!important;
+  margin:clamp(18px,2.4vw,32px) calc(50% - 50vw) 0!important;
+  clip-path:none!important;transform:none!important;border:0!important;border-radius:0!important;
+}
+@media(max-width:900px){
+  .marketing-site:not(.luxury-home) .marketing-page-hero-photo.marketing-masterclass-banner{
+    height:68vh!important;min-height:420px!important;max-height:650px!important;
+  }
+}
+@media(max-width:620px){
+  .marketing-site:not(.luxury-home) .marketing-page-hero-photo.marketing-masterclass-banner{
+    height:58vh!important;min-height:320px!important;max-height:500px!important;
+  }
+}
