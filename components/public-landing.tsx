@@ -296,6 +296,29 @@ export default function PublicLanding() {
           </div>
         </section>
 
+        <section className="lux-six-day-masterclass" id="six-day-masterclass">
+          <div className="lux-six-day-visual" data-gsap-image>
+            <img src={INSPECTION_IMAGE} alt="Practical vehicle paint and condition inspection in a workshop" loading="lazy" />
+            <div className="lux-six-day-visual-badge"><span>6</span><div><b>DAYS</b><small>PRACTICAL MASTERCLASS</small></div></div>
+          </div>
+          <div className="lux-six-day-copy" data-gsap-reveal>
+            <p className="lux-eyebrow"><span /> PRACTICAL TRAINING · SIX DAYS</p>
+            <h2>Learn to inspect cars. <em>Step by step.</em></h2>
+            <p className="lux-six-day-intro">A structured six-day learning path covering vehicle identity, exterior condition, engine-bay basics, cabin functions, diagnostic awareness, road-test observations and evidence-led report writing.</p>
+            <div className="lux-six-day-timeline">
+              <article><span>01–02</span><div><b>Inspection foundations</b><small>Safety, vehicle identity, workflow and exterior condition.</small></div></article>
+              <article><span>03–04</span><div><b>Cabin, engine bay and functions</b><small>Engine-bay observations, cabin checks and diagnostic-code basics.</small></div></article>
+              <article><span>05</span><div><b>Road test and reporting</b><small>Road-test observations and evidence-led report writing.</small></div></article>
+              <article><span>06</span><div><b>Guided inspection practice</b><small>Live guided inspection, review and next-step practice.</small></div></article>
+            </div>
+            <div className="lux-six-day-actions">
+              <Link href="/masterclass" className="lux-button lux-button-gold">View six-day curriculum <ArrowRight size={15} /></Link>
+              <Link href="#coaching-enquiry" className="lux-text-link">Enquire about the next batch <ArrowDownRight size={15} /></Link>
+            </div>
+            <p className="lux-six-day-note">Batch dates, venue, fees, equipment and delivery format are confirmed directly. Training does not guarantee placement or income.</p>
+          </div>
+        </section>
+
         <section className="lux-process-section">
           <div className="lux-section-title-row" data-gsap-reveal>
             <div><p className="lux-eyebrow"><span /> THE WORKFLOW</p><h2>From check to report.</h2></div>
