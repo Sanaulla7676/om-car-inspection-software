@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ShieldCheck, CarFront, FileText, Instagram, Mail, Phone, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ShieldCheck, ArrowUpRight } from "lucide-react";
 
 export function SiteFooter() {
   return (
