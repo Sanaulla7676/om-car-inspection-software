@@ -10,22 +10,10 @@ import { guidePages } from "@/lib/marketing-content";
 
 const slides = [
   {
-    phrase: "you buy.",
-    eyebrow: "PRE-PURCHASE CLARITY",
-    image: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=2200&q=88",
-    alt: "Vehicle technician reviewing a car in a workshop"
-  },
-  {
-    phrase: "you drive.",
-    eyebrow: "A BETTER HANDOVER",
-    image: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=2200&q=88",
-    alt: "Automotive specialist checking a vehicle"
-  },
-  {
     phrase: "you decide.",
-    eyebrow: "EVIDENCE-LED REPORTING",
-    image: "https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=2200&q=88",
-    alt: "Vehicle maintenance and inspection work"
+    eyebrow: "PROFESSIONAL INSPECTION",
+    image: "/omkar-inspection-hero.webp",
+    alt: "Professional vehicle inspector in a modern automotive workshop"
   }
 ];
 
@@ -65,7 +53,7 @@ export default function PublicLanding() {
   const slide = slides[activeSlide];
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (slides.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timer = window.setInterval(() => setActiveSlide((value) => (value + 1) % slides.length), 5200);
     return () => window.clearInterval(timer);
   }, []);
@@ -98,19 +86,11 @@ export default function PublicLanding() {
                 <span><CheckCircle2 size={15} /> Clear limitations</span>
               </div>
             </div>
-            <div className="hero-side-panel site-spotlight" data-reveal>
-              <div className="side-panel-top"><span className="panel-overline">THE OM METHOD</span><span className="panel-status"><i /> PROCESS-LED</span></div>
-              <div className="hero-scan-art" aria-hidden="true"><div className="scan-car-outline"><span /><span /><span /></div><div className="scan-sweep" /></div>
-              <div className="side-panel-bottom"><span>01 / OBSERVE</span><span>02 / RECORD</span><span>03 / REVIEW</span></div>
-              <div className="hero-side-note"><ShieldCheck size={15} /><span>Findings stay tied to what was actually checked.</span></div>
-            </div>
+
           </div>
           <div className="hero-bottom-row">
             <a className="hero-scroll-cue" href="#services"><span className="scroll-cue-line" /> SCROLL TO EXPLORE <ArrowDown size={14} /></a>
-            <div className="hero-slide-controls" aria-label="Choose hero message">
-              {slides.map((item, index) => <button key={item.phrase} type="button" onClick={() => setActiveSlide(index)} className={index === activeSlide ? "is-active" : ""} aria-label={"Show slide " + (index + 1) + ": " + item.phrase}><span /></button>)}
-              <span>0{activeSlide + 1} <i>/ 0{slides.length}</i></span>
-            </div>
+
           </div>
         </section>
 
