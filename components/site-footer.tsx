@@ -7,7 +7,7 @@ export function SiteFooter() {
       <div className="lux-footer-main">
         <div className="lux-footer-brand">
           <Link href="/" className="lux-footer-logo" aria-label="Omkar Car Inspection home">
-            <span className="lux-footer-car">⌒</span><b>OMKAR</b><small>CAR INSPECTION</small>
+            <img className="lux-footer-logo-img" src="https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/a526dc36-b0a0-4787-bbc3-bed064b316c1.png" alt="OMKAR Inspection" width={150} height={58} />
           </Link>
           <p>Professional vehicle inspection, structured valuation and evidence-led reporting for clearer decisions.</p>
           <Link className="lux-footer-admin" href="/login"><ShieldCheck size={15} /> Team sign-in <ArrowUpRight size={13} /></Link>
