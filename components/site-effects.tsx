@@ -19,7 +19,7 @@ export function SiteEffects() {
             const rawDelay = element.dataset.revealDelay || "0";
             element.style.setProperty("--reveal-delay", rawDelay + "ms");
             element.classList.add("reveal-in");
-            observer.unobserve(element);
+            activeObserver.unobserve(element);
           }
         });
       }, { rootMargin: "0px 0px -45px 0px", threshold: 0.08 });

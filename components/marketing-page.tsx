@@ -55,7 +55,7 @@ export function MarketingPage({ content }: { content: MarketingPageContent }) {
         <section className="marketing-hero">
           <div className="marketing-hero-content">
             <nav className="breadcrumbs" aria-label="Breadcrumb">
-              {breadcrumbs.map((crumb, index) => <span key={crumb.label} className="breadcrumb-item">{index > 0 && <ChevronRight size={12} />}<Link href={crumb.href}>{crumb.label}</Link></span>)}
+              {breadcrumbs.map((crumb, index) => <span key={crumb.label} className="breadcrumb-item">{index > 0 && <ChevronRight size={12} />}<Link href={crumb.href as any}>{crumb.label}</Link></span>)}
             </nav>
             <div className="marketing-hero-grid">
               <div>
@@ -64,7 +64,7 @@ export function MarketingPage({ content }: { content: MarketingPageContent }) {
                 <p className="marketing-hero-tagline shiny-heading">{content.tagline}</p>
                 <p className="marketing-hero-intro">{content.intro}</p>
                 <div className="marketing-hero-actions">
-                  <Link href={content.primaryHref || (isGuide ? "/services/used-car-inspection" : "/book-inspection")} className="site-button-v2 button-bright">{content.primaryLabel || (isGuide ? "Explore inspection services" : "Request an inspection")} <ArrowRight size={15} /></Link>
+                  <Link href={(content.primaryHref || (isGuide ? "/services/used-car-inspection" : "/book-inspection")) as any} className="site-button-v2 button-bright">{content.primaryLabel || (isGuide ? "Explore inspection services" : "Request an inspection")} <ArrowRight size={15} /></Link>
                   <Link href="/dashboard" className="site-button-v2 button-glass"><ShieldCheck size={15} /> Inspection software</Link>
                 </div>
               </div>
@@ -93,7 +93,7 @@ export function MarketingPage({ content }: { content: MarketingPageContent }) {
               <h2 id="overview-heading">{isGuide ? "What to look for and what it means" : "Make the scope clear. Keep the evidence."}</h2>
               <p>{content.overview}</p>
               <p>{isGuide ? "When evidence is incomplete, record the question that remains rather than treating an untested item as clear. Seek a qualified or authorised specialist for safety-critical, legal or technical matters beyond the agreed scope." : "The most useful inspection record distinguishes what was directly observed from what is suspected, and highlights items that need confirmation. Availability, price and specific deliverables are confirmed before the booking is final."}</p>
-              <Link href={isGuide ? (content.primaryHref || "/services") : "/book-inspection"} className="text-link-v2">{isGuide ? "Explore the relevant service" : "Discuss this service"} <ArrowRight size={14} /></Link>
+              <Link href={(isGuide ? (content.primaryHref || "/services") : "/book-inspection") as any} className="text-link-v2">{isGuide ? "Explore the relevant service" : "Discuss this service"} <ArrowRight size={14} /></Link>
             </article>
             <aside className="marketing-check-panel site-spotlight" data-reveal>
               <h3>{isGuide ? "Checklist to keep in mind" : "What a structured review may cover"}</h3>
@@ -117,7 +117,7 @@ export function MarketingPage({ content }: { content: MarketingPageContent }) {
           <div className="site-container-v2">
             <div className="marketing-section-heading" data-reveal><h2>{isGuide ? "Related learning guides" : "Other ways we can help"}</h2><p>{isGuide ? "Continue learning with closely related topics." : "Explore related inspection services and reporting options."}</p></div>
             <div className="related-card-grid">
-              {nearby.map((page, index) => <Link key={page.slug} href={(isGuide ? "/guides/" : "/services/") + page.slug} className="related-card" data-reveal data-reveal-delay={index * 55}><span>{isGuide ? "LEARNING GUIDE" : "INSPECTION SERVICE"}</span><h3>{page.title}</h3><p>{page.tagline}</p><ArrowRight size={16} /></Link>)}
+              {nearby.map((page, index) => <Link key={page.slug} href={((isGuide ? "/guides/" : "/services/") + page.slug) as any} className="related-card" data-reveal data-reveal-delay={index * 55}><span>{isGuide ? "LEARNING GUIDE" : "INSPECTION SERVICE"}</span><h3>{page.title}</h3><p>{page.tagline}</p><ArrowRight size={16} /></Link>)}
             </div>
           </div>
         </section>}
@@ -125,7 +125,7 @@ export function MarketingPage({ content }: { content: MarketingPageContent }) {
         <section className="marketing-page-bottom-cta">
           <div className="site-container-v2 marketing-page-bottom-cta-inner" data-reveal>
             <div><h2>{isGuide ? "Turn a better question into a clearer inspection." : isMasterclass ? "Ready to learn the method?" : "Start with the question you need answered."}</h2><p>{isGuide ? "Choose the service that fits your vehicle and situation. Confirm the scope before you book." : isMasterclass ? "Send a request for the current batch details, then confirm all terms directly before enrolling." : "Share the vehicle and your goal. The team can discuss availability, access and the agreed deliverables."}</p></div>
-            <Link href={content.primaryHref || "/book-inspection"} className="site-button-v2 button-bright">{content.primaryLabel || "Request an inspection"} <ArrowRight size={15} /></Link>
+            <Link href={(content.primaryHref || "/book-inspection") as any} className="site-button-v2 button-bright">{content.primaryLabel || "Request an inspection"} <ArrowRight size={15} /></Link>
           </div>
         </section>
       </main>

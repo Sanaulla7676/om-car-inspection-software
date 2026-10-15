@@ -34,7 +34,7 @@ export function SiteNavigation() {
             const active = item.href === "/" ? pathname === "/" : pathname === item.href || pathname.startsWith(item.href + "/");
             return (
               <Link
-                href={item.href}
+                href={item.href as any}
                 key={item.href}
                 className={"capsule-nav-link" + (active ? " is-current" : "") + (item.software ? " software-link" : "")}
                 onClick={() => setMobileOpen(false)}

@@ -132,7 +132,7 @@ export default function PublicLanding() {
                 const Icon = item.icon;
                 return (
                   <article className="service-card-v2 site-spotlight" data-reveal data-reveal-delay={index * 65} key={item.slug}>
-                    <Link href={"/services/" + item.slug} className="service-card-link">
+                    <Link href={("/services/" + item.slug) as any} className="service-card-link">
                       <div className="service-card-photo"><img src={item.image} alt="" loading="lazy" /><span className="service-card-index">0{index + 1}</span><span className="service-photo-arrow"><ArrowRight size={17} /></span></div>
                       <div className="service-card-copy-v2"><div className="service-card-kicker"><Icon size={14} /><span>{item.label}</span></div><h3>{item.title}</h3><p>{item.text}</p><span className="card-read-link">View service details <ArrowRight size={14} /></span></div>
                     </Link>
@@ -189,7 +189,7 @@ export default function PublicLanding() {
               <p className="section-intro-v2">Understand what a check can show, what it cannot prove, and when to seek a specialist opinion.</p>
             </div>
             <div className="guide-feature-grid">
-              {guideFeatured.map((guide, index) => <article className="guide-feature-card site-spotlight" data-reveal data-reveal-delay={index * 80} key={guide.slug}><span className="guide-feature-number">GUIDE / 0{index + 1}</span><h3>{guide.title}</h3><p>{guide.intro}</p><Link href={"/guides/" + guide.slug} className="text-link-v2">Read the guide <ArrowRight size={15} /></Link></article>)}
+              {guideFeatured.map((guide, index) => <article className="guide-feature-card site-spotlight" data-reveal data-reveal-delay={index * 80} key={guide.slug}><span className="guide-feature-number">GUIDE / 0{index + 1}</span><h3>{guide.title}</h3><p>{guide.intro}</p><Link href={("/guides/" + guide.slug) as any} className="text-link-v2">Read the guide <ArrowRight size={15} /></Link></article>)}
             </div>
             <div className="section-bottom-action" data-reveal><Link href="/guides" className="text-link-v2">Browse all learning guides <ArrowRight size={15} /></Link></div>
           </div>

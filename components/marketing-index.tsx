@@ -27,7 +27,7 @@ export function MarketingIndexPage({ kind, pages }: { kind: "service" | "guide";
                 <span className="index-card-number">{isGuide ? "FIELD GUIDE" : "SERVICE"} / {String(index + 1).padStart(2, "0")}</span>
                 <h2>{page.title}</h2>
                 <p>{page.intro}</p>
-                <Link href={(isGuide ? "/guides/" : "/services/") + page.slug} className="index-card-link">Read details <ArrowRight size={14} /></Link>
+                <Link href={((isGuide ? "/guides/" : "/services/") + page.slug) as any} className="index-card-link">Read details <ArrowRight size={14} /></Link>
               </article>)}
             </div>
             {pages.length === 0 && <div className="marketing-empty-state">Content is being prepared.</div>}
