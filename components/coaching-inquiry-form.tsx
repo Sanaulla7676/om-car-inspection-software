@@ -37,7 +37,7 @@ export function CoachingInquiryForm() {
       "Preferred contact time: " + preferredTime,
       message ? "Message: " + message : ""
     ].filter(Boolean).join("\n");
-    const rawNumber = process.env.NEXT_PUBLIC_COACHING_WHATSAPP_NUMBER || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
+    const rawNumber = process.env.NEXT_PUBLIC_COACHING_WHATSAPP_NUMBER || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919663120429";
     const number = rawNumber.replace(/\D/g, "");
     const url = number
       ? "https://wa.me/" + number + "?text=" + encodeURIComponent(text)
