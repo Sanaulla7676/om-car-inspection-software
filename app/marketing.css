@@ -1464,7 +1464,7 @@ html{scroll-behavior:smooth}
 }
 .lux-reference-opening-banner{
   display:block;position:relative;width:100%;max-width:none;margin:0;padding:0;
-  overflow:hidden;background:#f5f4ef;aspect-ratio:1090 / 315;
+  overflow:hidden;background:#f5f4ef;aspect-ratio:1092 / 340;
   animation:luxReferenceHeroIn .68s cubic-bezier(.2,.75,.18,1) both;
 }
 .lux-reference-opening-banner img{
@@ -1479,7 +1479,7 @@ html{scroll-behavior:smooth}
 
 /* Make the next image reach its full edge-to-edge size after a small scroll
    rather than requiring a long scroll through a tall spacer. */
-.lux-scroll-expand-story{height:104svh!important}
+.lux-scroll-expand-story{height:101svh!important}
 .lux-scroll-expand-sticky{
   top:82px!important;height:calc(100svh - 82px)!important;
   min-height:490px!important;max-height:none!important;
@@ -1534,7 +1534,7 @@ html{scroll-behavior:smooth}
   .lux-six-day-visual{height:clamp(260px,50vw,390px)}
 }
 @media(max-width:760px){
-  .lux-scroll-expand-story{height:105svh!important}
+  .lux-scroll-expand-story{height:101svh!important}
   .lux-scroll-expand-sticky{top:71px!important;height:calc(100svh - 71px)!important;min-height:320px!important}
   .lux-reference-opening-banner{aspect-ratio:1090 / 315}
   .lux-reference-opening-banner img{object-fit:contain}
