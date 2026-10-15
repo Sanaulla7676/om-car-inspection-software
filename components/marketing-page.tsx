@@ -6,6 +6,7 @@ import { SiteNavigation } from "@/components/site-navigation";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteEffects } from "@/components/site-effects";
 import { ScrollMotion } from "@/components/scroll-motion";
+import { CoachingInquiryForm } from "@/components/coaching-inquiry-form";
 
 const trainingDays = [
   ["DAY 01", "Inspection workflow and safety", "Vehicle identity, scope, safe work habits and the order of checks."],
@@ -146,6 +147,7 @@ export function MarketingPage({ content }: { content: MarketingPageContent }) {
           </div>
         </section>
       </main>
+      {isMasterclass && <CoachingInquiryForm />}
       <SiteFooter />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
