@@ -81,3 +81,19 @@ The repository also contains GitHub Actions CI configuration for those checks.
 - /book-inspection and /book-masterclass open a WhatsApp enquiry with the entered details. They do not create or confirm a reservation in a database.
 - /admin is a temporary, password-free mock preview that embeds public/admin-mock.html, the standalone sample inspection UI. Its records are demo data.
 - The production application remains on its existing application routes and its Supabase-authenticated dashboard layout is not disabled by this mock. Do not put real customer data in the public mock admin panel.
+
+
+## Public marketing website
+
+The root route is the public OM Car Inspection website. Dedicated route pages are provided for services and inspection guides. The long glass capsule navigation links to separate pages and to the real dashboard application.
+
+- /services — service index
+- /services/[slug] — independent service landing pages
+- /guides — education and checklist index
+- /guides/[slug] — unique SEO guide pages
+- /masterclass — six-day practical learning outline
+- /book-inspection and /book-masterclass — enquiry forms that hand off to WhatsApp; they do not themselves reserve an appointment
+- /dashboard — the existing authenticated inspection application
+- /admin — forwards to /dashboard; the old static prototype iframe is removed
+
+The marketing site includes page-specific title tags, descriptions, canonical paths, Open Graph/Twitter metadata, JSON-LD, sitemap and robots routes. See docs/WEBSITE_UPGRADE.md for the feature inventory and animation reference list.
