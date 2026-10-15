@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, Menu, X, Search, UserRound } from "lucide-react";
+import { ArrowRight, Menu, X, Search, UserRound, PhoneCall, MessageCircle } from "lucide-react";
 import { useState } from "react";
 
 const links = [
@@ -23,7 +23,7 @@ export function SiteNavigation() {
       <div className="site-scroll-progress" aria-hidden="true"><span id="site-scroll-progress-fill" /></div>
       <header className="site-header-v2 luxury-header">
         <Link href="/" className="site-brand-v2 luxury-brand" aria-label="OM Car Inspection home" onClick={() => setMobileOpen(false)}>
-          <span className="lux-brand-mark" aria-hidden="true"><span className="lux-brand-car">⌒</span><span className="lux-brand-word">OMKAR</span><small>CAR INSPECTION</small></span>
+          <img className="lux-brand-logo-img" src="https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/a526dc36-b0a0-4787-bbc3-bed064b316c1.png" alt="OMKAR Inspection" width={120} height={46} />
         </Link>
 
         <nav className={"capsule-nav luxury-capsule-nav" + (mobileOpen ? " capsule-nav-open" : "")} aria-label="Main navigation">
@@ -54,6 +54,17 @@ export function SiteNavigation() {
           {mobileOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
       </header>
+
+      <div className="lux-floating-contact" aria-label="Contact OMKAR Car Inspection">
+        <a className="lux-floating-whatsapp" href="https://wa.me/918880339999?text=Hello%20OMKAR%20Car%20Inspection%2C%20I%20would%20like%20to%20enquire%20about%20your%20services." target="_blank" rel="noopener noreferrer" aria-label="Chat with OMKAR on WhatsApp">
+          <MessageCircle size={19} strokeWidth={2.4} />
+          <span>WhatsApp</span>
+        </a>
+        <a className="lux-floating-call" href="tel:+918880339999" aria-label="Call OMKAR Car Inspection at 8880339999">
+          <PhoneCall size={18} strokeWidth={2.4} />
+          <span>Call <b>8880339999</b></span>
+        </a>
+      </div>
     </>
   );
 }
