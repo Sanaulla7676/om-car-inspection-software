@@ -28,7 +28,7 @@ export function MarketingPage({ content }: { content: MarketingPageContent }) {
     : content.slug === "masterclass"
       ? "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/9ded0ab3-2c6c-4815-b563-d0a46c973a66.png"
       : (content.slug.includes("used-car") || content.slug.includes("pre-owned"))
-        ? "https://img.indianautosblog.com/2021/01/23/2020-mahindra-thar-review-680b.jpg"
+        ? "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/40087/thar-exterior-right-front-three-quarter-37.jpeg?isig=0&q=80"
         : "https://cdn-s3.autocarindia.com/Mahindra/xuv700/_KMC0974.JPG";
   const heroImageLabel = content.slug === "new-car-pdi" ? "NEW VEHICLE PDI"
     : content.slug === "masterclass" ? "PDI COACHING & TRAINING"
