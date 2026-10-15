@@ -133,7 +133,7 @@ export default function PublicLanding() {
       setActiveSlide((current) => current < 0 ? 0 : (current + 1) % slides.length);
       setIsChangingSlide(true);
       window.setTimeout(() => setIsChangingSlide(false), 680);
-    }, isReferenceOpening ? 4500 : 3600);
+    }, 3200);
     return () => window.clearTimeout(timer);
   }, [paused, activeSlide, isReferenceOpening]);
 
