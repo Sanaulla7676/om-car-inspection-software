@@ -42,8 +42,7 @@ export function VehicleInspectionInquiryBar() {
       "Please confirm availability, scope and charges."
     ].filter(Boolean).join("\n");
 
-    const rawNumber = process.env.NEXT_PUBLIC_COACHING_WHATSAPP_NUMBER || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919663120429";
-    const number = rawNumber.replace(/\D/g, "");
+    const number = "918880339999";
     window.open("https://wa.me/" + number + "?text=" + encodeURIComponent(message), "_blank", "noopener,noreferrer");
     setOpened(true);
   }
