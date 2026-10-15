@@ -31,6 +31,7 @@ export function SiteFooter() {
         <div className="lux-footer-col lux-footer-contact">
           <h3>READY TO BEGIN?</h3>
           <p>Choose a service or ask the team about scope, timing and available booking options.</p>
+          <p className="lux-footer-phone">Call: <a href="tel:+918880339999">8880339999</a></p>
           <Link className="lux-footer-contact-cta" href="/book-inspection">Request an inspection <ArrowRight size={14} /></Link>
           <Link href="/login">Team sign-in <ShieldCheck size={13} /></Link>
         </div>
