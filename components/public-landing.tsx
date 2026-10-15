@@ -123,7 +123,7 @@ export default function PublicLanding() {
 
   useEffect(() => {
     if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setInterval(() => setActiveSlide((current) => (current + 1) % slides.length), 3600);
+    const timer = window.setInterval(() => setActiveSlide((current) => (current + 1) % slides.length), 3000);
     return () => window.clearInterval(timer);
   }, [paused, activeSlide]);
 
