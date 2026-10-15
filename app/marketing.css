@@ -1441,3 +1441,16 @@ html{scroll-behavior:smooth}
 .booking-page>.site-header-v2.luxury-header{
   position:sticky!important;top:8px!important;z-index:1400!important;
 }
+
+
+
+/* Mobile capsule defaults to closed; the higher-specificity desktop visibility
+   rule must not accidentally override the hamburger menu state. */
+@media(max-width:760px){
+  .site-header-v2.luxury-header .capsule-nav.luxury-capsule-nav:not(.capsule-nav-open){
+    display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important
+  }
+  .site-header-v2.luxury-header .capsule-nav.luxury-capsule-nav.capsule-nav-open{
+    display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important
+  }
+}
