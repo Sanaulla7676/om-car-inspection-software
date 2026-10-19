@@ -1,7 +1,5 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import { AuthExperience } from "@/components/auth-experience";
-
-export default function SignupPage() {
-  return <AuthExperience mode="signup" />;
+export default function SignupDisabledPage() {
+  redirect("/login?reason=invite-only");
 }
