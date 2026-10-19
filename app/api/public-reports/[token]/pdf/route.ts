@@ -3,6 +3,8 @@ import { createHash } from "crypto";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { createClient } from "@/lib/supabase/server";
 
+function safePdfText(text: string) { return text.replace(/•/g,"-").replace(/·/g,"|").replace(/[–—]/g,"-").replace(/₹/g,"INR ").replace(/…/g,"...").replace(/[^\\x20-\\x7E\\xA0-\\xFF]/g," "); }
+
 function wrap(text: string, max = 88) {
   const words = text.split(/\s+/);
   const lines: string[] = [];
@@ -31,6 +33,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
   const snapshot = (publicReport as any).snapshot;
   if (!snapshot) return new NextResponse("Report snapshot not found", { status: 404 });
 
+  const safeFilename = String((snapshot as any)?.inspection?.number ?? "inspection").replace(/[^A-Za-z0-9_-]/g, "_");
   const pdf = await PDFDocument.create();
   const normal = await pdf.embedFont(StandardFonts.Helvetica);
   const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
@@ -42,7 +45,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
       page = pdf.addPage([595, 842]);
       y = 790;
     }
-    page.drawText(text, {
+    page.drawText(safePdfText(text), {
       x: 42,
       y,
       size,
