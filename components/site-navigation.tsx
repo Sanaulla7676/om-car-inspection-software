@@ -6,12 +6,10 @@ import { ArrowRight, Menu, X, Search, UserRound, PhoneCall, MessageCircle } from
 import { useEffect, useState } from "react";
 
 const links = [
-  { label: "Home", href: "/" },
-  { label: "New Vehicle PDI", href: "/services/new-car-pdi" },
-  { label: "Pre-Owned PDI", href: "/services/used-car-inspection" },
-  { label: "PDI Coaching", href: "/masterclass" },
-  { label: "Valuation", href: "/#valuation-reports" },
-  { label: "Reports", href: "/services/inspection-report" }
+  { label: "Vehicle Inspections", href: "/services" },
+  { label: "PDI Training", href: "/masterclass" },
+  { label: "Sample Report", href: "/services/inspection-report" },
+  { label: "About", href: "/about" }
 ];
 
 export function SiteNavigation() {
@@ -63,7 +61,7 @@ export function SiteNavigation() {
         <div className="lux-header-actions">
           <Link href="/services" className="lux-header-icon" aria-label="Explore services"><Search size={17} /></Link>
           <Link href="/login" className="lux-header-icon" aria-label="Open sign-in"><UserRound size={17} /></Link>
-          <Link href="/login" className="lux-header-login">Login / Sign in <ArrowRight size={14} /></Link>
+          <Link href="/book-inspection" className="lux-header-login">Book Inspection <ArrowRight size={14} /></Link>
         </div>
 
         <button className="site-mobile-toggle" type="button" onClick={() => setMobileOpen((open) => !open)} aria-expanded={mobileOpen} aria-label={mobileOpen ? "Close navigation" : "Open navigation"}>
