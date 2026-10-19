@@ -21,6 +21,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
     status: report.status,
     version: report.version,
     createdAt: report.createdAt,
+    expiresAt: report.expiresAt,
     organization: report.organization,
     inspection: report.inspection,
   });
