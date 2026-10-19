@@ -5,8 +5,6 @@ export async function GET() {
   const context = await getStaffContext();
   if (!context.ok) return NextResponse.json({ error: context.error }, { status: context.status });
   const { supabase, organizationId } = context;
-  const {supabase,organizationId}=await getContext();
-  
   if(!organizationId) return NextResponse.json({error:"No active organization."},{status:409});
   const {data,error}=await supabase.from("inspections").select("*,vehicles(make,model,registration_number),customers(name),inspection_scores(overall_score)").eq("organization_id",organizationId).order("created_at",{ascending:false}).limit(100);
   if(error) return NextResponse.json({error:error.message},{status:500});
