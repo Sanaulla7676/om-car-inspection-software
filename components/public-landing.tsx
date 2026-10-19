@@ -97,7 +97,7 @@ export default function PublicLanding() {
             <p className="om-home-eyebrow"><span /> EVIDENCE OVER CLAIMS</p>
             <h2 id="om-evidence-title">A useful inspection explains what was found, not just what was checked.</h2>
             <p>A clear report should connect important observations to relevant evidence, explain the inspection scope and identify anything that could not be verified. Photos support the findings; they do not replace a qualified assessment.</p>
-            <Link href="/services/inspection-report" className="om-home-button om-home-button-light">Explore reporting approach <ArrowRight size={16} /></Link>
+            <Link href="/sample-report" className="om-home-button om-home-button-light">View sample report layout <ArrowRight size={16} /></Link>
           </div>
           <div className="om-home-evidence-grid">
             <article><span><ClipboardCheck size={20} /></span><b>Structured checks</b><p>A repeatable sequence helps reduce missed steps.</p></article>
