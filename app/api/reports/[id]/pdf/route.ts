@@ -1,5 +1,5 @@
 import {NextResponse} from "next/server";
-import {PDFDocument,StandardFonts,rgb} from "pdf-lib";
+import {PDFDocument,StandardFonts,rgb,type PDFImage} from "pdf-lib";
 import { getStaffContext } from "@/lib/supabase/authorization";
 
 function safePdfText(text:string){return text.replace(/•/g,"-").replace(/·/g,"|").replace(/[–—]/g,"-").replace(/₹/g,"INR ").replace(/…/g,"...").replace(/[^\x20-\x7E]/g," ")}
@@ -30,7 +30,7 @@ export async function GET(_req:Request,{params}:{params:Promise<{id:string}>}){
      if(!response.ok)throw new Error(`Evidence photo download failed (${response.status}).`);
      const bytes=await response.arrayBuffer();
      const type=(m.mime_type||response.headers.get("content-type")||"").toLowerCase();
-     let image;
+     let image:PDFImage;
      if(type.includes("png"))image=await pdf.embedPng(bytes);
      else if(type.includes("jpeg")||type.includes("jpg"))image=await pdf.embedJpg(bytes);
      else throw new Error(`Unsupported evidence image format: ${type||"unknown"}. Upload photos as JPG or PNG.`);
