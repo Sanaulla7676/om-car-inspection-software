@@ -134,7 +134,10 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       generatedAt,
     };
 
-    const token = randomUUID().replace(/-/g, "") + randomUUID().replace(/-/g, "");
+    const token = clean(payload.reportToken, 128);
+    if (!/^[a-f0-9]{64}$/.test(token)) {
+      return NextResponse.json({ error: "The secure report token is missing. Save the inspection and retry." }, { status: 400 });
+    }
     const { data, error } = await supabase.rpc("finalize_inspection", {
       p_inspection_id: id,
       p_organization_id: organizationId,
