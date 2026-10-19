@@ -10,22 +10,22 @@ const siteUrl = "https://om-car-inspection-software.vercel.app";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "OM Car Inspection | Vehicle Inspection and Practical Training",
+    default: "OMKAR Car Inspection & PDI Training | Book an Inspection or Learn PDI",
     template: "%s | OM Car Inspection"
   },
-  description: "Explore used-car inspection, new-car PDI, evidence-led condition reports and the six-day practical vehicle inspection masterclass.",
+  description: "Book a new-car PDI or pre-owned vehicle inspection, or explore six-day practical PDI training in vehicle checks, evidence capture and reporting.",
   applicationName: "OM Car Inspection",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     url: siteUrl,
     siteName: "OM Car Inspection",
-    title: "OM Car Inspection | Vehicle Inspection and Practical Training",
-    description: "Structured vehicle condition reviews, evidence-led reporting and practical inspection learning."
+    title: "OMKAR Car Inspection & PDI Training | Book an Inspection or Learn PDI",
+    description: "Vehicle PDI and pre-owned inspections, evidence-led reports, and practical PDI training for aspiring inspectors."
   },
   twitter: {
     card: "summary_large_image",
-    title: "OM Car Inspection | Vehicle Inspection and Practical Training",
+    title: "OMKAR Car Inspection & PDI Training | Book an Inspection or Learn PDI",
     description: "Structured vehicle condition reviews, evidence-led reporting and practical inspection learning."
   },
   robots: { index: true, follow: true }
