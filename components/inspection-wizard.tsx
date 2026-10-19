@@ -239,7 +239,7 @@ export function InspectionWizard() {
         const {error:rowError}=await supabase.from("inspection_media").insert({
           organization_id:orgId,
           inspection_id:id,
-          section_name:label.includes(" • ")?label.split(" • ")[0]:label,
+          section_name:label,
           file_path:path,
           media_type:prepared.type.startsWith("video/")?"video":prepared.type==="application/pdf"?"document":"image",
           original_filename:file.name,
