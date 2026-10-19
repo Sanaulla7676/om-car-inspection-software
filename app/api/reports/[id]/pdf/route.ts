@@ -2,7 +2,7 @@ import {NextResponse} from "next/server";
 import {PDFDocument,StandardFonts,rgb} from "pdf-lib";
 import { getStaffContext } from "@/lib/supabase/authorization";
 
-function safePdfText(text:string){return text.replace(/•/g,"-").replace(/·/g,"|").replace(/[–—]/g,"-").replace(/₹/g,"INR ").replace(/…/g,"...").replace(/[^\\x20-\\x7E\\xA0-\\xFF]/g," ")}
+function safePdfText(text:string){return text.replace(/•/g,"-").replace(/·/g,"|").replace(/[–—]/g,"-").replace(/₹/g,"INR ").replace(/…/g,"...").replace(/[^\x20-\x7E]/g," ")}
 function lineWrap(text:string,max=88){const words=text.split(/\s+/);const lines:string[]=[];let line="";for(const w of words){if((line+" "+w).trim().length>max){if(line)lines.push(line.trim());line=w}else line+=(line?" ":"")+w}if(line)lines.push(line.trim());return lines}
 
 export async function GET(_req:Request,{params}:{params:Promise<{id:string}>}){
