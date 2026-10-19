@@ -3,7 +3,7 @@ import { createHash } from "crypto";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { createClient } from "@/lib/supabase/server";
 
-function safePdfText(text: string) { return text.replace(/•/g,"-").replace(/·/g,"|").replace(/[–—]/g,"-").replace(/₹/g,"INR ").replace(/…/g,"...").replace(/[^\\x20-\\x7E\\xA0-\\xFF]/g," "); }
+function safePdfText(text: string) { return text.replace(/•/g,"-").replace(/·/g,"|").replace(/[–—]/g,"-").replace(/₹/g,"INR ").replace(/…/g,"...").replace(/[^\x20-\x7E]/g," "); }
 
 function wrap(text: string, max = 88) {
   const words = text.split(/\s+/);
@@ -104,7 +104,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
   return new NextResponse(Buffer.from(bytes), {
     headers: {
       "content-type": "application/pdf",
-      "content-disposition": `attachment; filename="${snapshot?.inspection?.number ?? "inspection"}.pdf"`,
+      "content-disposition": `attachment; filename="${safeFilename}.pdf"`,
     },
   });
 }
