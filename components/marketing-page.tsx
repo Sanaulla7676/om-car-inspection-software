@@ -14,7 +14,7 @@ const trainingDays = [
   ["DAY 03", "Engine-bay observations", "Safe visual checks, accessible fluids, hoses, belts and signs that need follow-up."],
   ["DAY 04", "Cabin and diagnostic basics", "Interior controls, warning lamps and the context behind OBD codes."],
   ["DAY 05", "Road test and report writing", "Authorised road-test observations, evidence photos, severity and clear reporting."],
-  ["DAY 06", "Supervised live practice", "Follow a guided checklist, review findings and practise explaining limitations."]
+  ["DAY 06", "Guided practice and business readiness", "Review a supervised inspection, practise customer-ready reporting and discuss the fundamentals of offering an inspection service."]
 ];
 
 export function MarketingPage({ content }: { content: MarketingPageContent }) {
