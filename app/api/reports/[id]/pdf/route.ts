@@ -1,5 +1,5 @@
 import {NextResponse} from "next/server";
-import {PDFDocument,StandardFonts,rgb} from "pdf-lib";
+import {PDFDocument,StandardFonts,rgb,type PDFImage} from "pdf-lib";
 import { getStaffContext } from "@/lib/supabase/authorization";
 
 function safePdfText(text:string){return text.replace(/•/g,"-").replace(/·/g,"|").replace(/[–—]/g,"-").replace(/₹/g,"INR ").replace(/…/g,"...").replace(/[^\x20-\x7E]/g," ")}
@@ -15,31 +15,32 @@ export async function GET(_req:Request,{params}:{params:Promise<{id:string}>}){
  if(!report)return new NextResponse("Report not found",{status:404});
  const versions:any=(report as any).report_versions;const snapshot=Array.isArray(versions)?versions[0]?.snapshot_json:versions?.snapshot_json;
  if(!snapshot)return new NextResponse("Report snapshot not found",{status:404});
-  const {data:mediaRows}=await supabase.from("inspection_media").select("file_path,media_type,original_filename,mime_type,section_name").eq("inspection_id",(report as any).inspection_id).eq("organization_id",organizationId).order("created_at",{ascending:true});
+  const {data:mediaRows,error:mediaError}=await supabase.from("inspection_media").select("file_path,media_type,original_filename,mime_type,section_name").eq("inspection_id",(report as any).inspection_id).eq("organization_id",organizationId).order("created_at",{ascending:true});
+ if(mediaError)return new NextResponse("Evidence records could not be loaded; the PDF was not generated.",{status:503});
  const media=(mediaRows??[]).filter((m:any)=>m.media_type==="image");
+ const expectedPhotos=Array.isArray(snapshot.photos)?snapshot.photos.filter((p:any)=>p?.path&&(p.mediaType==="image"||!p.mediaType)).length:0;
+ if(expectedPhotos>0&&media.length!==expectedPhotos)return new NextResponse(`Evidence mismatch: report expects ${expectedPhotos} photo(s), but ${media.length} are stored. Re-upload missing evidence before exporting.`,{status:503});
  async function addEvidencePages(){
    if(!media.length)return;
-   page=pdf.addPage([595,842]);y=790;
-   draw("Evidence & Imported Images",15,true);
-   draw(`${media.length} image${media.length===1?"":"s"} attached to this inspection.`,9);
-   let col=0,row=0;
+   let imageIndex=0;
    for(const m of media){
      const signed=await storageClient.storage.from("inspection-media").createSignedUrl(m.file_path,300);
-     if(signed.error||!signed.data?.signedUrl)continue;
-     try{
-       const response=await fetch(signed.data.signedUrl,{cache:"no-store"});if(!response.ok)continue;
-       const bytes=await response.arrayBuffer();const type=(m.mime_type||"").toLowerCase();
-       const image=type.includes("png")?await pdf.embedPng(bytes):type.includes("jpeg")||type.includes("jpg")?await pdf.embedJpg(bytes):null;
-       if(!image)continue;
-       if(row>=2){row=0;col=0;page=pdf.addPage([595,842]);y=790;draw("Evidence photos",14,true)}
-       const x=42+col*265, top=730-row*270;
-       const maxW=240,maxH=205,scale=Math.min(maxW/image.width,maxH/image.height);
-       const w=image.width*scale,h=image.height*scale;
-       page.drawRectangle({x,y:top-h-35,width:maxW,height:maxH+35,borderColor:rgb(.88,.9,.93),borderWidth:1});
-       page.drawImage(image,{x:x+((maxW-w)/2),y:top-h+5+((maxH-h)/2),width:w,height:h});
-       page.drawText(safePdfText(String(m.section_name||m.original_filename||"Evidence")),{x:x+7,y:top-25,size:8,font:font,color:rgb(.28,.34,.42)});
-       col++;if(col===2){col=0;row++}if(row===2){row=0}
-     }catch{continue}
+     if(signed.error||!signed.data?.signedUrl)throw new Error(`Could not access evidence photo ${m.original_filename||m.file_path}: ${signed.error?.message||"signed URL unavailable"}`);
+     const response=await fetch(signed.data.signedUrl,{cache:"no-store"});
+     if(!response.ok)throw new Error(`Evidence photo download failed (${response.status}).`);
+     const bytes=await response.arrayBuffer();
+     const type=(m.mime_type||response.headers.get("content-type")||"").toLowerCase();
+     let image:PDFImage;
+     if(type.includes("png"))image=await pdf.embedPng(bytes);
+     else if(type.includes("jpeg")||type.includes("jpg"))image=await pdf.embedJpg(bytes);
+     else throw new Error(`Unsupported evidence image format: ${type||"unknown"}. Upload photos as JPG or PNG.`);
+     if(imageIndex%4===0){page=pdf.addPage([595,842]);y=790;draw("Photographic evidence",15,true);draw("Stored inspection photos • all images attached to this report",9);}
+     const slot=imageIndex%4,col=slot%2,row=Math.floor(slot/2),x=42+col*265,cardTop=770-row*330;
+     const maxW=220,maxH=205,scale=Math.min(maxW/image.width,maxH/image.height),w=image.width*scale,h=image.height*scale;
+     page.drawRectangle({x,y:cardTop-270,width:240,height:270,borderColor:rgb(.88,.9,.93),borderWidth:1});
+     page.drawText(safePdfText(String(m.section_name||m.original_filename||`Evidence ${imageIndex+1}`)),{x:x+7,y:cardTop-23,size:8,font:font,color:rgb(.28,.34,.42)});
+     page.drawImage(image,{x:x+10+(220-w)/2,y:cardTop-250+(205-h)/2,width:w,height:h});
+     imageIndex++;
    }
  }
  const pdf=await PDFDocument.create();const font=await pdf.embedFont(StandardFonts.Helvetica);const bold=await pdf.embedFont(StandardFonts.HelveticaBold);
@@ -97,6 +98,6 @@ export async function GET(_req:Request,{params}:{params:Promise<{id:string}>}){
  }
 
  draw("Inspection disclaimer",13,true);for(const l of lineWrap("This report records observed condition at the time of inspection. It does not replace an independent specialist assessment where required."))draw(l);
- await addEvidencePages();
+ try{await addEvidencePages()}catch(e){return new NextResponse(e instanceof Error?`PDF evidence error: ${e.message}`:"PDF evidence could not be embedded.",{status:503})}
  const bytes=await pdf.save();const safeFilename=String(snapshot?.inspection?.number??"inspection").replace(/[^A-Za-z0-9_-]/g,"_");return new NextResponse(Buffer.from(bytes),{headers:{"content-type":"application/pdf","content-disposition":`attachment; filename="${safeFilename}.pdf"`}});
 }

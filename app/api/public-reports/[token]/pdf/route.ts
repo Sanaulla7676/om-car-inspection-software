@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createHash } from "crypto";
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { PDFDocument, StandardFonts, rgb, type PDFImage } from "pdf-lib";
 import { createClient } from "@/lib/supabase/server";
 
 function safePdfText(text: string) { return text.replace(/•/g,"-").replace(/·/g,"|").replace(/[–—]/g,"-").replace(/₹/g,"INR ").replace(/…/g,"...").replace(/[^\x20-\x7E]/g," "); }
@@ -99,6 +99,52 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
 
     add("Summary", 13, true);
   for (const line of wrap(snapshot?.summary || "No summary supplied.")) add(line);
+
+  const allPhotos = Array.isArray(snapshot.photos)
+    ? snapshot.photos.filter((photo: any) => photo?.mediaType === "image" || !photo?.mediaType)
+    : [];
+  if (allPhotos.some((photo: any) => !photo?.path)) {
+    return new NextResponse("This report references a photo that is not stored. Contact the inspection team for a corrected report.", { status: 503 });
+  }
+  const embeddedPhotos: Array<{ name: string; image: PDFImage }> = [];
+  for (const photo of allPhotos) {
+    const { data: signed, error: signError } = await supabase.storage.from("inspection-media").createSignedUrl(photo.path, 300);
+    if (signError || !signed?.signedUrl) {
+      return new NextResponse("Evidence photos could not be accessed securely. The PDF was not generated without them.", { status: 503 });
+    }
+    const response = await fetch(signed.signedUrl, { cache: "no-store" });
+    if (!response.ok) return new NextResponse("An evidence photo could not be downloaded. The PDF was not generated without it.", { status: 503 });
+    const bytes = await response.arrayBuffer();
+    const mime = (response.headers.get("content-type") || "").toLowerCase();
+    try {
+      const image = mime.includes("png") ? await pdf.embedPng(bytes) : mime.includes("jpeg") || mime.includes("jpg") ? await pdf.embedJpg(bytes) : null;
+      if (!image) return new NextResponse("An evidence photo uses an unsupported format. Upload JPG or PNG photos and regenerate the report.", { status: 503 });
+      embeddedPhotos.push({ name: String(photo.name || photo.originalName || "Inspection evidence"), image });
+    } catch {
+      return new NextResponse("An evidence photo could not be decoded. The PDF was not generated without it.", { status: 503 });
+    }
+  }
+  for (let index = 0; index < embeddedPhotos.length; index++) {
+    if (index % 4 === 0) {
+      page = pdf.addPage([595, 842]);
+      y = 790;
+      add("Photographic evidence", 14, true);
+      add("Stored inspection photos • evidence captured during inspection", 9);
+    }
+    const photo = embeddedPhotos[index];
+    const slot = index % 4, col = slot % 2, row = Math.floor(slot / 2);
+    const x = 42 + col * 265, cardTop = 770 - row * 330;
+    const maxW = 220, maxH = 205;
+    const scale = Math.min(maxW / photo.image.width, maxH / photo.image.height);
+    const width = photo.image.width * scale, height = photo.image.height * scale;
+    page.drawRectangle({ x, y: cardTop - 270, width: 240, height: 270, borderColor: rgb(0.88, 0.9, 0.93), borderWidth: 1 });
+    page.drawText(safePdfText(photo.name), { x: x + 7, y: cardTop - 23, size: 8, font: normal, color: rgb(0.28, 0.34, 0.42) });
+    page.drawImage(photo.image, { x: x + 10 + (220 - width) / 2, y: cardTop - 250 + (205 - height) / 2, width, height });
+  }
+
+  if (allPhotos.length !== embeddedPhotos.length) {
+    return new NextResponse("Not all report photos could be embedded. The PDF was not generated.", { status: 503 });
+  }
 
   const bytes = await pdf.save();
   return new NextResponse(Buffer.from(bytes), {

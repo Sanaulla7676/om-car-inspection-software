@@ -34,6 +34,7 @@ export type InspectionDraft = {
   sections: Record<string, Record<string, { status: string; severity: Severity; notes: string }>>;
   valuation?: ValuationDraft;
   findings: Fault[];
+  reportToken?: string;
   photos: { name: string; originalName?: string; url?: string; path?: string; mediaType?: "image" | "video" | "document" }[];
   signatureDataUrl?: string;
   recommendation: string;

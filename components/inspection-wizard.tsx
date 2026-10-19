@@ -37,7 +37,7 @@ function freshDraft(): InspectionDraft {
     inspectionType:"Used Car", inspectorName:"Current inspector",
     customer:{name:"",phone:"",email:"",type:"Buyer"},
     vehicle:{registration:"",vin:"",make:"",model:"",variant:"",year:"",fuel:"Petrol",transmission:"Automatic",color:"",odometer:"",engineNumber:"",ownership:"1st owner"},
-    sections:buildSections(),findings:[],photos:[],valuation:createDefaultValuation(),recommendation:"Suitable",reviewerComments:"",
+    sections:buildSections(),findings:[],photos:[],reportToken:"",valuation:createDefaultValuation(),recommendation:"Suitable",reviewerComments:"",
     testDrive:{distance:"",road:"Mixed city + highway",result:"0",notes:""},updatedAt:new Date().toISOString()
   };
 }
@@ -103,8 +103,8 @@ export function InspectionWizard() {
   const recommendation=recommendationForScore(score.overall,score.counts.Critical,score.counts.Major);
   const totalItems=useMemo(()=>Object.values(sectionItems).flat().length,[]);
   const reviewed=useMemo(()=>Object.values(draft.sections).flatMap(s=>Object.values(s)).filter(v=>v.status!=="NT").length,[draft.sections]);
-  const evidenceSynced=draft.photos.length>=1&&draft.photos.every(p=>Boolean(p.path));
-  const readinessRules=[{label:"Vehicle identity",done:Boolean(draft.vehicle.registration.trim())},{label:"Checklist reviewed",done:reviewed>=totalItems-1},{label:"Evidence captured",done:draft.photos.filter(p=>Boolean(p.path)).length>=4},{label:"All evidence synced",done:evidenceSynced},{label:"Recommendation ready",done:Boolean(recommendation)},{label:"Reviewer sign-off",done:signed}];
+  const evidenceSynced=draft.photos.some(p=>p.mediaType==="image"||!p.mediaType)&&draft.photos.every(p=>Boolean(p.path));
+  const readinessRules=[{label:"Vehicle identity",done:Boolean(draft.vehicle.registration.trim())},{label:"Checklist reviewed",done:reviewed>=totalItems-1},{label:"Evidence captured",done:draft.photos.filter(p=>Boolean(p.path)&&(p.mediaType==="image"||!p.mediaType)).length>=4},{label:"All evidence synced",done:evidenceSynced},{label:"Recommendation ready",done:Boolean(recommendation)},{label:"Reviewer sign-off",done:signed}];
   const readiness=Math.round(readinessRules.filter(x=>x.done).length/readinessRules.length*100),canFinalize=readiness>=80&&Boolean(draft.vehicle.registration.trim())&&evidenceSynced;
 
   function updateDraft(p:Partial<InspectionDraft>){setDraft(d=>({...d,...p,updatedAt:new Date().toISOString()}))}
@@ -171,9 +171,17 @@ export function InspectionWizard() {
       return {...prev,sections,findings,updatedAt:new Date().toISOString()}
     })
   }
+  function ensureReportToken(id:string){
+    const key=`om-report-token-${id}`;
+    const existing=draft.reportToken||localStorage.getItem(key)||"";
+    const token=/^[a-f0-9]{64}$/.test(existing)?existing:`${crypto.randomUUID().replace(/-/g,"")}${crypto.randomUUID().replace(/-/g,"")}`;
+    localStorage.setItem(key,token);
+    if(draft.reportToken!==token)setDraft(current=>({...current,reportToken:token,updatedAt:new Date().toISOString()}));
+    return token;
+  }
   async function ensureInspection(){
     if(inspectionId)return inspectionId;if(!draft.vehicle.registration.trim())throw new Error("Enter registration number first.");if(!supabase)return draft.inspectionNumber;if(!orgId)throw new Error("Create your organization from onboarding first.");
-    const r=await fetch("/api/inspections",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({draft,organizationId:orgId})});const j=await r.json();if(!r.ok)throw new Error(j.error||"Could not create inspection.");setInspectionId(j.id);localStorage.setItem("om-active-inspection",j.id);return j.id;
+    const r=await fetch("/api/inspections",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({draft,organizationId:orgId})});const j=await r.json();if(!r.ok)throw new Error(j.error||"Could not create inspection.");setInspectionId(j.id);localStorage.setItem("om-active-inspection",j.id);ensureReportToken(j.id);return j.id;
   }
   async function next(){try{if(stage===0)await ensureInspection();setStage(s=>Math.min(7,s+1));scrollTo({top:0,behavior:"smooth"})}catch(e){setNotice(e instanceof Error?e.message:"Could not continue.")}}
   function jumpToStage(target:number){
@@ -211,11 +219,15 @@ export function InspectionWizard() {
     let storedPath:string|undefined;
     try{
       const prepared=await prepareEvidenceFile(file);
+      if(prepared.type.startsWith("image/")&&!["image/jpeg","image/png"].includes(prepared.type)){
+        throw new Error("This image format could not be converted to JPEG in this browser. Save it as JPG or PNG and upload again.");
+      }
       preview=prepared.type.startsWith("image/")||prepared.type.startsWith("video/")||prepared.type==="application/pdf"?URL.createObjectURL(prepared):undefined;
 
       if(supabase&&orgId&&online&&id!==draft.inspectionNumber){
         const ext=(prepared.name.split(".").pop()||"bin").replace(/[^a-z0-9]/gi,"")||"bin";
-        const path=`${orgId}/${id}/original/${crypto.randomUUID()}.${ext}`;
+        const reportToken=ensureReportToken(id);
+        const path=`${orgId}/${id}/${reportToken}/original/${crypto.randomUUID()}.${ext}`;
         const {error:uploadError}=await supabase.storage.from("inspection-media").upload(path,prepared,{
           contentType:prepared.type||"application/octet-stream",
           cacheControl:"3600",
@@ -227,7 +239,7 @@ export function InspectionWizard() {
         const {error:rowError}=await supabase.from("inspection_media").insert({
           organization_id:orgId,
           inspection_id:id,
-          section_name:label.includes(" • ")?label.split(" • ")[0]:label,
+          section_name:label,
           file_path:path,
           media_type:prepared.type.startsWith("video/")?"video":prepared.type==="application/pdf"?"document":"image",
           original_filename:file.name,
@@ -290,10 +302,11 @@ function capitalize(v:string){return v? v.charAt(0).toUpperCase()+v.slice(1).toL
   if(!canFinalize){setNotice("Complete the remaining preflight checks before publishing.");return}
   try{
     const id=await ensureInspection();setSaving(true);
-    const payload={...draft,recommendation,signatureDataUrl:signatureRef.current?.toDataURL("image/png"),photos:draft.photos.map((p,i)=>({...p,annotation:annotations[i]??[]}))};
+    const reportToken=ensureReportToken(id);
+    const payload={...draft,reportToken,recommendation,signatureDataUrl:signatureRef.current?.toDataURL("image/png"),photos:draft.photos.map((p,i)=>({...p,annotation:annotations[i]??[]}))};
     const r=await fetch(`/api/inspections/${id}`,{method:"PATCH",headers:{"content-type":"application/json"},body:JSON.stringify({action:"finalize",payload})});
     const j=await r.json();if(!r.ok)throw new Error(j.error||"Finalization failed.");
-    localStorage.removeItem("om-active-inspection");setPublishedReportId(j.reportId);setPackageOpen(true);setNotice("Report generated. Choose how to package the PDF.");
+    localStorage.removeItem("om-active-inspection");localStorage.removeItem(`om-report-token-${id}`);setPublishedReportId(j.reportId);setPackageOpen(true);setNotice("Report generated. Choose how to package the PDF.");
   }catch(e){setNotice(e instanceof Error?e.message:"Finalization failed.")}finally{setSaving(false)}
 }
 async function getReportPdf(){
@@ -418,18 +431,18 @@ function VehicleStage({draft,updateVehicle,updateDraft,upload,lookup,lookupBusy,
       {draft.vehicle.registryDetails.ownerName&&<div className="om-registry-owner"><span>Registered owner</span><b>{draft.vehicle.registryDetails.ownerName}</b></div>}
     </div>}
     <div className="om-tool-row"><label className="om-tool"><ScanLine size={16}/><div>Scan VIN<small>Choose or capture a VIN photo</small></div><input type="file" accept="image/*" capture="environment" className="hidden" onChange={e=>{const file=e.currentTarget.files?.[0];e.currentTarget.value="";if(file)void upload(file,"VIN scan")}}/></label>
-      <label className="om-tool"><Paperclip size={16}/><div>Vehicle document<small>RC / insurance / PUC</small></div><input type="file" accept=".pdf,image/*" className="hidden" onChange={e=>{const f=e.target.files?.[0];if(f)void upload(f,"Vehicle document")}}/></label>
+      <label className="om-tool"><Paperclip size={16}/><div>Vehicle document<small>RC / insurance / PUC</small></div><input type="file" accept=".pdf,image/*" className="hidden" onChange={e=>{const f=e.currentTarget.files?.[0];e.currentTarget.value="";if(f)void upload(f,"Vehicle document")}}/></label>
     </div>
     <div className="om-callout"><ShieldCheck size={14}/><span>Verified registry data is attached to the vehicle record. Manual edits remain available for observations such as odometer and ownership.</span></div>
   </div>
 }
 function Checklist({section,draft,updateItem,upload}:{section:"Exterior"|"Interior";draft:InspectionDraft;updateItem:(s:string,i:string,k:"status"|"severity"|"notes",v:string)=>void;upload:(f:File,l:string)=>Promise<void>}) {
   const items=sectionItems[section];const zeroCount=items.filter(i=>(draft.sections[section]?.[i]?.status||"0")==="0").length;
-  return <div className="om-stage"><div className="om-stage-head"><div><h2>{section}</h2><p className="sub">Use the reference P/B/X damage codes and numbered levels. No generic condition grades.</p></div><span className="om-chip">{zeroCount}/{items.length} code 0</span></div><div className="om-callout"><ShieldCheck size={14}/><span>0 = no damage. P = paint / surface. B = body shape changed. X = cut, crack, hole or missing part. Level 1 = 0–2 in, level 2 = 2–6 in, level 3 = 6 in and above. NT = not inspected; NA = not applicable.</span></div><div className="om-checklist">{items.map(item=>{const v=draft.sections[section]?.[item]??{status:"0",severity:"Minor" as Severity,notes:""};const issue=isIssue(v.status);return <div className={`om-item ${issue?"issue":""}`} key={item}><div className="om-item-top"><div><div className="om-item-name">{item}</div><div className="om-item-meta">{issue?`Code ${v.status} · review required`:`Code ${v.status} recorded`}</div></div><select aria-label={`${item} inspection code`} value={v.status} onChange={e=>updateItem(section,item,"status",e.target.value)}>{conditionOptionsFor(section,v.status).map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</select></div>{issue&&<div className="om-item-detail"><textarea value={v.notes} onChange={e=>updateItem(section,item,"notes",e.target.value)} placeholder="Exact observation / reference…"/><label className="om-photo"><Camera size={12}/> Add evidence<input type="file" accept="image/*,video/*,.pdf" onChange={e=>{const f=e.target.files?.[0];if(f)void upload(f,`${section} • ${item}`)}}/></label></div>}</div>})}</div></div>
+  return <div className="om-stage"><div className="om-stage-head"><div><h2>{section}</h2><p className="sub">Use the reference P/B/X damage codes and numbered levels. No generic condition grades.</p></div><span className="om-chip">{zeroCount}/{items.length} code 0</span></div><div className="om-callout"><ShieldCheck size={14}/><span>0 = no damage. P = paint / surface. B = body shape changed. X = cut, crack, hole or missing part. Level 1 = 0–2 in, level 2 = 2–6 in, level 3 = 6 in and above. NT = not inspected; NA = not applicable.</span></div><div className="om-checklist">{items.map(item=>{const v=draft.sections[section]?.[item]??{status:"0",severity:"Minor" as Severity,notes:""};const issue=isIssue(v.status);return <div className={`om-item ${issue?"issue":""}`} key={item}><div className="om-item-top"><div><div className="om-item-name">{item}</div><div className="om-item-meta">{issue?`Code ${v.status} · review required`:`Code ${v.status} recorded`}</div></div><select aria-label={`${item} inspection code`} value={v.status} onChange={e=>updateItem(section,item,"status",e.target.value)}>{conditionOptionsFor(section,v.status).map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</select></div>{issue&&<div className="om-item-detail"><textarea value={v.notes} onChange={e=>updateItem(section,item,"notes",e.target.value)} placeholder="Exact observation / reference…"/><label className="om-photo"><Camera size={12}/> Add evidence<input type="file" accept="image/*,video/*,.pdf" onChange={e=>{const f=e.currentTarget.files?.[0];e.currentTarget.value="";if(f)void upload(f,`${section} • ${item}`)}}/></label></div>}</div>})}</div></div>
 }
 
 function Mechanical({tab,setTab,draft,updateItem,upload}:{tab:"Mechanical"|"Electrical"|"Tyres";setTab:(t:"Mechanical"|"Electrical"|"Tyres")=>void;draft:InspectionDraft;updateItem:(s:string,i:string,k:"status"|"severity"|"notes",v:string)=>void;upload:(f:File,l:string)=>Promise<void>}) {
-  const items=sectionItems[tab];return <div className="om-stage"><div className="om-tabs">{(["Mechanical","Electrical","Tyres"] as const).map(t=><button key={t} className={tab===t?"active":""} onClick={()=>setTab(t)}>{t}</button>)}</div><div className="om-stage-head"><div><h2>{tab}</h2><p className="sub">Apply 0 / S / L codes. Legacy grades are flagged for recoding.</p></div></div><div className="om-callout"><ShieldCheck size={14}/><span>0 = no defect recorded. S = small defect. L = large defect. NT = not inspected; NA = not applicable. Select the size code, then add the verified observation and evidence.</span></div><div className="om-checklist">{items.map(item=>{const v=draft.sections[tab]?.[item]??{status:"0",severity:"Minor" as Severity,notes:""};const issue=isIssue(v.status);return <div className={`om-item ${issue?"issue":""}`} key={item}><div className="om-item-top"><div><div className="om-item-name">{item}</div><div className="om-item-meta">{issue?`Code ${v.status} · review required`:`Code ${v.status} recorded`}</div></div><select aria-label={`${item} inspection code`} value={v.status} onChange={e=>updateItem(tab,item,"status",e.target.value)}>{conditionOptionsFor(tab,v.status).map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</select></div>{issue&&<div className="om-item-detail"><textarea value={v.notes} onChange={e=>updateItem(tab,item,"notes",e.target.value)} placeholder="Observation / measured finding…"/><label className="om-photo"><Camera size={12}/> Add evidence<input type="file" accept="image/*,video/*,.pdf" onChange={e=>{const f=e.target.files?.[0];if(f)void upload(f,`${tab} • ${item}`)}}/></label></div>}</div>})}</div></div>
+  const items=sectionItems[tab];return <div className="om-stage"><div className="om-tabs">{(["Mechanical","Electrical","Tyres"] as const).map(t=><button key={t} className={tab===t?"active":""} onClick={()=>setTab(t)}>{t}</button>)}</div><div className="om-stage-head"><div><h2>{tab}</h2><p className="sub">Apply 0 / S / L codes. Legacy grades are flagged for recoding.</p></div></div><div className="om-callout"><ShieldCheck size={14}/><span>0 = no defect recorded. S = small defect. L = large defect. NT = not inspected; NA = not applicable. Select the size code, then add the verified observation and evidence.</span></div><div className="om-checklist">{items.map(item=>{const v=draft.sections[tab]?.[item]??{status:"0",severity:"Minor" as Severity,notes:""};const issue=isIssue(v.status);return <div className={`om-item ${issue?"issue":""}`} key={item}><div className="om-item-top"><div><div className="om-item-name">{item}</div><div className="om-item-meta">{issue?`Code ${v.status} · review required`:`Code ${v.status} recorded`}</div></div><select aria-label={`${item} inspection code`} value={v.status} onChange={e=>updateItem(tab,item,"status",e.target.value)}>{conditionOptionsFor(tab,v.status).map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</select></div>{issue&&<div className="om-item-detail"><textarea value={v.notes} onChange={e=>updateItem(tab,item,"notes",e.target.value)} placeholder="Observation / measured finding…"/><label className="om-photo"><Camera size={12}/> Add evidence<input type="file" accept="image/*,video/*,.pdf" onChange={e=>{const f=e.currentTarget.files?.[0];e.currentTarget.value="";if(f)void upload(f,`${tab} • ${item}`)}}/></label></div>}</div>})}</div></div>
 }
 
 function RoadTest({draft,updateDraft}:{draft:InspectionDraft;updateDraft:(p:Partial<InspectionDraft>)=>void}) {
@@ -440,7 +453,7 @@ function Evidence({draft,upload,uploading,selected,setSelected,tool,setTool,anno
   const standardNames=new Set<string>(evidenceSlots.map(([label])=>label));
   const extras=draft.photos.map((photo,index)=>({...photo,index})).filter(photo=>!standardNames.has(photo.name));
   return <div className="om-stage"><div className="om-evidence-hero"><div><h2>Evidence center</h2><p>{draft.photos.length} captured • recommended minimum 4</p></div><label className="om-evidence-add"><ImagePlus size={14}/> Add files<input className="hidden" type="file" accept="image/*,video/*,.pdf" multiple onChange={e=>{const files=Array.from(e.currentTarget.files||[]);e.currentTarget.value="";void (async()=>{for(const file of files)await upload(file,file.name)})()}}/></label></div>
-    <div className="om-evidence-grid">{evidenceSlots.map(([label,system])=>{const p=draft.photos.find(x=>x.name===label);const i=p?draft.photos.indexOf(p):-1;return <div className="om-evidence-card" key={label}><button className="om-evidence-thumb" onClick={()=>i>=0&&setSelected(i)}>{p?.url?<img src={p.url} alt={label}/>:<Camera size={22}/>} {i>=0&&(annotations[i]||[]).map((m,j)=><span className="om-evidence-marker" key={j} style={{left:`${m.x}%`,top:`${m.y}%`}}/>)}</button><b>{label}</b><div className="om-evidence-meta"><span>{system}</span><span>{p?"Captured":"Missing"}</span></div><div className="om-evidence-actions"><label><Upload size={10}/><input type="file" accept="image/*" onChange={e=>{const f=e.target.files?.[0];if(f)void upload(f,label)}}/></label><button disabled={i<0} onClick={()=>i>=0&&setSelected(i)}>Annotate</button>{uploading===label&&<Loader2 className="spin" size={11}/>}</div></div>})}</div>
+    <div className="om-evidence-grid">{evidenceSlots.map(([label,system])=>{const p=draft.photos.find(x=>x.name===label);const i=p?draft.photos.indexOf(p):-1;return <div className="om-evidence-card" key={label}><button className="om-evidence-thumb" onClick={()=>i>=0&&setSelected(i)}>{p?.url?<img src={p.url} alt={label}/>:<Camera size={22}/>} {i>=0&&(annotations[i]||[]).map((m,j)=><span className="om-evidence-marker" key={j} style={{left:`${m.x}%`,top:`${m.y}%`}}/>)}</button><b>{label}</b><div className="om-evidence-meta"><span>{system}</span><span>{p?"Captured":"Missing"}</span></div><div className="om-evidence-actions"><label><Upload size={10}/><input type="file" accept="image/*" onChange={e=>{const f=e.currentTarget.files?.[0];e.currentTarget.value="";if(f)void upload(f,label)}}/></label><button disabled={i<0} onClick={()=>i>=0&&setSelected(i)}>Annotate</button>{uploading===label&&<Loader2 className="spin" size={11}/>}</div></div>})}</div>
     {extras.length>0&&<div className="om-uploaded-evidence"><div className="om-uploaded-evidence-head"><b>Additional uploads</b><span>{extras.length} file(s) · images and PDFs included</span></div><div className="om-uploaded-evidence-grid">{extras.map(photo=><article className="om-uploaded-evidence-card" key={photo.name+"-"+photo.index}><div className="om-uploaded-evidence-preview">{photo.url&&photo.mediaType==="video"?<video src={photo.url} controls preload="metadata"/>:photo.url&&photo.mediaType==="document"?<div className="om-uploaded-file-icon"><FileText size={26}/><b>PDF DOCUMENT</b></div>:photo.url?<img src={photo.url} alt={photo.originalName||photo.name}/>:<div className="om-uploaded-file-icon"><FileText size={26}/><b>Preview unavailable</b></div>}</div><b className="om-uploaded-file-name">{photo.originalName||photo.name}</b><small>{photo.path?"Uploaded to inspection storage":"Saved on this device only"} · {photo.mediaType||"file"}</small><div className="om-uploaded-file-actions">{(photo.mediaType==="image"||!photo.mediaType)&&photo.url&&<button type="button" onClick={()=>setSelected(photo.index)}>Annotate image</button>}{photo.url&&photo.mediaType==="document"&&<button type="button" onClick={()=>{const tab=window.open(photo.url,"_blank");if(tab)tab.opener=null}}>Preview PDF</button>}{photo.url&&photo.mediaType==="video"&&<button type="button" onClick={()=>{const tab=window.open(photo.url,"_blank");if(tab)tab.opener=null}}>Open video</button>}</div></article>)}</div></div>}
     {selected!==null&&draft.photos[selected]?.url&&draft.photos[selected]?.mediaType!=="document"&&draft.photos[selected]?.mediaType!=="video"&&<div className="om-annotate"><div style={{display:"flex",justifyContent:"space-between",gap:8,alignItems:"center"}}><b style={{fontSize:10}}>Damage annotation</b><div className="om-annotate-tools">{["circle","arrow","note"].map(t=><button className={tool===t?"active":""} key={t} onClick={()=>setTool(t)}>{t}</button>)}<button onClick={()=>setSelected(null)}><X size={10}/></button></div></div><div className="om-annotate-canvas" onClick={e=>annotate(e,selected)}><img src={draft.photos[selected].url} alt="selected evidence"/>{(annotations[selected]||[]).map((m,j)=><span className="om-marker-note" key={j} style={{left:`${m.x}%`,top:`${m.y}%`}}>{m.type==="circle"?"○":m.type==="arrow"?"↗":"N"}</span>)}</div><small style={{fontSize:8,color:"#8b98a6"}}>Choose a tool, then tap the image.</small></div>}
   </div>
