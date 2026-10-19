@@ -1,28 +1,22 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
-
-async function getContext() {
-  const supabase=await createClient();
-  if(!supabase) return {supabase:null,userId:"demo",organizationId:"demo-org",role:"ORG_ADMIN"};
-  const {data:{user}}=await supabase.auth.getUser();
-  if(!user) return {supabase,userId:null,organizationId:null,role:null};
-  const {data:m}=await supabase.from("memberships").select("organization_id,role").eq("user_id",user.id).eq("status","active").order("created_at").limit(1).maybeSingle();
-  return {supabase,userId:user.id,organizationId:m?.organization_id??null,role:m?.role??null};
-}
+import { getStaffContext } from "@/lib/supabase/authorization";
 
 export async function GET() {
+  const context = await getStaffContext();
+  if (!context.ok) return NextResponse.json({ error: context.error }, { status: context.status });
+  const { supabase, organizationId } = context;
   const {supabase,organizationId}=await getContext();
-  if(!supabase) return NextResponse.json([]);
-  if(!organizationId) return NextResponse.json({error:"No organization"},{status:409});
+  
+  if(!organizationId) return NextResponse.json({error:"No active organization."},{status:409});
   const {data,error}=await supabase.from("inspections").select("*,vehicles(make,model,registration_number),customers(name),inspection_scores(overall_score)").eq("organization_id",organizationId).order("created_at",{ascending:false}).limit(100);
   if(error) return NextResponse.json({error:error.message},{status:500});
   return NextResponse.json(data??[]);
 }
 
 export async function POST(req:Request) {
-  const {supabase,userId,organizationId}=await getContext();
-  if(!supabase) return NextResponse.json({id:"demo-"+Date.now(),inspectionNumber:"DEMO-"+Date.now()});
-  if(!userId||!organizationId) return NextResponse.json({error:"Create an organization first."},{status:409});
+  const context = await getStaffContext();
+  if (!context.ok) return NextResponse.json({ error: context.error }, { status: context.status });
+  const { supabase, userId, organizationId } = context;
   const body=await req.json();
   const d=body.draft;
   if(!d?.vehicle?.registration) return NextResponse.json({error:"Registration number is required."},{status:400});
