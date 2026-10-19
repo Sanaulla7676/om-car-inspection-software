@@ -15,7 +15,7 @@ export async function GET(_req:Request,{params}:{params:Promise<{id:string}>}){
  if(!report)return new NextResponse("Report not found",{status:404});
  const versions:any=(report as any).report_versions;const snapshot=Array.isArray(versions)?versions[0]?.snapshot_json:versions?.snapshot_json;
  if(!snapshot)return new NextResponse("Report snapshot not found",{status:404});
-  const {data:mediaRows}=await supabase.from("inspection_media").select("file_path,media_type,original_filename,mime_type,section_name").eq("inspection_id",(report as any).inspection_id).eq("organization_id",m.organization_id).order("created_at",{ascending:true});
+  const {data:mediaRows}=await supabase.from("inspection_media").select("file_path,media_type,original_filename,mime_type,section_name").eq("inspection_id",(report as any).inspection_id).eq("organization_id",organizationId).order("created_at",{ascending:true});
  const media=(mediaRows??[]).filter((m:any)=>m.media_type==="image");
  async function addEvidencePages(){
    if(!media.length)return;
