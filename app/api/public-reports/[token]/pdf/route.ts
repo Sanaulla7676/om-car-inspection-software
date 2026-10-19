@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { createHash } from "crypto";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
+
+function safePdfText(text: string) { return text.replace(/•/g,"-").replace(/·/g,"|").replace(/[–—]/g,"-").replace(/₹/g,"INR ").replace(/…/g,"...").replace(/[^\x20-\x7E]/g," "); }
 
 function wrap(text: string, max = 88) {
   const words = text.split(/\s+/);
@@ -21,21 +23,17 @@ function wrap(text: string, max = 88) {
 
 export async function GET(_req: Request, { params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
-  const supabase = createAdminClient();
+  const supabase = await createClient();
   if (!supabase) return new NextResponse("Public PDF is not configured.", { status: 503 });
 
   const hash = createHash("sha256").update(token).digest("hex");
-  const { data: report } = await supabase
-    .from("reports")
-    .select("id,current_version,report_versions(snapshot_json)")
-    .eq("verification_token_hash", hash)
-    .maybeSingle();
+  const { data: publicReport, error } = await supabase.rpc("get_public_report_by_token_hash", { p_token_hash: hash });
+  if (error) return new NextResponse("Report verification is temporarily unavailable.", { status: 503 });
+  if (!publicReport) return new NextResponse("Report not found", { status: 404 });
+  const snapshot = (publicReport as any).snapshot;
+  if (!snapshot) return new NextResponse("Report snapshot not found", { status: 404 });
 
-  if (!report) return new NextResponse("Report not found", { status: 404 });
-
-  const versions: any = (report as any).report_versions;
-  const snapshot = Array.isArray(versions) ? versions[0]?.snapshot_json : versions?.snapshot_json;
-
+  const safeFilename = String((snapshot as any)?.inspection?.number ?? "inspection").replace(/[^A-Za-z0-9_-]/g, "_");
   const pdf = await PDFDocument.create();
   const normal = await pdf.embedFont(StandardFonts.Helvetica);
   const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
@@ -47,7 +45,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
       page = pdf.addPage([595, 842]);
       y = 790;
     }
-    page.drawText(text, {
+    page.drawText(safePdfText(text), {
       x: 42,
       y,
       size,
@@ -106,7 +104,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
   return new NextResponse(Buffer.from(bytes), {
     headers: {
       "content-type": "application/pdf",
-      "content-disposition": `attachment; filename="${snapshot?.inspection?.number ?? "inspection"}.pdf"`,
+      "content-disposition": `attachment; filename="${safeFilename}.pdf"`,
     },
   });
 }

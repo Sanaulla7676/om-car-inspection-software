@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getStaffContext } from "@/lib/supabase/authorization";
 
 function deterministic(findings:any[],vehicle:any,score:number){
   const major=findings.filter(f=>f.severity==="Major"||f.severity==="Critical").length;
@@ -9,7 +10,10 @@ function deterministic(findings:any[],vehicle:any,score:number){
 }
 
 export async function POST(req:Request){
-  const body=await req.json();
+  const context = await getStaffContext();
+  if (!context.ok) return NextResponse.json({ error: context.error }, { status: context.status });
+  const body=await req.json().catch(()=>null);
+  if (!body || typeof body !== "object" || Array.isArray(body)) return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   const findings=body.findings??[];
   const vehicle=body.vehicle??{};
   const score=Number(body.score??0);

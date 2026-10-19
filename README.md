@@ -21,14 +21,14 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the complete architecture a
 4. Add its project URL and publishable key.
 5. Install dependencies: `npm install`.
 6. Start: `npm run dev`.
-7. Create the first Auth user in Supabase, sign in, then open `/onboarding`.
+7. Provision staff accounts through Supabase Auth administration. Public self-sign-up is disabled. Sign in at `/login`; authorised staff land in `/dashboard`.
 8. Apply `supabase/migrations/202610040001_om_car_inspection_production.sql` to the dedicated project.
 
 ## Database and security
 
 The schema is multi-tenant. Structured data lives in PostgreSQL, original evidence lives in private Storage buckets, and published reports use immutable snapshots.
 
-RLS is enabled on application tables. Authorization data is stored in memberships rather than user-editable metadata. The service-role key is server-only.
+RLS is enabled on application and reference tables. Staff access is verified against active organisation memberships, never user-editable metadata. Public booking and report verification use narrowly scoped database RPCs; no service-role key is needed in the browser.
 
 Do not apply this migration to an existing Supabase project that contains unrelated application tables. Create a dedicated project or use an explicitly isolated schema strategy first.
 
@@ -36,7 +36,7 @@ Do not apply this migration to an existing Supabase project that contains unrela
 
 `NEXT_PUBLIC_SUPABASE_URL`
 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
-`SUPABASE_SERVICE_ROLE_KEY` (server only)
+`SUPABASE_SERVICE_ROLE_KEY` (optional for trusted maintenance scripts only; never expose it to the browser)
 `NEXT_PUBLIC_APP_URL`
 
 Optional integrations:
@@ -97,3 +97,14 @@ The root route is the public OM Car Inspection website. Dedicated route pages ar
 - /admin — forwards to /dashboard; the old static prototype iframe is removed
 
 The marketing site includes page-specific title tags, descriptions, canonical paths, Open Graph/Twitter metadata, JSON-LD, sitemap and robots routes. See docs/WEBSITE_UPGRADE.md for the feature inventory and animation reference list.
+
+## Public website and private staff portal
+
+- Public business website: `/` (vehicle inspections, PDI training, service evidence and enquiry forms).
+- Private staff sign-in: `/login`.
+- Private admin/staff application: `/dashboard` (also reachable through `/admin`).
+- Booking requests submitted on the public website are stored in `booking_requests` and can be managed by workspace administrators at `/requests`.
+- Public visitors cannot read booking records or enter the inspection dashboard. Private pages and APIs fail closed when authentication or an active staff membership cannot be verified.
+- Inspection creation and report finalisation use transactional database functions. Completed report snapshots are not overwritten; public report links expire after one year and can be revoked by an administrator.
+
+The website and staff application share the same deployment but use separate routes and access controls. The staff portal is not linked from the primary navigation; the footer contains a discreet staff sign-in link.

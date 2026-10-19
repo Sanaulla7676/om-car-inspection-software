@@ -15,7 +15,7 @@ export function SiteFooter() {
         <div className="lux-footer-col">
           <h3>INSPECTION SERVICES</h3>
           <Link href="/services/new-car-pdi">New Vehicle PDI</Link>
-          <Link href="/services/used-car-inspection">Old Vehicle PDA</Link>
+          <Link href="/services/used-car-inspection">Pre-Owned Vehicle Inspection</Link>
           <Link href="/#valuation-reports">Vehicle valuation</Link>
           <Link href="/services/inspection-report">Reports & documentation</Link>
           <Link href="/services">Explore all services <ArrowRight size={13} /></Link>
@@ -33,7 +33,6 @@ export function SiteFooter() {
           <p>Choose a service or ask the team about scope, timing and available booking options.</p>
           <p className="lux-footer-phone">Call: <a href="tel:+918880339999">8880339999</a></p>
           <Link className="lux-footer-contact-cta" href="/book-inspection">Request an inspection <ArrowRight size={14} /></Link>
-          <Link href="/login">Team sign-in <ShieldCheck size={13} /></Link>
         </div>
       </div>
       <div className="lux-footer-bottom">

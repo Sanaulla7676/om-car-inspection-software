@@ -1,63 +1,49 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
-
-async function getContext() {
-  const supabase=await createClient();
-  if(!supabase) return {supabase:null,userId:"demo",organizationId:"demo-org",role:"ORG_ADMIN"};
-  const {data:{user}}=await supabase.auth.getUser();
-  if(!user) return {supabase,userId:null,organizationId:null,role:null};
-  const {data:m}=await supabase.from("memberships").select("organization_id,role").eq("user_id",user.id).eq("status","active").order("created_at").limit(1).maybeSingle();
-  return {supabase,userId:user.id,organizationId:m?.organization_id??null,role:m?.role??null};
-}
+import { getStaffContext } from "@/lib/supabase/authorization";
 
 export async function GET() {
-  const {supabase,organizationId}=await getContext();
-  if(!supabase) return NextResponse.json([]);
-  if(!organizationId) return NextResponse.json({error:"No organization"},{status:409});
+  const context = await getStaffContext();
+  if (!context.ok) return NextResponse.json({ error: context.error }, { status: context.status });
+  const { supabase, organizationId } = context;
+  if(!organizationId) return NextResponse.json({error:"No active organization."},{status:409});
   const {data,error}=await supabase.from("inspections").select("*,vehicles(make,model,registration_number),customers(name),inspection_scores(overall_score)").eq("organization_id",organizationId).order("created_at",{ascending:false}).limit(100);
   if(error) return NextResponse.json({error:error.message},{status:500});
   return NextResponse.json(data??[]);
 }
 
-export async function POST(req:Request) {
-  const {supabase,userId,organizationId}=await getContext();
-  if(!supabase) return NextResponse.json({id:"demo-"+Date.now(),inspectionNumber:"DEMO-"+Date.now()});
-  if(!userId||!organizationId) return NextResponse.json({error:"Create an organization first."},{status:409});
-  const body=await req.json();
-  const d=body.draft;
-  if(!d?.vehicle?.registration) return NextResponse.json({error:"Registration number is required."},{status:400});
+export async function POST(req: Request) {
+  const context = await getStaffContext();
+  if (!context.ok) return NextResponse.json({ error: context.error }, { status: context.status });
+  const { supabase, userId, organizationId } = context;
 
-  let {data:vehicle,error:vehicleError}=await supabase.from("vehicles").upsert({
-    organization_id:organizationId,
-    registration_number:d.vehicle.registration.trim().toUpperCase(),
-    vin:d.vehicle.vin||null,
-    chassis_number:d.vehicle.vin||null,
-    make:d.vehicle.make||null, model:d.vehicle.model||null, variant:d.vehicle.variant||null,
-    manufacturing_year:d.vehicle.year?Number(d.vehicle.year):null,
-    fuel_type:d.vehicle.fuel||null, transmission:d.vehicle.transmission||null,
-    color:d.vehicle.color||null, odometer:d.vehicle.odometer?Number(d.vehicle.odometer):null,
-    engine_number:d.vehicle.engineNumber||null
-  },{onConflict:"organization_id,registration_number"}).select("id").single();
-  if(vehicleError||!vehicle) return NextResponse.json({error:vehicleError?.message??"Vehicle could not be saved"},{status:500});
-
-  let customerId:string|null=null;
-  if(d.customer?.name) {
-    const {data:existing}=await supabase.from("customers").select("id").eq("organization_id",organizationId).eq("phone",d.customer.phone||"").eq("name",d.customer.name).limit(1).maybeSingle();
-    if(existing) customerId=existing.id;
-    else {
-      const {data:c,error}=await supabase.from("customers").insert({organization_id:organizationId,name:d.customer.name,phone:d.customer.phone||null,email:d.customer.email||null,customer_type:d.customer.type||"Buyer"}).select("id").single();
-      if(error) return NextResponse.json({error:error.message},{status:500}); customerId=c.id;
-    }
+  const contentLength = Number(req.headers.get("content-length") || "0");
+  if (contentLength > 1_000_000) return NextResponse.json({ error: "Inspection draft is too large." }, { status: 413 });
+  const body = await req.json().catch(() => null);
+  const draft = body && typeof body === "object" && !Array.isArray(body) ? body.draft : null;
+  if (!draft || typeof draft !== "object" || Array.isArray(draft)) {
+    return NextResponse.json({ error: "Inspection draft is missing." }, { status: 400 });
+  }
+  if (!draft.vehicle || typeof draft.vehicle !== "object" || Array.isArray(draft.vehicle)) {
+    return NextResponse.json({ error: "Vehicle details are required." }, { status: 400 });
+  }
+  const registration = typeof draft.vehicle.registration === "string" ? draft.vehicle.registration.trim() : "";
+  if (registration.length < 4 || registration.length > 24) {
+    return NextResponse.json({ error: "Enter a valid vehicle registration number." }, { status: 400 });
   }
 
-  const inspectionNumber=d.inspectionNumber || `INS-${new Date().getFullYear()}-${String(Date.now()).slice(-7)}`;
-  const {data:inspection,error}=await supabase.from("inspections").insert({
-    organization_id:organizationId,inspection_number:inspectionNumber,vehicle_id:vehicle.id,customer_id:customerId,
-    inspector_id:userId,inspection_type:d.inspectionType||"Used Car",status:"IN_PROGRESS",priority:"Normal",started_at:new Date().toISOString(),draft_payload:d
-  }).select("id,inspection_number").single();
-  if(error||!inspection) return NextResponse.json({error:error?.message??"Inspection could not be created"},{status:500});
+  const { data, error } = await supabase.rpc("create_inspection", {
+    p_organization_id: organizationId,
+    p_user_id: userId,
+    p_draft: draft,
+  });
 
-  await supabase.from("inspection_drafts").upsert({organization_id:organizationId,inspection_id:inspection.id,version:1,payload:d,updated_by:userId,updated_at:new Date().toISOString()},{onConflict:"inspection_id"});
-  await supabase.from("audit_logs").insert({organization_id:organizationId,actor_id:userId,action:"created inspection",entity_type:"inspection",entity_id:inspection.id,after_data:{inspection_number:inspectionNumber}});
-  return NextResponse.json({id:inspection.id,inspectionNumber:inspection.inspection_number});
+  if (error) {
+    if (error.code === "22023") return NextResponse.json({ error: "Check the vehicle and customer details, then try again." }, { status: 400 });
+    if (error.code === "42501") return NextResponse.json({ error: "You are not authorised to create inspections in this workspace." }, { status: 403 });
+    return NextResponse.json({ error: "Inspection could not be created. No partial vehicle/customer/inspection record was saved." }, { status: 503 });
+  }
+
+  const created = Array.isArray(data) ? data[0] : data;
+  if (!created?.id) return NextResponse.json({ error: "Inspection creation did not return a record ID." }, { status: 503 });
+  return NextResponse.json({ id: created.id, inspectionNumber: created.inspection_number }, { status: 201 });
 }
