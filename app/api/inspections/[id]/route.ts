@@ -138,6 +138,15 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     if (!/^[a-f0-9]{64}$/.test(token)) {
       return NextResponse.json({ error: "The secure report token is missing. Save the inspection and retry." }, { status: 400 });
     }
+    const photos = Array.isArray(payload.photos) ? payload.photos : [];
+    const imagePhotos = photos.filter((photo: Record<string, unknown>) => photo && (photo.mediaType === "image" || !photo.mediaType));
+    if (imagePhotos.length < 1) {
+      return NextResponse.json({ error: "Add at least one successfully uploaded photo before publishing the PDI report." }, { status: 400 });
+    }
+    const expectedPathPrefix = `${organizationId}/${id}/${token}/`;
+    if (photos.some((photo: Record<string, unknown>) => typeof photo.path !== "string" || !photo.path.startsWith(expectedPathPrefix))) {
+      return NextResponse.json({ error: "One or more evidence files are not linked to this inspection report token. Re-upload the files before publishing." }, { status: 400 });
+    }
     const { data, error } = await supabase.rpc("finalize_inspection", {
       p_inspection_id: id,
       p_organization_id: organizationId,
