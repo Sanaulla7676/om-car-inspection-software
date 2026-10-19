@@ -18,7 +18,7 @@ export function BookingPage({ type }: BookingPageProps) {
     const values = Array.from(form.entries()).map(([key, value]) => key + ": " + String(value));
     const heading = isClass ? "6-Day Car Inspection Masterclass Request" : "Car Inspection Booking Request";
     const message = heading + "\n\n" + values.join("\n") + "\n\nPlease contact me to confirm availability and next steps.";
-    const whatsappUrl = "https://wa.me/919663120429?text=" + encodeURIComponent(message);
+    const whatsappUrl = "https://wa.me/918880339999?text=" + encodeURIComponent(message);
     window.open(whatsappUrl, "_blank", "noopener,noreferrer");
     setSent(true);
   }
