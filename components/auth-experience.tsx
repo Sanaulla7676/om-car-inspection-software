@@ -34,7 +34,8 @@ export function AuthExperience({ mode }: { mode: AuthMode }) {
     setSuccess("");
 
     if (!supabase) {
-      router.push("/dashboard");
+      setError("Staff sign-in is temporarily unavailable. Please try again later.");
+      setBusy(false);
       return;
     }
 
@@ -58,7 +59,10 @@ export function AuthExperience({ mode }: { mode: AuthMode }) {
         password,
       });
       if (signInError) setError(signInError.message);
-      else router.push("/dashboard");
+      else {
+        router.push("/dashboard");
+        router.refresh();
+      }
     }
 
     setBusy(false);
@@ -161,8 +165,7 @@ export function AuthExperience({ mode }: { mode: AuthMode }) {
           </form>
 
           <div className="om-auth-switch">
-            <span>{isSignup ? "Already have an account?" : "Don't have an account?"}</span>
-            <button type="button" onClick={() => router.push(switchHref)}>{switchLabel}</button>
+            <span>Staff access is invite-only. Ask your workspace administrator to provision an account.</span>
           </div>
         </div>
       </section>
