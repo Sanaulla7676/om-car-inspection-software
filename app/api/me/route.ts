@@ -1,21 +1,23 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { getStaffContext } from "@/lib/supabase/authorization";
 
 export async function GET() {
-  const supabase = await createClient();
-  if (!supabase) return NextResponse.json({ user:{id:"demo",name:"Demo Inspector"}, organization:{id:"demo-org",name:"OM Car Inspection"}, demo:true });
-  const { data:{ user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error:"Unauthorized" },{status:401});
+  const context = await getStaffContext();
+  if (!context.ok) return NextResponse.json({ error: context.error }, { status: context.status });
 
-  const { data: membership } = await supabase
-    .from("memberships")
-    .select("organization_id, role, organizations(id,name,logo_url,timezone)")
-    .eq("user_id",user.id).eq("status","active").order("created_at").limit(1).maybeSingle();
+  const { supabase, user, organizationId, role } = context;
+  const { data: organization, error } = await supabase
+    .from("organizations")
+    .select("id,name,logo_url,timezone")
+    .eq("id", organizationId)
+    .maybeSingle();
 
-  const organization = membership?.organizations ?? null;
+  if (error) return NextResponse.json({ error: "Workspace could not be loaded." }, { status: 503 });
+
   return NextResponse.json({
-    user:{id:user.id,name:user.user_metadata?.full_name ?? user.email ?? "User",email:user.email},
+    user: { id: user.id, name: user.user_metadata?.full_name ?? user.email ?? "User", email: user.email },
     organization,
-    role:membership?.role ?? null,
+    role,
+    demo: false,
   });
 }
