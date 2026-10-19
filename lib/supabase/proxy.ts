@@ -11,7 +11,7 @@ function isPrivatePage(pathname: string) {
   return [
     "/dashboard", "/admin", "/inspections", "/reports", "/vehicles", "/customers",
     "/analytics", "/calendar", "/reinspections", "/templates", "/faults", "/scoring",
-    "/settings", "/audit", "/inspectors", "/onboarding"
+    "/settings", "/audit", "/inspectors", "/onboarding", "/requests"
   ].some((root) => startsAt(pathname, root));
 }
 
@@ -85,6 +85,10 @@ export async function updateSession(request: NextRequest) {
   if (!membership?.organization_id) {
     if (privateApi) return withCookies(response, NextResponse.json({ error: "Staff workspace access required." }, { status: 403 }));
     return withCookies(response, NextResponse.redirect(new URL("/login?reason=access", request.url)));
+  }
+
+  if (startsAt(pathname, "/requests") && membership.role !== "SUPER_ADMIN" && membership.role !== "ORG_ADMIN") {
+    return withCookies(response, NextResponse.redirect(new URL("/dashboard?reason=admin", request.url)));
   }
 
   return response;
