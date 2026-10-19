@@ -2,203 +2,148 @@
 
 import Link from "next/link";
 import {
-  ArrowDownRight, ArrowRight, BadgeCheck, Camera, CarFront, Check,
-  CheckCircle2, ClipboardCheck, FileCheck2, FileText, GraduationCap,
-  Gauge, ShieldCheck, Wrench
+  ArrowRight,
+  Camera,
+  CarFront,
+  CheckCircle2,
+  ClipboardCheck,
+  FileText,
+  GraduationCap,
+  ShieldCheck
 } from "lucide-react";
 import { SiteNavigation } from "@/components/site-navigation";
 import { SiteFooter } from "@/components/site-footer";
 import { ScrollMotion } from "@/components/scroll-motion";
-import { CoachingInquiryForm } from "@/components/coaching-inquiry-form";
-import { VehicleInspectionInquiryBar } from "@/components/vehicle-inspection-inquiry-bar";
-import { HomeHero } from "@/components/home-hero";
 
-const VERNA_IMAGE = "https://htcms-prod-images.s3.ap-south-1.amazonaws.com/htmobile1/hyundai_new-verna/images/colours_hyundai-verna_titan-grey_1920x1033.jpg";
-const FORTUNER_IMAGE = "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/936fcbb7-1c2c-420f-ab93-c8a897dfb549.png";
-const THAR_IMAGE = "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/40087/thar-exterior-right-front-three-quarter-37.jpeg?isig=0&q=80";
-const MERCEDES_IMAGE = "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/178525/glc-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80";
-const XUV700_IMAGE = "https://cdn-s3.autocarindia.com/Mahindra/xuv700/_KMC0974.JPG";
 const INSPECTION_IMAGE = "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/18971d42-3c84-4532-b232-c7a29e9ac3dd.png";
-const REPORT_IMAGE = "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1400&q=90";
-const HOME_COACHING_BANNER = "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/cc9e2296-b59d-45ec-ba87-f6af4cf87d45.png";
+const TRAINING_IMAGE = "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/cc9e2296-b59d-45ec-ba87-f6af4cf87d45.png";
 
-const vehicleLineup = [
-  { name: "Hyundai Verna", type: "SEDAN · NEW VEHICLE PDI", image: VERNA_IMAGE, alt: "Hyundai Verna sedan in Titan Grey" },
-  { name: "Toyota Fortuner", type: "SUV · HANDOVER INSPECTION", image: FORTUNER_IMAGE, alt: "Toyota Fortuner SUV front three-quarter view" },
-  { name: "Mahindra Thar", type: "SUV · PRE-OWNED INSPECTION", image: THAR_IMAGE, alt: "Mahindra Thar off-road SUV" },
-  { name: "Mercedes-Benz GLC", type: "PREMIUM VEHICLE INSPECTION", image: MERCEDES_IMAGE, alt: "Mercedes-Benz GLC SUV front three-quarter view" },
-  { name: "Mahindra XUV700", type: "SUV · CONDITION REVIEW", image: XUV700_IMAGE, alt: "Mahindra XUV700 SUV on Indian roads" }
-];
-
-
-const services = [
-  {
-    number: "01", label: "NEW VEHICLE", title: "New Vehicle PDI",
-    intro: "Inspect a factory-new vehicle before handover sign-off.",
-    points: ["Exterior fit and finish", "Cabin and accessible functions", "Handover items and evidence"],
-    href: "/services/new-car-pdi", image: VERNA_IMAGE, icon: CarFront
-  },
-  {
-    number: "02", label: "PRE-OWNED VEHICLE", title: "Pre-Owned PDI / PDA",
-    intro: "Record visible condition before you commit to a used vehicle.",
-    points: ["Panels, paint, glass and lights", "Tyres, cabin and visible concerns", "Findings that need follow-up"],
-    href: "/services/used-car-inspection", image: THAR_IMAGE, icon: Gauge
-  },
-  {
-    number: "03", label: "PRACTICAL LEARNING", title: "PDI Coaching",
-    intro: "Learn a repeatable PDI checklist and evidence workflow.",
-    points: ["Walk-through inspection sequence", "Condition codes and observation", "Evidence and report writing"],
-    href: "/masterclass", image: INSPECTION_IMAGE, icon: GraduationCap
-  },
-  {
-    number: "04", label: "DOCUMENTATION", title: "Valuation & Reports",
-    intro: "Keep condition findings and documents together.",
-    points: ["W / X / Y / Z worksheet", "Photo and video evidence", "Report PDF and supporting files"],
-    href: "/services/inspection-report", image: REPORT_IMAGE, icon: FileText
-  }
-];
-
-const checkSystems = [
-  { code: "W", title: "Exterior", detail: "Body panels, glass, lights, visible paint and exterior defects." },
-  { code: "X", title: "Interior", detail: "Cabin trim, seats, roof lining, cleaning and visible interior defects." },
-  { code: "Y", title: "Function", detail: "Engine-related observations, electrical systems, steering, brakes and controls." },
-  { code: "Z", title: "Frame", detail: "Frame and structural inspection observations recorded by component." }
-];
-
-const workflow = [
-  { number: "01", title: "Choose the inspection", detail: "New PDI, pre-owned inspection or coaching.", icon: ClipboardCheck },
-  { number: "02", title: "Record each check", detail: "Use the relevant checklist and condition code.", icon: CheckCircle2 },
-  { number: "03", title: "Attach evidence", detail: "Add photos, videos and supporting files.", icon: Camera },
-  { number: "04", title: "Review the report", detail: "Check observations, valuation and attachments.", icon: FileCheck2 }
+const learningBlocks = [
+  { label: "DAYS 01–02", title: "Foundations and exterior checks", detail: "Inspection order, vehicle identity, safety, panels, paint, glass, lights, tyres and wheels." },
+  { label: "DAYS 03–04", title: "Cabin, engine bay and functions", detail: "Safe visual observations, accessible systems, cabin controls and diagnostic-code awareness." },
+  { label: "DAY 05", title: "Evidence and reporting", detail: "Record findings clearly, connect relevant photos to observations and explain what still needs checking." },
+  { label: "DAY 06", title: "Guided practice and business readiness", detail: "Review a supervised inspection, practise customer-ready reporting and discuss the fundamentals of offering an inspection service." }
 ];
 
 export default function PublicLanding() {
   return (
-    <div className="marketing-site home-page luxury-home luxury-motion-site">
+    <div className="marketing-site om-home-v2">
       <ScrollMotion />
       <SiteNavigation />
       <main>
-        <HomeHero />
-
-        <VehicleInspectionInquiryBar />
-
-        <section className="lux-model-lineup" aria-labelledby="lux-model-lineup-title">
-          <div className="lux-model-lineup-head">
-            <div><p className="lux-eyebrow"><span /> VEHICLE TYPES WE COVER</p><h2 id="lux-model-lineup-title">Indian roads. Real inspection needs.</h2></div>
-            <span className="lux-model-lineup-note">ILLUSTRATIVE MODEL GALLERY</span>
+        <section className="om-home-hero" aria-labelledby="om-home-title">
+          <div className="om-home-hero-copy">
+            <p className="om-home-eyebrow"><span /> OMKAR CAR INSPECTION & PDI TRAINING</p>
+            <h1 id="om-home-title">Inspect with evidence.<br /><em>Learn the method.</em></h1>
+            <p className="om-home-lead">
+              We help vehicle owners make clearer decisions with structured new-car PDI and pre-owned inspections. We also train aspiring inspectors in practical checks, evidence capture and professional report writing.
+            </p>
+            <div className="om-home-hero-actions">
+              <Link href="/book-inspection" className="om-home-button om-home-button-primary">Book a vehicle inspection <ArrowRight size={17} /></Link>
+              <Link href="/masterclass" className="om-home-button om-home-button-secondary">Explore PDI training <ArrowRight size={17} /></Link>
+            </div>
+            <div className="om-home-proof-points" aria-label="Our approach">
+              <span><CheckCircle2 size={15} /> Clear inspection scope</span>
+              <span><Camera size={15} /> Evidence-led findings</span>
+              <span><GraduationCap size={15} /> Hands-on learning</span>
+            </div>
           </div>
-          <div className="lux-model-lineup-track">
-            {vehicleLineup.map((vehicle, index) => (
-              <article className="lux-model-card" key={vehicle.name} data-gsap-reveal>
-                <div className="lux-model-image"><img src={vehicle.image} alt={vehicle.alt} loading={index < 2 ? "eager" : "lazy"} /></div>
-                <div className="lux-model-meta"><span>{vehicle.type}</span><h3>{vehicle.name}</h3></div>
-                <span className="lux-model-index">{String(index + 1).padStart(2, "0")}</span>
-              </article>
-            ))}
+          <div className="om-home-hero-visual">
+            <img src={INSPECTION_IMAGE} alt="Automotive inspector demonstrating practical vehicle inspection in a workshop" fetchPriority="high" />
+            <div className="om-home-visual-note">
+              <span className="om-home-visual-icon"><ShieldCheck size={20} /></span>
+              <div><b>Inspect. Document. Explain.</b><small>Make observations clear and traceable.</small></div>
+            </div>
+            <span className="om-home-visual-index">OM / FIELDWORK</span>
           </div>
         </section>
 
-        <section className="lux-service-section" id="services">
-          <div className="lux-section-title-row" data-gsap-reveal>
-            <div><p className="lux-eyebrow"><span /> INSPECTION & LEARNING</p><h2>Vehicle PDI and coaching.</h2></div>
-            <p>New-car handover checks, pre-owned vehicle inspection, practical PDI coaching and reporting.</p>
+        <section className="om-home-pathways" aria-labelledby="om-pathways-title">
+          <div className="om-home-section-heading">
+            <p className="om-home-eyebrow"><span /> START WITH YOUR GOAL</p>
+            <h2 id="om-pathways-title">What brings you here?</h2>
+            <p>Choose the path that matches what you need. No guessing which menu item is meant for you.</p>
           </div>
-          <div className="lux-service-grid">
-            {services.map((service) => {
-              const Icon = service.icon;
-              return (
-                <article className="lux-service-card lux-service-featured" key={service.number} data-gsap-reveal>
-                  <Link href={service.href as any} className="lux-service-img-link" aria-label={"Explore " + service.title}>
-                    <img src={service.image} alt="" loading="lazy" data-gsap-image />
-                    <span className="lux-service-index">{service.number}</span>
-                    <span className="lux-service-arrow"><ArrowRight size={17} /></span>
-                  </Link>
-                  <div className="lux-service-card-body">
-                    <span className="lux-service-tag">{service.label}</span>
-                    <h3>{service.title}</h3>
-                    <p>{service.intro}</p>
-                    <ul>{service.points.map((point) => <li key={point}><Check size={13} />{point}</li>)}</ul>
-                    <Link href={service.href as any} className="lux-service-link">Explore service <ArrowRight size={15} /></Link>
-                  </div>
+          <div className="om-home-path-grid">
+            <article className="om-home-path-card">
+              <div className="om-home-path-icon"><CarFront size={25} /></div>
+              <span className="om-home-card-label">FOR CAR OWNERS & BUYERS</span>
+              <h3>Need a car inspected?</h3>
+              <p>Request a new-car pre-delivery inspection or a pre-owned vehicle condition review before you make a decision.</p>
+              <ul>
+                <li><CheckCircle2 size={15} /> Structured checks for the agreed scope</li>
+                <li><CheckCircle2 size={15} /> Clear observations and relevant photo evidence</li>
+                <li><CheckCircle2 size={15} /> Limitations and follow-up questions made clear</li>
+              </ul>
+              <Link href="/book-inspection" className="om-home-card-link">Request an inspection <ArrowRight size={16} /></Link>
+            </article>
+            <article className="om-home-path-card om-home-path-card-training">
+              <div className="om-home-path-icon"><GraduationCap size={25} /></div>
+              <span className="om-home-card-label">FOR STUDENTS & ASPIRING INSPECTORS</span>
+              <h3>Want to learn PDI?</h3>
+              <p>Build practical vehicle inspection skills through a guided six-day learning path, from the checklist to evidence and reporting.</p>
+              <ul>
+                <li><CheckCircle2 size={15} /> Learn a repeatable inspection sequence</li>
+                <li><CheckCircle2 size={15} /> Practise recording and explaining findings</li>
+                <li><CheckCircle2 size={15} /> Explore the fundamentals of starting an inspection service</li>
+              </ul>
+              <Link href="/masterclass" className="om-home-card-link">Explore the 6-day masterclass <ArrowRight size={16} /></Link>
+            </article>
+          </div>
+        </section>
+
+        <section className="om-home-evidence" aria-labelledby="om-evidence-title">
+          <div className="om-home-evidence-copy">
+            <p className="om-home-eyebrow"><span /> EVIDENCE OVER CLAIMS</p>
+            <h2 id="om-evidence-title">A useful inspection explains what was found, not just what was checked.</h2>
+            <p>A clear report should connect important observations to relevant evidence, explain the inspection scope and identify anything that could not be verified. Photos support the findings; they do not replace a qualified assessment.</p>
+            <Link href="/services/inspection-report" className="om-home-button om-home-button-light">Explore reporting approach <ArrowRight size={16} /></Link>
+          </div>
+          <div className="om-home-evidence-grid">
+            <article><span><ClipboardCheck size={20} /></span><b>Structured checks</b><p>A repeatable sequence helps reduce missed steps.</p></article>
+            <article><span><Camera size={20} /></span><b>Relevant evidence</b><p>Capture photos that help explain an observation.</p></article>
+            <article><span><FileText size={20} /></span><b>Clear reporting</b><p>Separate observed facts, uncertainty and next steps.</p></article>
+          </div>
+        </section>
+
+        <section className="om-home-training" aria-labelledby="om-training-title">
+          <div className="om-home-training-visual">
+            <img src={TRAINING_IMAGE} alt="Promotional visual for the six-day practical vehicle PDI masterclass" loading="lazy" />
+          </div>
+          <div className="om-home-training-copy">
+            <p className="om-home-eyebrow"><span /> PRACTICAL TRAINING · SIX DAYS</p>
+            <h2 id="om-training-title">Learn to inspect cars. Understand how the work runs.</h2>
+            <p>The masterclass is designed to build foundational inspection skills and reporting habits, with guided practice and an introduction to the practical considerations involved in offering inspection services.</p>
+            <div className="om-home-learning-list">
+              {learningBlocks.map((block) => (
+                <article key={block.label}>
+                  <span>{block.label}</span>
+                  <div><b>{block.title}</b><p>{block.detail}</p></div>
                 </article>
-              );
-            })}
-          </div>
-        </section>
-
-        <section className="lux-worksheet-section" id="valuation-reports">
-          <div className="lux-worksheet-copy" data-gsap-reveal>
-            <p className="lux-eyebrow"><span /> INSPECTION WORKSHEET</p>
-            <h2>Four worksheet sections.</h2>
-            <p>For valuation workflows, keep the findings grouped by the same worksheet references used in the form.</p>
-            <Link href="/services/inspection-report" className="lux-button lux-button-white">See report details <ArrowRight size={15} /></Link>
-          </div>
-          <div className="lux-code-grid">
-            {checkSystems.map((item) => <article className="lux-code-card" key={item.code} data-gsap-reveal><div><span>{item.code}</span><h3>{item.title}</h3></div><p>{item.detail}</p><ArrowRight size={15} /></article>)}
-          </div>
-        </section>
-
-        <section className="lux-training-section" id="coaching">
-          <div className="lux-training-image" data-gsap-image><img src={INSPECTION_IMAGE} alt="An inspector checking vehicle body condition in a bright workshop" loading="lazy" /><div className="lux-training-photo-label">PRACTICAL PDI COACHING</div></div>
-          <div className="lux-training-copy" data-gsap-reveal>
-            <p className="lux-eyebrow"><span /> TRAINING & COACHING</p>
-            <h2>Learn the inspection process hands-on.</h2>
-            <p>Coaching focuses on the practical workflow: where to look, how to record a finding, when to capture evidence and how to explain what could not be verified.</p>
-            <div className="lux-training-list">
-              <span><Check size={14} /> Exterior and interior checks</span>
-              <span><Check size={14} /> Function and condition observations</span>
-              <span><Check size={14} /> Evidence and report writing</span>
+              ))}
             </div>
-            <div className="lux-training-actions"><Link href="/masterclass" className="lux-button lux-button-gold">Training outline <ArrowRight size={15} /></Link><a href="#coaching-enquiry" className="lux-text-link">Ask about a batch <ArrowDownRight size={15} /></a></div>
-          </div>
-        </section>
-
-        <section className="lux-coaching-banner-wrap" data-gsap-image>
-          <img src={HOME_COACHING_BANNER} alt="Six-day vehicle PDI masterclass with hands-on coaching, expert guidance and practical vehicle inspection learning" loading="lazy" />
-          <div className="lux-coaching-banner-action"><span>6-DAY PRACTICAL MASTERCLASS</span><Link href="/masterclass">Explore the coaching programme <ArrowRight size={16} /></Link></div>
-        </section>
-
-        <section className="lux-six-day-masterclass" id="six-day-masterclass">
-          <div className="lux-six-day-visual" data-gsap-image>
-            <img src={INSPECTION_IMAGE} alt="Practical vehicle paint and condition inspection in a workshop" loading="lazy" />
-            <div className="lux-six-day-visual-badge"><span>6</span><div><b>DAYS</b><small>PRACTICAL MASTERCLASS</small></div></div>
-          </div>
-          <div className="lux-six-day-copy" data-gsap-reveal>
-            <p className="lux-eyebrow"><span /> PRACTICAL TRAINING · SIX DAYS</p>
-            <h2>Learn to inspect cars. <em>Step by step.</em></h2>
-            <p className="lux-six-day-intro">A structured six-day learning path covering vehicle identity, exterior condition, engine-bay basics, cabin functions, diagnostic awareness, road-test observations and evidence-led report writing.</p>
-            <div className="lux-six-day-timeline">
-              <article><span>01–02</span><div><b>Inspection foundations</b><small>Safety, vehicle identity, workflow and exterior condition.</small></div></article>
-              <article><span>03–04</span><div><b>Cabin, engine bay and functions</b><small>Engine-bay observations, cabin checks and diagnostic-code basics.</small></div></article>
-              <article><span>05</span><div><b>Road test and reporting</b><small>Road-test observations and evidence-led report writing.</small></div></article>
-              <article><span>06</span><div><b>Guided inspection practice</b><small>Live guided inspection, review and next-step practice.</small></div></article>
+            <div className="om-home-training-actions">
+              <Link href="/masterclass" className="om-home-button om-home-button-primary">View the course outline <ArrowRight size={16} /></Link>
+              <Link href="/book-masterclass" className="om-home-text-link">Request the next batch details</Link>
             </div>
-            <div className="lux-six-day-actions">
-              <Link href="/masterclass" className="lux-button lux-button-gold">View six-day curriculum <ArrowRight size={15} /></Link>
-              <Link href="#coaching-enquiry" className="lux-text-link">Enquire about the next batch <ArrowDownRight size={15} /></Link>
-            </div>
-            <p className="lux-six-day-note">Batch dates, venue, fees, equipment and delivery format are confirmed directly. Training does not guarantee placement or income.</p>
+            <p className="om-home-disclaimer">Batch dates, venue, fees, equipment and completion criteria must be confirmed before enrolling. Training does not guarantee a job, customers or income.</p>
           </div>
         </section>
 
-        <section className="lux-process-section">
-          <div className="lux-section-title-row" data-gsap-reveal>
-            <div><p className="lux-eyebrow"><span /> THE WORKFLOW</p><h2>From check to report.</h2></div>
-            <p>Choose the service, complete the relevant checks, attach evidence and review the report.</p>
+        <section className="om-home-booking-flow" aria-labelledby="om-booking-flow-title">
+          <div className="om-home-section-heading">
+            <p className="om-home-eyebrow"><span /> SIMPLE NEXT STEPS</p>
+            <h2 id="om-booking-flow-title">Know what happens after you click.</h2>
           </div>
-          <div className="lux-process-grid">
-            {workflow.map((item) => {
-              const Icon = item.icon;
-              return <article className="lux-process-step" key={item.number} data-gsap-reveal><span className="lux-step-number">{item.number}</span><span className="lux-step-icon"><Icon size={21} /></span><h3>{item.title}</h3><p>{item.detail}</p></article>;
-            })}
+          <div className="om-home-flow-grid">
+            <article><span>01</span><b>Choose a path</b><p>Inspection request or practical PDI training.</p></article>
+            <article><span>02</span><b>Share the details</b><p>Tell the team about your vehicle or learning goals.</p></article>
+            <article><span>03</span><b>Confirm before committing</b><p>The team confirms availability, scope, fees and next steps. A request is not a confirmed booking.</p></article>
           </div>
-        </section>
-
-        <CoachingInquiryForm />
-
-        <section className="lux-final-contact">
-          <div data-gsap-reveal><p className="lux-eyebrow"><span /> NEXT STEP</p><h2>Vehicle to inspect? Skills to learn?</h2><p>Select a service or enquire about practical coaching. The team will need to confirm the scope, availability, location and any fees before a booking is final.</p></div>
-          <div className="lux-final-contact-actions"><Link href="/services/new-car-pdi" className="lux-button lux-button-gold">New Vehicle PDI <ArrowRight size={15} /></Link><Link href="/services/used-car-inspection" className="lux-button lux-button-white">Pre-Owned Inspection <ArrowRight size={15} /></Link><Link href="/login" className="lux-separate-login"><ShieldCheck size={15} /> Team sign in</Link></div>
+          <div className="om-home-final-actions">
+            <Link href="/book-inspection" className="om-home-button om-home-button-primary">Request vehicle inspection <ArrowRight size={16} /></Link>
+            <Link href="/book-masterclass" className="om-home-button om-home-button-secondary">Request training details <ArrowRight size={16} /></Link>
+          </div>
         </section>
       </main>
       <SiteFooter />
