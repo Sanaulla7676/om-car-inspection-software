@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createHash, randomUUID } from "crypto";
+import { createHash } from "crypto";
 import { getStaffContext } from "@/lib/supabase/authorization";
 import { calculateScore, recommendationForScore } from "@/lib/scoring";
 import { calculateValuation } from "@/lib/valuation";
