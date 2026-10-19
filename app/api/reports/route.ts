@@ -7,7 +7,7 @@ export async function GET() {
 
   const { data, error } = await context.supabase
     .from("reports")
-    .select("id,inspection_id,current_version,status,share_count,created_at,updated_at,inspections(inspection_number,inspection_type,vehicles(make,model,registration_number),customers(name))")
+    .select("id,inspection_id,current_version,status,share_count,created_at,updated_at,verification_expires_at,verification_revoked_at,inspections(inspection_number,inspection_type,vehicles(make,model,registration_number),customers(name))")
     .eq("organization_id", context.organizationId)
     .order("created_at", { ascending: false })
     .limit(100);
