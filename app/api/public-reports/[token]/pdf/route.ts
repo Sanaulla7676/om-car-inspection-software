@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createHash } from "crypto";
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { PDFDocument, StandardFonts, rgb, type PDFImage } from "pdf-lib";
 import { createClient } from "@/lib/supabase/server";
 
 function safePdfText(text: string) { return text.replace(/•/g,"-").replace(/·/g,"|").replace(/[–—]/g,"-").replace(/₹/g,"INR ").replace(/…/g,"...").replace(/[^\x20-\x7E]/g," "); }
@@ -106,7 +106,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
   if (allPhotos.some((photo: any) => !photo?.path)) {
     return new NextResponse("This report references a photo that is not stored. Contact the inspection team for a corrected report.", { status: 503 });
   }
-  const embeddedPhotos: Array<{ name: string; image: Awaited<ReturnType<typeof pdf.embedJpg>> | Awaited<ReturnType<typeof pdf.embedPng>> }> = [];
+  const embeddedPhotos: Array<{ name: string; image: PDFImage }> = [];
   for (const photo of allPhotos) {
     const { data: signed, error: signError } = await supabase.storage.from("inspection-media").createSignedUrl(photo.path, 300);
     if (signError || !signed?.signedUrl) {
