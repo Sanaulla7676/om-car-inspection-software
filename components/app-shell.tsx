@@ -9,7 +9,7 @@ import { demoCustomers,demoInspections,demoInspectors,demoVehicles,faultLibrary 
 
 const managerPrimary=[["dashboard","Dashboard",LayoutDashboard],["analytics","Analytics",BarChart3],["inspections","Inspections",ClipboardList],["vehicles","Vehicles",CarFront],["reports","Reports",FileText],["calendar","Calendar",CalendarDays]] as const;
 const fieldPrimary=[["dashboard","Home",LayoutDashboard],["inspections","My inspections",ClipboardList],["vehicles","Vehicles",CarFront],["reports","Reports",FileText],["reinspections","Re-inspections",RefreshCcw]] as const;
-const managementMore=[["inspections/new","New inspection",Plus],["customers","Customers",Users],["inspectors","Inspectors",Users],["templates","Templates",SlidersHorizontal],["faults","Fault Library",Wrench],["scoring","Scoring Rules",Gauge],["settings","Settings",Settings],["audit","Audit Logs",History]] as const;
+const managementMore=[["inspections/new","New inspection",Plus],["customers","Customers",Users],["inspectors","Inspectors",Users],["templates","Templates",SlidersHorizontal],["faults","Fault Library",Wrench],["scoring","Scoring Rules",Gauge],["settings","Settings",Settings],["audit","Audit Logs",History],["requests","Booking Requests",CalendarDays]] as const;
 const statusClass=(s:string)=>s==="COMPLETED"||s==="APPROVED"||s==="Active"?"chip success":s==="IN_REVIEW"||s==="CHANGES_REQUESTED"||s==="Worn"?"chip warn":s==="IN_PROGRESS"?"chip info":s==="Major"||s==="Critical"?"chip danger":"chip";
 
 export function AppShell({module,children}:{module:string;children?:React.ReactNode}){
