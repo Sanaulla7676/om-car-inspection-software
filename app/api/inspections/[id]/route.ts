@@ -1,26 +1,17 @@
 import { NextResponse } from "next/server";
 import { createHash } from "crypto";
-import { createClient } from "@/lib/supabase/server";
+import { getStaffContext } from "@/lib/supabase/authorization";
 import { calculateScore, recommendationForScore } from "@/lib/scoring";
 import { calculateValuation } from "@/lib/valuation";
 import type { Severity } from "@/lib/types";
 
 function tokenHash(token:string){return createHash("sha256").update(token).digest("hex");}
 
-async function context() {
-  const supabase=await createClient();
-  if(!supabase) return {supabase:null,userId:"demo",organizationId:"demo-org"};
-  const {data:{user}}=await supabase.auth.getUser();
-  if(!user) return {supabase,userId:null,organizationId:null};
-  const {data:m}=await supabase.from("memberships").select("organization_id").eq("user_id",user.id).eq("status","active").order("created_at").limit(1).maybeSingle();
-  return {supabase,userId:user.id,organizationId:m?.organization_id??null};
-}
-
 export async function PATCH(req:Request,{params}:{params:Promise<{id:string}>}) {
   const {id}=await params;
-  const {supabase,userId,organizationId}=await context();
-  if(!supabase) return NextResponse.json({ok:true});
-  if(!userId||!organizationId) return NextResponse.json({error:"Unauthorized"},{status:401});
+  const context = await getStaffContext();
+  if (!context.ok) return NextResponse.json({ error: context.error }, { status: context.status });
+  const { supabase, userId, organizationId } = context;
 
   const {data:inspection}=await supabase.from("inspections").select("id,organization_id,inspection_number,vehicle_id,customer_id,inspection_type").eq("id",id).eq("organization_id",organizationId).single();
   if(!inspection) return NextResponse.json({error:"Inspection not found"},{status:404});
