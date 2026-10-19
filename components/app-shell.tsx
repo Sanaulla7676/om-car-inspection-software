@@ -71,7 +71,7 @@ function DashboardScreen(){
 }
 
 function ModuleScreen({module}:{module:string;showToast:(x:string)=>void}){
- const title=module.replaceAll("-"," ").replace(/\\b\\w/g,x=>x.toUpperCase());
+ const title=module.replaceAll("-"," ").replace(/\b\w/g,x=>x.toUpperCase());
  const descriptions:Record<string,string>={
   analytics:"Operational analytics will be shown here after verified production events are connected.",
   calendar:"Appointment scheduling is not yet connected to a live calendar. Do not treat this view as a confirmed booking calendar.",
