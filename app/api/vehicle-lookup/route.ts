@@ -1,19 +1,10 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { getStaffContext } from "@/lib/supabase/authorization";
 
 type LookupData = Record<string, unknown>;
 
 function normalizeText(value: unknown){ return typeof value==="string" ? value.trim() : value==null ? "" : String(value).trim(); }
 function first(data:LookupData, keys:string[]){ for(const key of keys){const v=data[key];if(v!==undefined&&v!==null&&normalizeText(v)!=="")return v;} return ""; }
-
-async function context(){
-  const supabase=await createClient();
-  if(!supabase)return {supabase:null,userId:"demo",organizationId:"demo-org"};
-  const {data:{user}}=await supabase.auth.getUser();
-  if(!user)return {supabase,userId:null,organizationId:null};
-  const {data:m}=await supabase.from("memberships").select("organization_id").eq("user_id",user.id).eq("status","active").order("created_at").limit(1).maybeSingle();
-  return {supabase,userId:user.id,organizationId:m?.organization_id??null};
-}
 
 function normalizeResponse(root:LookupData){
   const d=(root.data&&typeof root.data==="object"&&!Array.isArray(root.data)?root.data:root) as LookupData;
@@ -49,9 +40,9 @@ function normalizeResponse(root:LookupData){
 }
 
 export async function POST(req:Request){
-  const {supabase,userId,organizationId}=await context();
-  if(!supabase)return NextResponse.json({error:"Vehicle lookup is not configured in demo mode."},{status:503});
-  if(!userId||!organizationId)return NextResponse.json({error:"Unauthorized"},{status:401});
+  const context = await getStaffContext();
+  if (!context.ok) return NextResponse.json({ error: context.error }, { status: context.status });
+  const { supabase, userId, organizationId } = context;
 
   const body=await req.json().catch(()=>({}));
   const chassis=normalizeText(body.chassis_number).toUpperCase().replace(/\s+/g,"");
