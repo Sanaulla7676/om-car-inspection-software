@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 
 const MAX_BODY_BYTES = 12_000;
 const clean = (value: unknown, max = 500) =>
@@ -65,28 +65,29 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Enter a valid model year." }, { status: 400 });
   }
 
-  const supabase = createAdminClient();
+  const supabase = await createClient();
   if (!supabase) return NextResponse.json({ error: "Enquiry saving is temporarily unavailable. Please contact the team directly." }, { status: 503 });
 
-  const { data, error } = await supabase.from("booking_requests").insert({
-    request_type: requestType,
-    full_name: fullName,
-    mobile,
-    email: email || null,
-    vehicle_make_model: vehicleMakeModel || null,
-    model_year: modelYear,
-    inspection_type: inspectionType || null,
-    preferred_date: preferredDate,
-    vehicle_location: vehicleLocation || null,
-    notes: notes || null,
-    experience_level: experienceLevel || null,
-    learning_goals: learningGoals || null,
-    source: "public-website",
-  }).select("id,created_at").single();
+  const { data, error } = await supabase.rpc("create_public_booking_request", {
+    p_request_type: requestType,
+    p_full_name: fullName,
+    p_mobile: mobile,
+    p_email: email || null,
+    p_vehicle_make_model: vehicleMakeModel || null,
+    p_model_year: modelYear,
+    p_inspection_type: inspectionType || null,
+    p_preferred_date: preferredDate,
+    p_vehicle_location: vehicleLocation || null,
+    p_notes: notes || null,
+    p_experience_level: experienceLevel || null,
+    p_learning_goals: learningGoals || null,
+  });
 
-  if (error || !data) {
-    return NextResponse.json({ error: "We could not save your enquiry. Please try again or contact the team." }, { status: 503 });
+  const saved = Array.isArray(data) ? data[0] : data;
+  if (error || !saved?.id) {
+    const status = error?.code === "22023" ? 400 : 503;
+    return NextResponse.json({ error: status === 400 ? "Please check the details and try again." : "We could not save your enquiry. Please try again or contact the team." }, { status });
   }
 
-  return NextResponse.json({ ok: true, id: data.id, createdAt: data.created_at }, { status: 201 });
+  return NextResponse.json({ ok: true, id: saved.id, createdAt: saved.created_at }, { status: 201 });
 }
