@@ -2127,3 +2127,119 @@ html{scroll-behavior:smooth}
     height:58vh!important;min-height:320px!important;max-height:500px!important;
   }
 }
+
+
+/* Clear dual-path homepage: inspection customers and training students should never have to decode the navigation. */
+.om-home-v2{background:#f5f4f0;color:#121820;overflow:clip}
+.om-home-v2 main{width:100%}
+.om-home-hero,.om-home-pathways,.om-home-evidence,.om-home-training,.om-home-booking-flow{width:min(1240px,calc(100% - 48px));margin-inline:auto}
+.om-home-hero{display:grid;grid-template-columns:minmax(0,1.03fr) minmax(360px,.97fr);align-items:center;gap:clamp(28px,5vw,76px);padding:clamp(54px,8vw,104px) 0 70px}
+.om-home-eyebrow{display:flex;align-items:center;gap:9px;margin:0 0 17px;color:#78602b;font-size:11px;font-weight:800;letter-spacing:.15em;line-height:1.5}
+.om-home-eyebrow span{width:24px;height:2px;flex:0 0 auto;background:#bd9a50}
+.om-home-hero h1{max-width:690px;margin:0;color:#111820;font-family:"Barlow Condensed",Impact,sans-serif;font-size:clamp(48px,6.1vw,82px);font-weight:800;letter-spacing:-.035em;line-height:.98}
+.om-home-hero h1 em{color:#987536;font-style:normal}
+.om-home-lead{max-width:630px;margin:24px 0 0;color:#4c5660;font-size:clamp(15px,1.4vw,18px);line-height:1.8}
+.om-home-hero-actions,.om-home-training-actions,.om-home-final-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.om-home-button{min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:13px 18px;border:1px solid transparent;border-radius:6px;font-size:13px;font-weight:800;line-height:1.3;text-decoration:none;transition:transform .18s ease,background .18s ease,border-color .18s ease}
+.om-home-button:hover,.om-home-card-link:hover{transform:translateY(-2px)}
+.om-home-button-primary{background:#151b21;color:#fff;border-color:#151b21}
+.om-home-button-primary:hover{background:#2c343c}
+.om-home-button-secondary{background:transparent;color:#151b21;border-color:#c9c6be}
+.om-home-button-secondary:hover{background:#ebe9e2}
+.om-home-button-light{background:#fff;color:#171d23;border-color:#fff}
+.om-home-proof-points{display:flex;flex-wrap:wrap;gap:12px 18px;margin-top:25px;color:#47515b;font-size:11px;font-weight:700}
+.om-home-proof-points span{display:inline-flex;align-items:center;gap:7px}
+.om-home-proof-points svg{color:#987536}
+.om-home-hero-visual{position:relative;min-width:0}
+.om-home-hero-visual>img{display:block;width:100%;aspect-ratio:4/4.4;max-height:600px;object-fit:cover;object-position:center;border-radius:4px;background:#dedbd2}
+.om-home-visual-note{position:absolute;left:-24px;bottom:28px;display:flex;align-items:center;gap:13px;max-width:330px;padding:17px 20px;background:#fff;box-shadow:0 18px 55px #0b15201c;border:1px solid #e5e1d8}
+.om-home-visual-icon{display:grid;place-items:center;width:42px;height:42px;flex:0 0 auto;background:#f2ead8;color:#8b6c2e}
+.om-home-visual-note b,.om-home-visual-note small{display:block}
+.om-home-visual-note b{font-size:13px;color:#171d23}
+.om-home-visual-note small{margin-top:4px;color:#66707a;font-size:11px;line-height:1.45}
+.om-home-visual-index{position:absolute;top:16px;right:16px;padding:8px 10px;background:#101820d9;color:#fff;font-size:10px;font-weight:800;letter-spacing:.14em}
+.om-home-pathways{padding:52px 0 82px;border-top:1px solid #e3e0d8}
+.om-home-section-heading{max-width:730px;margin-bottom:28px}
+.om-home-section-heading h2,.om-home-evidence h2,.om-home-training h2{margin:0;color:#151b21;font-family:"Barlow Condensed",Impact,sans-serif;font-size:clamp(34px,4vw,52px);font-weight:800;letter-spacing:-.025em;line-height:1.05}
+.om-home-section-heading>p:last-child{max-width:650px;margin:13px 0 0;color:#59636d;font-size:15px;line-height:1.7}
+.om-home-path-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.om-home-path-card{display:flex;flex-direction:column;align-items:flex-start;min-width:0;padding:clamp(24px,3.3vw,40px);background:#fff;border:1px solid #e2dfd7;box-shadow:0 8px 30px #19212a08}
+.om-home-path-card-training{background:#171e25;color:#fff;border-color:#171e25}
+.om-home-path-icon{display:grid;place-items:center;width:52px;height:52px;margin-bottom:22px;background:#f3eddf;color:#8c6c2f}
+.om-home-path-card-training .om-home-path-icon{background:#2b343d;color:#e1c27b}
+.om-home-card-label{color:#88703b;font-size:10px;font-weight:800;letter-spacing:.14em;line-height:1.5}
+.om-home-path-card h3{margin:11px 0 10px;color:#171d23;font-family:"Barlow Condensed",Impact,sans-serif;font-size:clamp(28px,3vw,38px);font-weight:800;line-height:1.1}
+.om-home-path-card-training h3{color:#fff}
+.om-home-path-card>p{max-width:500px;margin:0;color:#59636d;font-size:14px;line-height:1.75}
+.om-home-path-card-training>p{color:#c3c9ce}
+.om-home-path-card ul{display:grid;gap:11px;width:100%;margin:22px 0 28px;padding:0;list-style:none}
+.om-home-path-card li{display:flex;align-items:flex-start;gap:9px;color:#414c56;font-size:12px;line-height:1.55}
+.om-home-path-card-training li{color:#d9dde0}
+.om-home-path-card li svg{flex:0 0 auto;margin-top:2px;color:#9b7b3c}
+.om-home-card-link{display:inline-flex;align-items:center;gap:9px;margin-top:auto;color:#151b21;font-size:13px;font-weight:800;text-decoration:none;transition:transform .18s ease}
+.om-home-path-card-training .om-home-card-link{color:#e2c47c}
+.om-home-evidence{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.82fr);align-items:center;gap:clamp(30px,5vw,76px);padding:clamp(34px,5.5vw,70px);background:#e9e6dd;border:1px solid #ded9cd}
+.om-home-evidence h2{max-width:620px}
+.om-home-evidence-copy>p:not(.om-home-eyebrow){max-width:610px;margin:18px 0 24px;color:#515b64;font-size:14px;line-height:1.8}
+.om-home-evidence-grid{display:grid;gap:10px}
+.om-home-evidence-grid article{display:grid;grid-template-columns:42px 1fr;column-gap:13px;align-items:center;padding:17px;background:#fff;border:1px solid #e3dfd6}
+.om-home-evidence-grid article>span{grid-row:span 2;display:grid;place-items:center;width:42px;height:42px;background:#f3eddf;color:#8c6c2f}
+.om-home-evidence-grid b{font-size:13px;color:#171d23}
+.om-home-evidence-grid p{margin:4px 0 0;color:#65707a;font-size:11px;line-height:1.5}
+.om-home-training{display:grid;grid-template-columns:minmax(300px,.78fr) minmax(0,1fr);align-items:center;gap:clamp(30px,5vw,76px);padding:92px 0}
+.om-home-training-visual img{display:block;width:100%;aspect-ratio:4/4.7;object-fit:cover;object-position:center;border-radius:3px;background:#dedbd2}
+.om-home-training-copy>p:not(.om-home-eyebrow){margin:16px 0;color:#58626c;font-size:14px;line-height:1.8}
+.om-home-learning-list{display:grid;gap:0;margin-top:22px;border-top:1px solid #dedbd3}
+.om-home-learning-list article{display:grid;grid-template-columns:105px 1fr;gap:14px;padding:16px 0;border-bottom:1px solid #dedbd3}
+.om-home-learning-list article>span{color:#8a6b31;font-size:10px;font-weight:800;letter-spacing:.08em;line-height:1.5}
+.om-home-learning-list b{color:#171d23;font-size:13px}
+.om-home-learning-list p{margin:5px 0 0;color:#606a73;font-size:12px;line-height:1.65}
+.om-home-text-link{display:inline-flex;align-items:center;min-height:44px;color:#4b3a1b;font-size:12px;font-weight:800;text-decoration:underline;text-underline-offset:4px}
+.om-home-disclaimer{font-size:11px!important;color:#6c747b!important;line-height:1.6!important}
+.om-home-booking-flow{padding:48px 0 90px;border-top:1px solid #e3e0d8}
+.om-home-flow-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.om-home-flow-grid article{padding:23px;background:#fff;border:1px solid #e3dfd7}
+.om-home-flow-grid article>span{display:block;margin-bottom:25px;color:#987536;font-family:"Barlow Condensed",Impact,sans-serif;font-size:28px;font-weight:800}
+.om-home-flow-grid b{display:block;color:#171d23;font-size:14px}
+.om-home-flow-grid p{margin:8px 0 0;color:#606a73;font-size:12px;line-height:1.7}
+.om-home-final-actions{padding-top:6px}
+@media(max-width:900px){
+ .om-home-hero{grid-template-columns:minmax(0,1fr) minmax(280px,.78fr);gap:26px}
+ .om-home-evidence{grid-template-columns:1fr;gap:28px}
+ .om-home-training{grid-template-columns:minmax(240px,.7fr) minmax(0,1fr);gap:28px}
+ .om-home-learning-list article{grid-template-columns:90px 1fr}
+}
+@media(max-width:680px){
+ .om-home-hero,.om-home-pathways,.om-home-evidence,.om-home-training,.om-home-booking-flow{width:calc(100% - 32px)}
+ .om-home-hero{grid-template-columns:1fr;gap:28px;padding:44px 0 42px}
+ .om-home-hero h1{font-size:clamp(46px,13vw,66px)}
+ .om-home-lead{margin-top:17px;font-size:15px;line-height:1.75}
+ .om-home-hero-actions{display:grid;grid-template-columns:1fr;margin-top:22px}
+ .om-home-button{width:100%;min-height:49px}
+ .om-home-proof-points{gap:10px 14px;font-size:10px}
+ .om-home-hero-visual{margin-left:12px}
+ .om-home-hero-visual>img{aspect-ratio:1.08/1;max-height:410px}
+ .om-home-visual-note{left:-12px;bottom:14px;max-width:calc(100% - 18px);padding:12px}
+ .om-home-visual-icon{width:36px;height:36px}
+ .om-home-visual-index{top:10px;right:10px}
+ .om-home-pathways{padding:40px 0 48px}
+ .om-home-section-heading h2,.om-home-evidence h2,.om-home-training h2{font-size:clamp(33px,9vw,44px)}
+ .om-home-section-heading>p:last-child{font-size:13px}
+ .om-home-path-grid{grid-template-columns:1fr;gap:12px}
+ .om-home-path-card{padding:24px}
+ .om-home-path-card h3{font-size:32px}
+ .om-home-evidence{width:100%;padding:32px 20px}
+ .om-home-evidence-copy>p:not(.om-home-eyebrow){font-size:13px}
+ .om-home-training{grid-template-columns:1fr;gap:24px;padding:54px 0}
+ .om-home-training-visual img{aspect-ratio:1.15/1;max-height:390px}
+ .om-home-learning-list article{grid-template-columns:82px 1fr;gap:10px;padding:14px 0}
+ .om-home-learning-list article>span{font-size:9px}
+ .om-home-booking-flow{padding:40px 0 60px}
+ .om-home-flow-grid{grid-template-columns:1fr;gap:10px}
+ .om-home-flow-grid article{padding:18px}
+ .om-home-flow-grid article>span{margin-bottom:12px}
+ .om-home-final-actions{display:grid;grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+ .om-home-v2 .om-home-button,.om-home-v2 .om-home-card-link{transition:none}
+}
