@@ -233,3 +233,15 @@
 @media(prefers-reduced-motion:reduce){
  .om17-home *,.om17-home *::before,.om17-home *::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+/* Two distinct customer journeys remain visible inside the service-discovery section. */
+.om17-pathway-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:24px 0 22px}
+.om17-pathway-card{display:grid;grid-template-columns:44px minmax(0,1fr) 20px;align-items:center;gap:13px;padding:17px 18px;background:#fff;border:1px solid #dfe2dc;text-decoration:none!important;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.om17-pathway-card:hover{transform:translateY(-2px);border-color:#c4ae7f;box-shadow:0 12px 28px rgba(19,27,33,.06)}
+.om17-pathway-icon{display:grid;place-items:center;width:42px;height:42px;background:#efebe2;color:#897044}
+.om17-pathway-copy{display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0}
+.om17-pathway-copy small{font-size:8px;font-weight:800;letter-spacing:.1em;color:#8c774e;line-height:1.6}
+.om17-pathway-copy b{font-size:14px;line-height:1.35;letter-spacing:-.025em;color:#171b1d}
+.om17-pathway-copy>span{font-size:11px;line-height:1.65;color:#657078}
+.om17-pathway-arrow{color:#826a40}
+@media(max-width:720px){.om17-pathway-grid{grid-template-columns:1fr;gap:10px;margin-block:20px}.om17-pathway-card{padding:16px;grid-template-columns:38px minmax(0,1fr) 18px;gap:11px}.om17-pathway-icon{width:38px;height:38px}.om17-pathway-copy small{font-size:8px}.om17-pathway-copy b{font-size:13px}}
