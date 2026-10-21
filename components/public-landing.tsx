@@ -180,6 +180,18 @@ export default function PublicLanding() {
               <div><p className="om17-kicker"><span /> SERVICES & LEARNING</p><h2 id="om17-services-title">The right checks for the right moment.</h2></div>
               <p>Explore the service that matches your goal. Exact inspection coverage is agreed before the appointment.</p>
             </div>
+            <div className="om17-pathway-grid" aria-label="Choose your OMKAR pathway">
+              <Link href="/book-inspection" className="om17-pathway-card">
+                <span className="om17-pathway-icon"><CarFront size={22} /></span>
+                <span className="om17-pathway-copy"><small>FOR CAR OWNERS & BUYERS</small><b>Need a vehicle inspected?</b><span>Request new-car PDI or a pre-owned condition review.</span></span>
+                <ArrowRight className="om17-pathway-arrow" size={18} />
+              </Link>
+              <Link href="/masterclass" className="om17-pathway-card om17-pathway-training">
+                <span className="om17-pathway-icon"><GraduationCap size={22} /></span>
+                <span className="om17-pathway-copy"><small>FOR STUDENTS & ASPIRING INSPECTORS</small><b>Want to learn PDI?</b><span>Explore the six-day practical learning path.</span></span>
+                <ArrowRight className="om17-pathway-arrow" size={18} />
+              </Link>
+            </div>
             <div className="om17-service-grid">
               {services.map((service) => (
                 <article className="om17-service-card" key={service.number}>
@@ -370,7 +382,7 @@ export default function PublicLanding() {
         </section>
 
         {/* 16 / Final conversion CTA with a functional WhatsApp enquiry form */}
-        <section className="om17-section om17-final" aria-labelledby="om17-final-title">
+        <section id="vehicle-inquiry" className="om17-section om17-final" aria-labelledby="om17-final-title">
           <div className="om17-container om17-final-layout">
             <div className="om17-final-copy">
               <p className="om17-kicker om17-kicker-light"><span /> START WITH THE RIGHT DETAILS</p>
