@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./marketing.css";
 import "./animation-effects.css";
+import "./homepage-sections.css";
 import { QueryProvider } from "@/components/query-provider";
 import { PwaRegister } from "@/components/pwa-register";
 
