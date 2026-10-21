@@ -183,7 +183,7 @@ export default function PublicLanding() {
             <div className="om17-service-grid">
               {services.map((service) => (
                 <article className="om17-service-card" key={service.number}>
-                  <Link href={service.href} className="om17-service-image" aria-label={service.link}>
+                  <Link href={service.href as any} className="om17-service-image" aria-label={service.link}>
                     <img src={service.image} alt={service.alt} loading="lazy" />
                     <span className="om17-image-number">{service.number}</span>
                     <span className="om17-image-arrow" aria-hidden="true"><ArrowDownRight size={21} /></span>
