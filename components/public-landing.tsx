@@ -192,7 +192,7 @@ export default function PublicLanding() {
                     <p className="om17-card-kicker">{service.label}</p>
                     <h3>{service.title}</h3>
                     <p>{service.text}</p>
-                    <Link href={service.href} className="om17-text-link">{service.link} <ArrowRight size={15} /></Link>
+                    <Link href={service.href as any} className="om17-text-link">{service.link} <ArrowRight size={15} /></Link>
                   </div>
                 </article>
               ))}
