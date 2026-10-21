@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { FormEvent } from "react";
 import {
   ArrowDownRight,
   ArrowRight,
@@ -114,7 +115,7 @@ const faqs = [
   }
 ];
 
-function openWhatsAppEnquiry(event: React.FormEvent<HTMLFormElement>) {
+function openWhatsAppEnquiry(event: FormEvent<HTMLFormElement>) {
   event.preventDefault();
   const form = new FormData(event.currentTarget);
   const name = String(form.get("name") || "").trim();
