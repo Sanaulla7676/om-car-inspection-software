@@ -35,7 +35,7 @@ export function SiteNavigation() {
   return (
     <>
       <div className="site-scroll-progress" aria-hidden="true"><span id="site-scroll-progress-fill" /></div>
-      <header className="site-header-v2 luxury-header">
+      <header className={"site-header-v2 luxury-header" + (pathname === "/" ? " om-home-glass-header" : "")}>
         <Link href="/" className="site-brand-v2 luxury-brand" aria-label="OM Car Inspection home" onClick={() => setMobileOpen(false)}>
           <img className="lux-brand-logo-img" src="https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/a526dc36-b0a0-4787-bbc3-bed064b316c1.png" alt="OMKAR Inspection" width={120} height={46} />
         </Link>

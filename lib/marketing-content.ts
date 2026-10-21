@@ -603,6 +603,78 @@ export const guidePages: MarketingPageContent[] = [
       { question: "Do digital records replace compliance duties?", answer: "No. Continue to follow applicable legal, manufacturer and workplace requirements." }
     ],
     primaryHref: "/services/fleet-vehicle-inspection", primaryLabel: "Explore fleet inspection workflows"
+  },
+  {
+    slug: "car-maintenance-checklist", kind: "guide", title: "The Practical Car Maintenance Checklist",
+    metaTitle: "Car Maintenance Checklist: Checks Owners Should Track",
+    metaDescription: "A practical car maintenance checklist covering service records, tyres, fluids, warning lamps, battery condition, brakes, cooling, and when to use a qualified workshop.",
+    tagline: "Small checks. Fewer surprises. Better records.",
+    intro: "Routine maintenance is easier to manage when you track the vehicle's own service schedule, observe changes early and record what was done. This guide helps owners build a simple routine without replacing the manufacturer's advice.",
+    overview: "Maintenance intervals and specifications vary by make, model, engine, usage and climate. Follow the vehicle owner manual and service schedule, use the correct fluids and parts, and have safety-critical concerns checked by a qualified workshop. Do not work beneath a vehicle supported only by a jack or open a hot pressurised cooling system.",
+    checks: [
+      "Keep the owner manual, service invoices, warranty details and recall information together",
+      "Check tyre pressure when cold using the vehicle placard/manual; observe tread, cuts, bulges and uneven wear",
+      "Look for new warning lamps, fluid spots, unusual smells, noises, vibration or changes in braking",
+      "Check accessible fluid levels only as directed by the manufacturer and on safe, level ground",
+      "Keep windscreen, wipers, mirrors, lamps, washer fluid and number plates clean and functional",
+      "Track battery age, service intervals, brake checks, coolant service and other model-specific maintenance",
+      "Ask the workshop to record replaced parts, findings, next service date and any deferred work",
+      "Stop driving and seek assistance for serious brake, steering, overheating, oil-pressure or tyre safety warnings"
+    ],
+    faqs: [
+      { question: "Should I follow a fixed monthly checklist for every car?", answer: "Use a simple observation routine if helpful, but follow the model's manual for checks and service intervals. Different powertrains and operating conditions require different procedures." },
+      { question: "Can I top up any engine oil or coolant?", answer: "No. Confirm the exact specification and safe procedure in the owner's manual. The wrong fluid or opening a hot pressurised system can cause damage or injury." },
+      { question: "Which signs should not wait until the next service?", answer: "Serious brake or steering changes, overheating, oil-pressure warnings, tyre bulges or sudden loss of function require prompt safe assessment. Stop in a safe place and follow the vehicle guidance." }
+    ],
+    primaryHref: "/services/vehicle-condition-assessment", primaryLabel: "Explore a condition assessment"
+  },
+  {
+    slug: "what-to-check-before-buying-used-car", kind: "guide", title: "Before You Buy a Used Car: The Decision Checklist",
+    metaTitle: "What to Check Before Buying a Used Car in India",
+    metaDescription: "Use a structured pre-purchase checklist for vehicle identity, service history, visible body condition, tyres, warning lights, test drive, documents and follow-up checks.",
+    tagline: "Do the paperwork. Inspect the car. Then decide.",
+    intro: "A tidy exterior and a confident seller are not substitutes for due diligence. Separate the checks you can observe from facts that require official verification, a specialist or a proper document review.",
+    overview: "This checklist supports a buying decision but cannot establish the full history or guarantee future reliability. Verify ownership, registration, finance, insurance, challans and transfer requirements through appropriate official channels. Arrange permission for an independent inspection before paying a non-refundable amount.",
+    checks: [
+      "Match the vehicle and visible chassis/VIN identifiers to records; ask the relevant authority about discrepancies",
+      "Review service invoices, owner-provided history, recall information, insurance details and odometer consistency",
+      "Compare paint, panel gaps, glass, tyres and cabin wear while treating each clue as a prompt, not proof",
+      "Check cold-start conditions, dashboard warnings and accessible functions where the seller permits",
+      "Drive only with permission and a suitable licensed driver; stop if the vehicle appears unsafe",
+      "Ask for an independent assessment of concerns involving structure, brakes, steering, drivetrain or electronics",
+      "Obtain written repair estimates for material findings instead of guessing future costs from photos",
+      "Confirm the transaction terms, pending repairs, delivery items and document transfer steps before committing"
+    ],
+    faqs: [
+      { question: "Can I tell from the paint whether a car was in an accident?", answer: "Paint differences and panel alignment can justify closer inspection, but ordinary repairs and factory variation may look similar. They do not prove the full accident history." },
+      { question: "Should I buy if the report score is high?", answer: "Read the individual findings, limitations and unresolved checks. A score does not replace document verification or your budget and suitability assessment." },
+      { question: "Is a seller's service book enough?", answer: "It is one source. Compare it with available invoices and records, and independently verify information that is important to the purchase." }
+    ],
+    primaryHref: "/services/pre-purchase-inspection", primaryLabel: "Explore a pre-purchase inspection"
+  },
+  {
+    slug: "overlooked-car-maintenance-checks", kind: "guide", title: "Often-Overlooked Car Maintenance Checks",
+    metaTitle: "Often-Overlooked Car Maintenance Checks and Warning Signs",
+    metaDescription: "Learn overlooked maintenance habits: cold tyre pressure, age-related tyres, battery terminals, wiper condition, under-car leaks, service records and dashboard warnings.",
+    tagline: "The quiet clues are still clues.",
+    intro: "Some useful maintenance habits are unglamorous: recording tyre age, noticing a new leak, checking wiper performance and addressing warning lamps instead of ignoring them. None is a secret trick, and none overrides the owner's manual.",
+    overview: "The vehicle manual remains the authority for specifications and intervals. This guide focuses on observations owners can make safely, plus cues that mean it is time to stop guessing and arrange professional help.",
+    checks: [
+      "Measure tyre pressure when tyres are cold and use the vehicle's specified pressures, not the maximum printed on the tyre sidewall",
+      "Look at tyre sidewalls for cracks, bulges and cuts; request expert assessment for damage or persistent pressure loss",
+      "Notice new damp patches under the parked vehicle without crawling underneath it; photograph the location and seek assessment",
+      "Replace worn wipers before visibility is compromised and check that all exterior lamps work",
+      "Treat repeated battery starting problems or visible corrosion as reasons for safe battery-system assessment; avoid shorting terminals",
+      "Record when warning lamps appear and what the vehicle was doing; do not erase fault codes simply to hide the warning",
+      "Keep a log of servicing, tyres, battery, brake observations and unresolved recommendations",
+      "Use approved parts and the correct specifications; leave high-voltage, pressurised, lifting and safety-critical work to qualified people"
+    ],
+    faqs: [
+      { question: "Is the tyre pressure printed on the tyre the correct target?", answer: "Usually no. Use the vehicle manufacturer's specified pressure on the placard or in the manual for the relevant load and driving conditions." },
+      { question: "Can I ignore a warning light if the car feels normal?", answer: "Do not assume it is harmless. Check the owner's manual for the specific warning and urgency. For red or safety-critical warnings, stop safely and seek assistance." },
+      { question: "Can I check for leaks by going under the car?", answer: "Do not go under a vehicle supported only by a jack or without proper workshop safety equipment. Observe from a safe position and have suspected leaks assessed." }
+    ],
+    primaryHref: "/services/vehicle-diagnostics", primaryLabel: "Explore diagnostic checks"
   }
 ];
 
@@ -627,9 +699,9 @@ export const aboutContent: MarketingPageContent = {
   slug: "about", kind: "static", title: "About OM Car Inspection",
   metaTitle: "About OM Car Inspection and Practical Training",
   metaDescription: "Learn about OM Car Inspection's evidence-led approach to vehicle condition reviews, clear reporting and practical inspection learning.",
-  tagline: "A repeatable method is better than a confident guess.",
-  intro: "OM Car Inspection presents vehicle condition observations in a structured way and offers a practical learning path for people developing inspection skills.",
-  overview: "The aim of the website is to help visitors understand inspection options, prepare useful questions and request the right service. Scope, availability, equipment, fees and deliverables should be confirmed directly before booking.",
+  tagline: "Practical checks. Clear evidence. Better-informed decisions.",
+  intro: "OMKAR Car Inspection focuses on a repeatable approach to vehicle condition reviews and an accessible learning path for people building inspection skills.",
+  overview: "The approach prioritises an agreed scope, safe observation, relevant photos, readable reporting and clear limitations. The goal is to help vehicle owners and buyers understand what was observed, what remains uncertain and what step may help resolve it. Confirm service scope, availability, equipment, fees, trainer details and actual deliverables directly before booking.",
   checks: ["Define the inspection purpose and scope before work begins", "Record observations in plain language and connect important findings to evidence", "Be transparent about inaccessible areas, uncertainty and follow-up checks", "Treat training as practical learning rather than a promise of employment or income"],
   faqs: [
     { question: "Does OM Car Inspection certify every vehicle as safe?", answer: "No inspection can guarantee every component is free of defects. Findings depend on scope, access and conditions at the time." },

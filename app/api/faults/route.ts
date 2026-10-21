@@ -8,6 +8,7 @@ export async function GET() {
     .from("faults")
     .select("id,code,system,name,severity,default_description,recommendation,photo_required,active,organization_id")
     .eq("active", true)
+    .or("organization_id.is.null,organization_id.eq." + context.organizationId)
     .order("system", { ascending: true })
     .order("name", { ascending: true })
     .limit(500);

@@ -21,6 +21,9 @@ import {
   Wrench
 } from "lucide-react";
 import { HomeHero } from "@/components/home-hero";
+import { HeroIntro } from "@/components/hero-intro";
+import { PdiPathwayHub } from "@/components/pdi-pathway-hub";
+import { RoadJourney } from "@/components/road-journey";
 import { SiteNavigation } from "@/components/site-navigation";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteEffects } from "@/components/site-effects";
@@ -138,6 +141,7 @@ function openWhatsAppEnquiry(event: FormEvent<HTMLFormElement>) {
 export default function PublicLanding() {
   return (
     <div className="marketing-site om-editorial-home om17-home">
+      <HeroIntro />
       <SiteEffects />
       <ScrollMotion />
       {/* 01 / Header and primary navigation */}
@@ -146,6 +150,10 @@ export default function PublicLanding() {
       <main>
         {/* 02 / Hero: the main value proposition and next action */}
         <HomeHero />
+
+        {/* Animated PDI pathways sit directly beside the hero journey. */}
+        <PdiPathwayHub />
+        <RoadJourney />
 
         {/* 03 / Trust strip: factual service principles, not invented statistics */}
         <section className="om17-trust" aria-label="OMKAR inspection principles">
@@ -196,7 +204,7 @@ export default function PublicLanding() {
               {services.map((service) => (
                 <article className="om17-service-card" key={service.number}>
                   <Link href={service.href as any} className="om17-service-image" aria-label={service.link}>
-                    <img src={service.image} alt={service.alt} loading="lazy" />
+                    <img src={service.image} alt={service.alt} loading="lazy" data-gsap-image />
                     <span className="om17-image-number">{service.number}</span>
                     <span className="om17-image-arrow" aria-hidden="true"><ArrowDownRight size={21} /></span>
                   </Link>
@@ -307,12 +315,17 @@ export default function PublicLanding() {
         {/* 11 / About the company */}
         <section className="om17-section om17-about" aria-labelledby="om17-about-title">
           <div className="om17-container om17-about-layout">
-            <div className="om17-about-mark" aria-hidden="true"><CarFront size={48} /><span>OM / INSPECTION</span></div>
+            <div className="om17-about-mark"><img src="/car-assets/01_dark_blue_SUV.png" alt="Dark blue SUV representing vehicles reviewed by OMKAR" loading="lazy" /><span>OM / INSPECTION</span></div>
             <div className="om17-section-heading">
               <p className="om17-kicker"><span /> ABOUT OMKAR</p>
-              <h2 id="om17-about-title">A clearer record for a consequential decision.</h2>
-              <p>OMKAR Car Inspection focuses on structured vehicle-condition observations, relevant photo evidence and readable reporting for vehicle owners and buyers. The PDI learning path introduces the same emphasis on inspection sequence and clear documentation.</p>
-              <p>Inspection findings are limited to what can be observed and verified within the agreed scope. Credentials, mechanical conclusions and outcomes should always be confirmed for the specific service being requested.</p>
+              <h2 id="om17-about-title">Built around practical checks, not confident guesses.</h2>
+              <p>OMKAR brings a process-first approach to vehicle condition reviews: a repeatable checklist, relevant photo evidence, clear findings and an honest record of what still needs verification. The same principles shape the PDI learning roadmap.</p>
+              <p>From planning a new-car handover to asking better questions before a used-car purchase, the aim is straightforward: help people make informed decisions with a clearer view of the evidence, the limitations and the next step.</p>
+              <div className="om17-about-principles" aria-label="OMKAR approach">
+                <span><b>01</b><strong>Observe</strong><small>Use a repeatable sequence</small></span>
+                <span><b>02</b><strong>Document</strong><small>Keep context with evidence</small></span>
+                <span><b>03</b><strong>Clarify</strong><small>Separate fact from follow-up</small></span>
+              </div>
               <Link href="/about" className="om17-text-link">Learn more about OMKAR <ArrowRight size={16} /></Link>
             </div>
           </div>
@@ -361,6 +374,7 @@ export default function PublicLanding() {
               <Link href="/sample-report" className="om17-resource-card"><span><FileText size={22} /></span><small>REPORT EXAMPLE</small><b>Understand the report layout</b><p>See how observations, evidence and limitations can be organized.</p><i>Open sample report <ArrowRight size={15} /></i></Link>
               <Link href="/guides" className="om17-resource-card"><span><BookOpen size={22} /></span><small>INSPECTION GUIDES</small><b>Prepare better questions</b><p>Explore the available inspection guides and supporting information.</p><i>Explore guides <ArrowRight size={15} /></i></Link>
               <Link href="/faq" className="om17-resource-card"><span><CircleHelp size={22} /></span><small>HELP & CLARITY</small><b>Resolve the practical details</b><p>Review common questions about booking, scope and training.</p><i>Read FAQs <ArrowRight size={15} /></i></Link>
+              <Link href="/guides/car-maintenance-checklist" className="om17-resource-card"><span><Wrench size={22} /></span><small>OWNER'S FIELD GUIDE</small><b>Keep your car in better shape</b><p>Track routine checks, notice new warning signs and know when to use a qualified workshop.</p><i>Open maintenance checklist <ArrowRight size={15} /></i></Link>
             </div>
           </div>
         </section>

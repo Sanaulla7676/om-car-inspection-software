@@ -99,5 +99,5 @@ export async function GET(_req:Request,{params}:{params:Promise<{id:string}>}){
 
  draw("Inspection disclaimer",13,true);for(const l of lineWrap("This report records observed condition at the time of inspection. It does not replace an independent specialist assessment where required."))draw(l);
  try{await addEvidencePages()}catch(e){return new NextResponse(e instanceof Error?`PDF evidence error: ${e.message}`:"PDF evidence could not be embedded.",{status:503})}
- const bytes=await pdf.save();const safeFilename=String(snapshot?.inspection?.number??"inspection").replace(/[^A-Za-z0-9_-]/g,"_");return new NextResponse(Buffer.from(bytes),{headers:{"content-type":"application/pdf","content-disposition":`attachment; filename="${safeFilename}.pdf"`}});
+ const bytes=await pdf.save();const safeFilename=String(snapshot?.inspection?.number??"inspection").replace(/[^A-Za-z0-9_-]/g,"_");return new NextResponse(Buffer.from(bytes),{headers:{"content-type":"application/pdf","content-disposition":`attachment; filename="${safeFilename}.pdf"`,"cache-control":"private, no-store, max-age=0","pragma":"no-cache"}});
 }

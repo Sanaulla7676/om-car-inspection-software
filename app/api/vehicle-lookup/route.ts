@@ -2,6 +2,49 @@ import { NextResponse } from "next/server";
 import { getStaffContext } from "@/lib/supabase/authorization";
 
 type LookupData = Record<string, unknown>;
+const MAX_LOOKUP_REQUEST_BYTES = 4_096;
+const MAX_LOOKUP_RESPONSE_BYTES = 1_000_000;
+
+async function readJsonLimited(
+  stream: ReadableStream<Uint8Array> | null,
+  maxBytes: number,
+): Promise<{ ok: true; value: unknown } | { ok: false; tooLarge?: boolean }> {
+  if (!stream) return { ok: false };
+  const reader = stream.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.byteLength;
+      if (total > maxBytes) {
+        await reader.cancel();
+        return { ok: false, tooLarge: true };
+      }
+      chunks.push(value);
+    }
+    const bytes = new Uint8Array(total);
+    let offset = 0;
+    for (const chunk of chunks) {
+      bytes.set(chunk, offset);
+      offset += chunk.byteLength;
+    }
+    const text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+    return { ok: true, value: JSON.parse(text) as unknown };
+  } catch {
+    return { ok: false };
+  }
+}
+
+function isPrivateOrLocalHostname(hostname: string) {
+  const host = hostname.toLowerCase().replace(/^\[|\]$/g, "");
+  return host === "localhost" || host.endsWith(".localhost") || host.endsWith(".local")
+    || host === "0.0.0.0" || host === "::1" || host.startsWith("fc") || host.startsWith("fd")
+    || host.startsWith("fe80:") || host.startsWith("10.") || host.startsWith("127.")
+    || host.startsWith("169.254.") || host.startsWith("192.168.")
+    || /^172\.(1[6-9]|2\d|3[01])\./.test(host);
+}
 
 function normalizeText(value: unknown){ return typeof value==="string" ? value.trim() : value==null ? "" : String(value).trim(); }
 function first(data:LookupData, keys:string[]){ for(const key of keys){const v=data[key];if(v!==undefined&&v!==null&&normalizeText(v)!=="")return v;} return ""; }
@@ -44,7 +87,21 @@ export async function POST(req:Request){
   if (!context.ok) return NextResponse.json({ error: context.error }, { status: context.status });
   const { supabase, userId, organizationId } = context;
 
-  const body=await req.json().catch(()=>({}));
+  const declaredLength = Number(req.headers.get("content-length") || "0");
+  if (Number.isFinite(declaredLength) && declaredLength > MAX_LOOKUP_REQUEST_BYTES) {
+    return NextResponse.json({ error: "Vehicle lookup request is too large." }, { status: 413 });
+  }
+  const parsedRequest = await readJsonLimited(req.body, MAX_LOOKUP_REQUEST_BYTES);
+  if (!parsedRequest.ok) {
+    return NextResponse.json(
+      { error: parsedRequest.tooLarge ? "Vehicle lookup request is too large." : "Send a valid JSON request." },
+      { status: parsedRequest.tooLarge ? 413 : 400 },
+    );
+  }
+  if (!parsedRequest.value || typeof parsedRequest.value !== "object" || Array.isArray(parsedRequest.value)) {
+    return NextResponse.json({ error: "Send a valid JSON request." }, { status: 400 });
+  }
+  const body = parsedRequest.value as Record<string, unknown>;
   const chassis=normalizeText(body.chassis_number).toUpperCase().replace(/\s+/g,"");
   const engineNumber=normalizeText(body.engine_number).toUpperCase().replace(/\s+/g,"");
   if(chassis.length<6||chassis.length>32)return NextResponse.json({error:"Enter a valid chassis/VIN number."},{status:400});
@@ -63,6 +120,28 @@ export async function POST(req:Request){
     payload={chassis_number:chassis,engine_number:engineNumber};
   }
 
+  // This endpoint is operator-configured, not client supplied. Still require
+  // HTTPS and reject obvious local/private targets to reduce SSRF risk from a
+  // mistaken provider URL. The known adapters must use their official hosts.
+  let endpointUrl: URL;
+  try {
+    endpointUrl = new URL(endpoint);
+  } catch {
+    return NextResponse.json({ error: "Vehicle lookup provider URL is invalid." }, { status: 503 });
+  }
+  const expectedHost = provider === "decentro" ? "in.decentro.tech"
+    : provider === "surepass" ? "kyc-api.surepass.app" : null;
+  if (
+    endpointUrl.protocol !== "https:" ||
+    endpointUrl.username ||
+    endpointUrl.password ||
+    (endpointUrl.port !== "" && endpointUrl.port !== "443") ||
+    isPrivateOrLocalHostname(endpointUrl.hostname) ||
+    (expectedHost !== null && endpointUrl.hostname !== expectedHost)
+  ) {
+    return NextResponse.json({ error: "Vehicle lookup provider URL is not allowed." }, { status: 503 });
+  }
+
   const headers:Record<string,string>={"content-type":"application/json"};
   if(provider==="decentro"){headers.client_id=process.env.DECENTRO_CLIENT_ID||"";headers.client_secret=process.env.DECENTRO_CLIENT_SECRET||""}
   else if(provider==="surepass")headers.authorization=`Bearer ${process.env.SUREPASS_API_KEY||""}`;
@@ -72,12 +151,30 @@ export async function POST(req:Request){
 
   let upstream:Response;
   try{
-    upstream=await fetch(endpoint,{method:"POST",headers,body:JSON.stringify(payload),cache:"no-store"});
+    upstream=await fetch(endpoint,{
+      method:"POST",
+      headers,
+      body:JSON.stringify(payload),
+      cache:"no-store",
+      redirect:"manual",
+      signal:AbortSignal.timeout(12_000),
+    });
   }catch{
     return NextResponse.json({error:"Vehicle registry is temporarily unreachable. You can continue with manual vehicle entry."},{status:502});
   }
 
-  const result=await upstream.json().catch(()=>({}));
+  const declaredResponseLength = Number(upstream.headers.get("content-length") || "0");
+  if (Number.isFinite(declaredResponseLength) && declaredResponseLength > MAX_LOOKUP_RESPONSE_BYTES) {
+    return NextResponse.json({ error: "Vehicle registry returned an oversized response." }, { status: 502 });
+  }
+  const parsedResponse = await readJsonLimited(upstream.body, MAX_LOOKUP_RESPONSE_BYTES);
+  if (!parsedResponse.ok) {
+    return NextResponse.json(
+      { error: parsedResponse.tooLarge ? "Vehicle registry returned an oversized response." : "Vehicle registry returned an invalid response." },
+      { status: 502 },
+    );
+  }
+  const result = parsedResponse.value as LookupData;
   if(!upstream.ok||result?.success===false||result?.status_code&&Number(result.status_code)>=400){
     await supabase.from("vehicle_lookup_logs").insert({organization_id:organizationId,provider,request:{chassis_number:chassis,has_engine_number:Boolean(engineNumber)},response_summary:{message:result?.message||"Lookup failed",status_code:result?.status_code||upstream.status},status:"FAILED",requested_by:userId});
     return NextResponse.json({error:normalizeText(result?.message)||"No vehicle was found for that chassis number."},{status:422});

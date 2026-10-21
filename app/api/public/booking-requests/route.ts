@@ -7,10 +7,12 @@ const clean = (value: unknown, max = 500) =>
 
 export async function POST(request: Request) {
   const origin = request.headers.get("origin");
-  const forwardedHost = request.headers.get("x-forwarded-host") ?? request.headers.get("host");
-  if (origin && forwardedHost) {
+  // Compare Origin to the server-visible Host header, never to a client-supplied
+  // X-Forwarded-Host value. Reverse proxies must sanitise forwarding headers.
+  const requestHost = request.headers.get("host") ?? new URL(request.url).host;
+  if (origin) {
     try {
-      if (new URL(origin).host !== forwardedHost) {
+      if (new URL(origin).host !== requestHost) {
         return NextResponse.json({ error: "Request origin is not allowed." }, { status: 403 });
       }
     } catch {
@@ -18,8 +20,34 @@ export async function POST(request: Request) {
     }
   }
 
-  const raw = await request.text();
-  if (raw.length > MAX_BODY_BYTES) return NextResponse.json({ error: "Request is too large." }, { status: 413 });
+  const declaredLength = Number(request.headers.get("content-length") ?? "0");
+  if (Number.isFinite(declaredLength) && declaredLength > MAX_BODY_BYTES) {
+    return NextResponse.json({ error: "Request is too large." }, { status: 413 });
+  }
+
+  // Enforce the request limit while reading the stream, so a missing or falsified
+  // Content-Length cannot force the handler to buffer an unbounded body in memory.
+  let raw = "";
+  if (request.body) {
+    const reader = request.body.getReader();
+    const decoder = new TextDecoder("utf-8", { fatal: true });
+    let totalBytes = 0;
+    try {
+      while (true) {
+        const chunk = await reader.read();
+        if (chunk.done) break;
+        totalBytes += chunk.value.byteLength;
+        if (totalBytes > MAX_BODY_BYTES) {
+          await reader.cancel();
+          return NextResponse.json({ error: "Request is too large." }, { status: 413 });
+        }
+        raw += decoder.decode(chunk.value, { stream: true });
+      }
+      raw += decoder.decode();
+    } catch {
+      return NextResponse.json({ error: "Please send a valid UTF-8 request body." }, { status: 400 });
+    }
+  }
 
   let body: Record<string, unknown>;
   try {

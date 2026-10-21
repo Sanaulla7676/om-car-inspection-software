@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteEffects } from "@/components/site-effects";
 import { ScrollMotion } from "@/components/scroll-motion";
 import { CoachingInquiryForm } from "@/components/coaching-inquiry-form";
+import { TrainingCurriculum } from "@/components/training-curriculum";
 
 const trainingDays = [
   ["DAY 01", "Inspection workflow and safety", "Vehicle identity, scope, safe work habits and the order of checks."],
@@ -64,6 +65,9 @@ const PAGE_HERO_IMAGES: Record<string, { image: string; label: string; alt: stri
   "preparing-for-independent-inspection": { image: "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/936fcbb7-1c2c-420f-ab93-c8a897dfb549.png", label: "PREPARE FOR INDEPENDENT INSPECTION", alt: "Toyota Fortuner before inspection" },
   "vehicle-inspection-for-fleet-managers": { image: "https://cdn-s3.autocarindia.com/Mahindra/xuv700/_KMC0974.JPG", label: "FLEET INSPECTION FOR MANAGERS", alt: "Mahindra XUV700 for fleet inspection" },
   "masterclass": { image: "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/2f1faea6-1140-4625-9abe-5ef915fdea93.png", label: "PDI COACHING & TRAINING", alt: "Hands-on vehicle PDI masterclass training" },
+  "car-maintenance-checklist": { image: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=2000&q=90", label: "MAINTENANCE ROUTINE", alt: "Vehicle maintenance and inspection in a workshop" },
+  "what-to-check-before-buying-used-car": { image: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=2000&q=90", label: "BEFORE YOU BUY", alt: "Car exterior photographed for a pre-purchase decision" },
+  "overlooked-car-maintenance-checks": { image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=2000&q=90", label: "THE DETAILS MATTER", alt: "Vehicle ready for careful maintenance checks" },
   "about": { image: "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/18971d42-3c84-4532-b232-c7a29e9ac3dd.png", label: "ABOUT OMKAR INSPECTION", alt: "Professional automotive inspection workshop" },
   "contact": { image: "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/936fcbb7-1c2c-420f-ab93-c8a897dfb549.png", label: "CONTACT OMKAR INSPECTION", alt: "Toyota Fortuner in an inspection workshop" },
   "faq": { image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1400&q=90", label: "VEHICLE INSPECTION FAQ", alt: "Vehicle inspection reporting and documentation" },
@@ -134,7 +138,7 @@ const DEFAULT_PAGE_HERO = {
           </div>
           <div className={"marketing-page-hero-photo" + (content.slug === "masterclass" ? " marketing-masterclass-banner" : "")} data-gsap-page-expand>
             <img src={heroImage} alt={pageHero.alt} fetchPriority="high" />
-            {content.slug !== "masterclass" && <div className="marketing-page-photo-label"><span>{heroImageLabel}</span><b>{content.title}</b></div>}
+            <div className="marketing-page-photo-label"><span>{heroImageLabel}</span><b>{content.title}</b></div>
           </div>
         </section>
 
@@ -146,6 +150,7 @@ const DEFAULT_PAGE_HERO = {
             </div>
           </div>
         </section>}
+        {isMasterclass && <TrainingCurriculum />}
 
         <section className="marketing-main-section" aria-labelledby="overview-heading">
           <div className="site-container-v2 marketing-two-col">

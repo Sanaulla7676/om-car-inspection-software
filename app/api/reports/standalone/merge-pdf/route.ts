@@ -1,16 +1,29 @@
 import { NextResponse } from "next/server";
 import { PDFDocument } from "pdf-lib";
-import { createClient } from "@/lib/supabase/server";
+import { getStaffContext } from "@/lib/supabase/authorization";
+import { readRequestBodyLimited, requestWithBodyBytes } from "@/lib/request-body";
 
 const MAX_PDF_BYTES=25*1024*1024;
+const MAX_REQUEST_BYTES=52*1024*1024;
 
 export async function POST(req:Request){
-  const supabase=await createClient();
-  if(!supabase)return NextResponse.json({error:"PDF merge is not configured."},{status:503});
-  const {data:{user}}=await supabase.auth.getUser();
-  if(!user)return NextResponse.json({error:"Unauthorized"},{status:401});
+  const context=await getStaffContext();
+  if(!context.ok)return NextResponse.json({error:context.error},{status:context.status});
+  const {supabase}=context;
 
-  const form=await req.formData();
+  const boundedBody = await readRequestBodyLimited(req, MAX_REQUEST_BYTES);
+  if (!boundedBody.ok) {
+    return NextResponse.json(
+      { error: boundedBody.tooLarge ? "PDF merge upload is too large." : "The PDF upload could not be read." },
+      { status: boundedBody.tooLarge ? 413 : 400 },
+    );
+  }
+  let form: FormData;
+  try {
+    form = await requestWithBodyBytes(req, boundedBody.bytes).formData();
+  } catch {
+    return NextResponse.json({ error: "Upload a valid multipart PDF form." }, { status: 400 });
+  }
   const base=form.get("basePdf"),attachment=form.get("attachment");
   if(!(base instanceof File)||!(attachment instanceof File))return NextResponse.json({error:"basePdf and attachment are required."},{status:400});
   if(![base,attachment].every(f=>f.type==="application/pdf"||f.name.toLowerCase().endsWith(".pdf")))return NextResponse.json({error:"Both files must be PDFs."},{status:415});

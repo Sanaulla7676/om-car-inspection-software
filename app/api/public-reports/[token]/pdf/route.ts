@@ -151,6 +151,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
     headers: {
       "content-type": "application/pdf",
       "content-disposition": `attachment; filename="${safeFilename}.pdf"`,
+      "cache-control": "private, no-store, max-age=0",
+      "pragma": "no-cache",
     },
   });
 }

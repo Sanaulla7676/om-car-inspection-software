@@ -1,40 +1,42 @@
 import { NextResponse } from "next/server";
 import { PDFDocument } from "pdf-lib";
-import { createClient } from "@/lib/supabase/server";
+import { getStaffContext } from "@/lib/supabase/authorization";
+import { readRequestBodyLimited, requestWithBodyBytes } from "@/lib/request-body";
 
 const MAX_ATTACHMENT_BYTES = 25 * 1024 * 1024;
+const MAX_BASE_PDF_BYTES = 25 * 1024 * 1024;
 const MAX_TOTAL_ATTACHMENT_BYTES = 100 * 1024 * 1024;
+const MAX_REQUEST_BYTES = 126 * 1024 * 1024;
 const MAX_ATTACHMENTS = 10;
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const supabase = await createClient();
-  if (!supabase) return NextResponse.json({ error: "PDF merge is not configured." }, { status: 503 });
-
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  const { data: membership } = await supabase
-    .from("memberships")
-    .select("organization_id")
-    .eq("user_id", user.id)
-    .eq("status", "active")
-    .order("created_at")
-    .limit(1)
-    .maybeSingle();
-
-  if (!membership?.organization_id) return NextResponse.json({ error: "No active organization." }, { status: 409 });
+  const context = await getStaffContext();
+  if (!context.ok) return NextResponse.json({ error: context.error }, { status: context.status });
+  const { supabase, organizationId } = context;
 
   const { data: report } = await supabase
     .from("reports")
     .select("id, inspection_id, current_version")
     .eq("id", id)
-    .eq("organization_id", membership.organization_id)
+    .eq("organization_id", organizationId)
     .maybeSingle();
 
   if (!report) return NextResponse.json({ error: "Report not found." }, { status: 404 });
 
-  const form = await req.formData();
+  const boundedBody = await readRequestBodyLimited(req, MAX_REQUEST_BYTES);
+  if (!boundedBody.ok) {
+    return NextResponse.json(
+      { error: boundedBody.tooLarge ? "The combined PDF upload is too large." : "The PDF upload could not be read." },
+      { status: boundedBody.tooLarge ? 413 : 400 },
+    );
+  }
+  let form: FormData;
+  try {
+    form = await requestWithBodyBytes(req, boundedBody.bytes).formData();
+  } catch {
+    return NextResponse.json({ error: "Upload a valid multipart PDF form." }, { status: 400 });
+  }
   const basePdf = form.get("basePdf");
   const legacyAttachment = form.get("attachment");
   const uploadedAttachments = form.getAll("attachments").filter((entry): entry is File => entry instanceof File);
@@ -47,6 +49,12 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   if (!(basePdf instanceof File)) {
     return NextResponse.json({ error: "The generated base PDF is required." }, { status: 400 });
+  }
+  if ((basePdf.type !== "application/pdf" && !basePdf.name.toLowerCase().endsWith(".pdf"))) {
+    return NextResponse.json({ error: "The generated base file must be a PDF." }, { status: 415 });
+  }
+  if (basePdf.size > MAX_BASE_PDF_BYTES) {
+    return NextResponse.json({ error: "The generated base PDF must be 25 MB or smaller." }, { status: 413 });
   }
   if (!attachments.length) {
     return NextResponse.json({ error: "Select at least one supporting PDF." }, { status: 400 });

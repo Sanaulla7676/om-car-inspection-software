@@ -24,5 +24,5 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
     expiresAt: report.expiresAt,
     organization: report.organization,
     inspection: report.inspection,
-  });
+  }, { headers: { "Cache-Control": "private, no-store, max-age=0", Pragma: "no-cache" } });
 }
