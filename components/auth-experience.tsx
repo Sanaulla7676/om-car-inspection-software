@@ -33,6 +33,33 @@ export function AuthExperience({ mode }: { mode: AuthMode }) {
     setError("");
     setSuccess("");
 
+    // Admin credentials use the separate server-verified admin session.
+    // Staff accounts continue to use Supabase email/password authentication.
+    if (!isSignup && !email.trim().includes("@")) {
+      try {
+        const response = await fetch("/api/admin/login", {
+          method: "POST",
+          credentials: "same-origin",
+          cache: "no-store",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify({ loginId: email.trim(), password }),
+        });
+        const result = await response.json() as { ok?: boolean; error?: string };
+        if (!response.ok || !result.ok) {
+          setError(result.error || "The login ID or password is incorrect.");
+        } else {
+          setPassword("");
+          router.push("/admin");
+          router.refresh();
+          return;
+        }
+      } catch {
+        setError("Admin sign-in is temporarily unavailable. Please try again.");
+      }
+      setBusy(false);
+      return;
+    }
+
     if (!supabase) {
       setError("Staff sign-in is temporarily unavailable. Please try again later.");
       setBusy(false);
@@ -118,16 +145,17 @@ export function AuthExperience({ mode }: { mode: AuthMode }) {
             )}
 
             <div className="om-auth-field-group">
-              <label className="om-auth-field-label" htmlFor="auth-email">Email address</label>
+              <label className="om-auth-field-label" htmlFor="auth-email">{isSignup ? "Email address" : "Email address or admin login ID"}</label>
               <div className="om-field">
                 <Mail size={18} aria-hidden="true" />
                 <input
                   id="auth-email"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
-                  placeholder="you@company.com"
-                  type="email"
-                  autoComplete="email"
+                  placeholder={isSignup ? "you@company.com" : "Staff email or admin login ID"}
+                  type={isSignup ? "email" : "text"}
+                  autoComplete={isSignup ? "email" : "username"}
+                  maxLength={320}
                   required
                 />
               </div>
@@ -167,7 +195,8 @@ export function AuthExperience({ mode }: { mode: AuthMode }) {
           </form>
 
           <div className="om-auth-switch">
-            <span>Staff access is invite-only. Ask your workspace administrator to provision an account.</span>
+            <span>{isSignup ? "Staff access is invite-only. Ask your workspace administrator to provision an account." : "Use your staff email or enter the administrator login ID."}</span>
+            {!isSignup && <a href="/admin" className="om-auth-admin-link">Open admin portal <span aria-hidden="true">↗</span></a>}
           </div>
         </div>
       </section>
@@ -428,6 +457,30 @@ export function AuthExperience({ mode }: { mode: AuthMode }) {
         }
         .om-auth-submit:disabled{opacity:.7;cursor:wait}
         @keyframes omShimmer{0%,58%{transform:translateX(-120%)}72%,100%{transform:translateX(120%)}}
+
+
+        .om-auth-admin-link{
+          display:inline-flex;
+          align-items:center;
+          justify-content:center;
+          gap:6px;
+          width:fit-content;
+          margin:12px auto 0;
+          padding:9px 13px;
+          border:1px solid rgba(255,108,116,.4);
+          border-radius:999px;
+          color:#ffdadd;
+          background:rgba(142,27,38,.18);
+          font-size:12px;
+          font-weight:700;
+          text-decoration:none;
+          transition:background .18s,border-color .18s,transform .18s;
+        }
+        .om-auth-admin-link:hover{
+          background:rgba(142,27,38,.35);
+          border-color:rgba(255,108,116,.72);
+          transform:translateY(-1px);
+        }
 
         .om-auth-switch{
           margin-top:18px;
