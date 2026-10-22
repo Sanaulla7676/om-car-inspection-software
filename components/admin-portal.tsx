@@ -144,7 +144,7 @@ export function AdminPortal() {
     return <main className="om-admin-login" ref={rootRef}>
       <div className="admin-orb admin-orb-one" aria-hidden="true" /><div className="admin-orb admin-orb-two" aria-hidden="true" />
       <header className="admin-login-top admin-enter">
-        <a className="admin-brand" href="/" aria-label="OMKAR Inspection home"><span className="admin-brand-mark"><CarFront size={22} strokeWidth={1.8} /></span><span><strong>OMKAR</strong><small>VEHICLE INSPECTION</small></span></a>
+        <a className="admin-brand" href="/" aria-label="OMCAR Inspection home"><span className="admin-brand-mark"><CarFront size={22} strokeWidth={1.8} /></span><span><strong>OMCAR</strong><small>VEHICLE INSPECTION</small></span></a>
         <span className="admin-portal-tag"><ShieldCheck size={14} /> Administrator portal</span>
       </header>
       <div className="admin-login-grid">
@@ -173,7 +173,7 @@ export function AdminPortal() {
           <div className="admin-login-card-bottom"><LockGlyph /><span>Your password is verified server-side and is never stored in plain text.</span></div>
         </section>
       </div>
-      <footer className="admin-login-footer"><span>OMKAR Inspection</span><span>Private administrator access</span><a href="/">Return to website <ArrowUpRight size={12} /></a></footer>
+      <footer className="admin-login-footer"><span>OMCAR Inspection</span><span>Private administrator access</span><a href="/">Return to website <ArrowUpRight size={12} /></a></footer>
     </main>;
   }
 
@@ -188,7 +188,7 @@ export function AdminPortal() {
   return <main className="om-admin-app" ref={rootRef}>
     <div className="admin-app-grain" aria-hidden="true" />
     <aside className={"admin-sidebar" + (mobileNav ? " admin-sidebar-open" : "")}>
-      <a href="/" className="admin-brand admin-sidebar-brand"><span className="admin-brand-mark"><CarFront size={22} /></span><span><strong>OMKAR</strong><small>INSPECTION SUITE</small></span></a>
+      <a href="/" className="admin-brand admin-sidebar-brand"><span className="admin-brand-mark"><CarFront size={22} /></span><span><strong>OMCAR</strong><small>INSPECTION SUITE</small></span></a>
       <div className="admin-sidebar-label">WORKSPACE</div>
       <nav className="admin-side-nav" aria-label="Admin navigation">
         <button type="button" className={view === "overview" ? "active" : ""} onClick={() => openView("overview")}><Gauge size={17} /><span>Overview</span><ChevronRight className="admin-nav-chevron" size={15} /></button>
@@ -201,7 +201,7 @@ export function AdminPortal() {
     </aside>
     <div className="admin-main">
       <header className="admin-topbar admin-enter">
-        <div className="admin-topbar-left"><button className="admin-mobile-menu" type="button" aria-label={mobileNav ? "Close navigation" : "Open navigation"} onClick={() => setMobileNav((value) => !value)}>{mobileNav ? <X size={20} /> : <Menu size={20} />}</button><span className="admin-breadcrumb">OMKAR <ChevronRight size={13} /> ADMIN <ChevronRight size={13} /> <b>{view === "settings" ? "SECURITY SETTINGS" : "OVERVIEW"}</b></span></div>
+        <div className="admin-topbar-left"><button className="admin-mobile-menu" type="button" aria-label={mobileNav ? "Close navigation" : "Open navigation"} onClick={() => setMobileNav((value) => !value)}>{mobileNav ? <X size={20} /> : <Menu size={20} />}</button><span className="admin-breadcrumb">OMCAR <ChevronRight size={13} /> ADMIN <ChevronRight size={13} /> <b>{view === "settings" ? "SECURITY SETTINGS" : "OVERVIEW"}</b></span></div>
         <div className="admin-topbar-actions"><span className="admin-secure-chip"><span className="admin-status-dot" /> Secure session</span><button type="button" className="admin-refresh-button" aria-label="Refresh overview" title="Refresh overview" onClick={refreshOverview} disabled={busy}><RefreshCw size={16} className={busy ? "admin-spin-icon" : ""} /></button><button className="admin-topbar-avatar" type="button" onClick={() => openView("settings")} title="Open account settings">{initials(admin.loginId)}</button></div>
       </header>
       {mobileNav && <button className="admin-mobile-scrim" aria-label="Close navigation" onClick={() => setMobileNav(false)} />}
@@ -222,7 +222,7 @@ export function AdminPortal() {
             <article className="admin-overview-card admin-enter"><div className="admin-card-heading"><div><span className="admin-card-eyebrow">PROGRESS</span><h2>Completion summary</h2><p>Share of inspection records marked complete.</p></div><span className="admin-progress-badge">{completion}%</span></div>
               <div className="admin-progress-number"><strong>{formatNumber(metrics.completed)}</strong><span>of {formatNumber(metrics.inspections)} inspections completed</span></div><div className="admin-progress-track"><span style={{ width: completion + "%" }} /></div><div className="admin-progress-foot"><span><i className="admin-dot-green" /> Completed</span><span><i className="admin-dot-grey" /> Remaining</span></div>
             </article>
-            <article className="admin-overview-card admin-overview-card-dark admin-enter"><div className="admin-card-heading"><div><span className="admin-card-eyebrow">RECORDS</span><h2>Workspace inventory</h2><p>Records in the existing OMKAR workspace.</p></div><span className="admin-inventory-icon"><CarFront size={21} /></span></div>
+            <article className="admin-overview-card admin-overview-card-dark admin-enter"><div className="admin-card-heading"><div><span className="admin-card-eyebrow">RECORDS</span><h2>Workspace inventory</h2><p>Records in the existing OMCAR workspace.</p></div><span className="admin-inventory-icon"><CarFront size={21} /></span></div>
               <div className="admin-inventory-grid"><div><span>Vehicles</span><b>{formatNumber(metrics.vehicles)}</b></div><div><span>Customers</span><b>{formatNumber(metrics.customers)}</b></div><div><span>Reports</span><b>{formatNumber(metrics.reports)}</b></div></div>
             </article>
           </section>

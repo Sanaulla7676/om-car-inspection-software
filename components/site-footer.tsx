@@ -6,8 +6,8 @@ export function SiteFooter() {
     <footer className="site-footer-v2 luxury-footer">
       <div className="lux-footer-main">
         <div className="lux-footer-brand">
-          <Link href="/" className="lux-footer-logo" aria-label="Omkar Car Inspection home">
-            <img className="lux-footer-logo-img" src="https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/a526dc36-b0a0-4787-bbc3-bed064b316c1.png" alt="OMKAR Inspection" width={150} height={58} />
+          <Link href="/" className="lux-footer-logo" aria-label="OMCAR Car Inspection home">
+            <span className="omcar-wordmark omcar-wordmark-footer"><span className="omcar-wordmark-mark">OC</span><span className="omcar-wordmark-type"><strong>OMCAR</strong><small>CAR INSPECTION</small></span></span>
           </Link>
           <p>Professional vehicle inspection, structured valuation and evidence-led reporting for clearer decisions.</p>
           <Link className="lux-footer-admin" href="/login"><ShieldCheck size={15} /> Team sign-in <ArrowUpRight size={13} /></Link>
@@ -24,7 +24,7 @@ export function SiteFooter() {
           <h3>RESOURCES</h3>
           <Link href="/guides">Inspection guides</Link>
           <Link href="/faq">Frequently asked questions</Link>
-          <Link href="/about">About Omkar</Link>
+          <Link href="/about">About OMCAR</Link>
           <Link href="/contact">Contact & bookings</Link>
           <Link href="/software">Inspection Software</Link>
           <Link href="/privacy">Privacy information</Link>
@@ -37,7 +37,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="lux-footer-bottom">
-        <span>© {new Date().getFullYear()} Omkar Car Inspection</span>
+        <span>© {new Date().getFullYear()} OMCAR Car Inspection</span>
         <span>Inspect clearly. Decide confidently.</span>
         <Link href="/privacy">Privacy & terms <ArrowUpRight size={12} /></Link>
       </div>

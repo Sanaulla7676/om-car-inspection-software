@@ -63,7 +63,7 @@ export function HomeHero() {
   }, []);
 
   return (
-    <section className="lux-car-image-hero lux-synchronized-hero om-car-showcase" aria-label="OMKAR car inspection hero" style={heroStyle}>
+    <section className="lux-car-image-hero lux-synchronized-hero om-car-showcase" aria-label="OMCAR car inspection hero" style={heroStyle}>
       <div className="om-car-showcase__stage">
         <div className="om-car-showcase__lava" aria-hidden="true">
           <svg viewBox="0 0 1000 600" preserveAspectRatio="none" focusable="false">
@@ -89,7 +89,7 @@ export function HomeHero() {
         <div className="om-car-showcase__grain" aria-hidden="true" />
         <div className="om-car-showcase__glow" aria-hidden="true" />
         <div className="om-car-showcase__copy">
-          <p className="om-car-showcase__eyebrow"><span /> OMKAR CAR INSPECTION</p>
+          <p className="om-car-showcase__eyebrow"><span /> OMCAR CAR INSPECTION</p>
           <p className="om-car-showcase__kicker">CONFIDENCE STARTS BEFORE THE DRIVE</p>
           <h1>SEE BEYOND<br /><em>THE SURFACE.</em></h1>
           <p className="om-car-showcase__description">Expert-led vehicle inspections. Clear evidence. Better-informed decisions before you buy or accept delivery.</p>

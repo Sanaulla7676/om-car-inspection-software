@@ -1,12 +1,11 @@
-import type { Metadata } from "next";
-import { SoftwareAccess } from "@/components/software-access";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Inspection Software",
-  description: "Access the OMKAR vehicle inspection workspace online from desktop, tablet or mobile.",
-  alternates: { canonical: "/software" },
+export const metadata = {
+  title: "OMCAR Inspection Software",
+  description: "Open the original OMCAR vehicle inspection workspace.",
+  robots: { index: false, follow: false },
 };
 
-export default function SoftwarePage() {
-  return <SoftwareAccess />;
+export default function SoftwarePage(): never {
+  redirect("/omcar-inspection.html" as never);
 }

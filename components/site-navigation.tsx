@@ -38,8 +38,8 @@ export function SiteNavigation() {
     <>
       <div className="site-scroll-progress" aria-hidden="true"><span id="site-scroll-progress-fill" /></div>
       <header className={"site-header-v2 luxury-header" + (pathname === "/" ? " om-home-glass-header" : "")}>
-        <Link href="/" className="site-brand-v2 luxury-brand" aria-label="OM Car Inspection home" onClick={() => setMobileOpen(false)}>
-          <img className="lux-brand-logo-img" src="https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/a526dc36-b0a0-4787-bbc3-bed064b316c1.png" alt="OMKAR Inspection" width={120} height={46} />
+        <Link href="/" className="site-brand-v2 luxury-brand" aria-label="OMCAR Car Inspection home" onClick={() => setMobileOpen(false)}>
+          <span className="omcar-wordmark"><span className="omcar-wordmark-mark">OC</span><span className="omcar-wordmark-type"><strong>OMCAR</strong><small>CAR INSPECTION</small></span></span>
         </Link>
 
         <nav className={"capsule-nav luxury-capsule-nav" + (mobileOpen ? " capsule-nav-open" : "")} aria-label="Main navigation">
@@ -71,12 +71,12 @@ export function SiteNavigation() {
         </button>
       </header>
 
-      <div className={"lux-floating-contact" + (enquiryInView ? " is-hidden-for-enquiry" : "")} aria-label="Contact OMKAR Car Inspection">
-        <a className="lux-floating-whatsapp" href="https://wa.me/918880339999?text=Hello%20OMKAR%20Car%20Inspection%2C%20I%20would%20like%20to%20enquire%20about%20your%20services." target="_blank" rel="noopener noreferrer" aria-label="Chat with OMKAR on WhatsApp">
+      <div className={"lux-floating-contact" + (enquiryInView ? " is-hidden-for-enquiry" : "")} aria-label="Contact OMCAR Car Inspection">
+        <a className="lux-floating-whatsapp" href="https://wa.me/918880339999?text=Hello%20OMCAR%20Car%20Inspection%2C%20I%20would%20like%20to%20enquire%20about%20your%20services." target="_blank" rel="noopener noreferrer" aria-label="Chat with OMCAR on WhatsApp">
           <MessageCircle size={19} strokeWidth={2.4} />
           <span>WhatsApp</span>
         </a>
-        <a className="lux-floating-call" href="tel:+918880339999" aria-label="Call OMKAR Car Inspection at 8880339999">
+        <a className="lux-floating-call" href="tel:+918880339999" aria-label="Call OMCAR Car Inspection at 8880339999">
           <PhoneCall size={18} strokeWidth={2.4} />
           <span>Call <b>8880339999</b></span>
         </a>

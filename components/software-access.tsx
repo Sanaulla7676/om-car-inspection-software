@@ -11,7 +11,7 @@ export function SoftwareAccess() {
         <section className="om-software-hero" aria-labelledby="om-software-title">
           <div className="om-software-grid" aria-hidden="true" />
           <div className="om-software-copy">
-            <p className="om-software-eyebrow"><span /> OMKAR INSPECTION WORKSPACE</p>
+            <p className="om-software-eyebrow"><span /> OMCAR INSPECTION WORKSPACE</p>
             <h1 id="om-software-title">Your inspection software.<br /><em>Ready wherever you work.</em></h1>
             <p className="om-software-lead">Access the live vehicle inspection workspace from your desktop, tablet or phone. Record findings, attach photo evidence and prepare structured inspection reports online.</p>
             <div className="om-software-actions">
@@ -22,7 +22,7 @@ export function SoftwareAccess() {
           </div>
           <div className="om-software-visual" aria-label="Inspection software features">
             <div className="om-software-window">
-              <div className="om-software-window-top"><span><i /> <i /> <i /></span><b>OMKAR / FIELD WORKSPACE</b><span className="om-software-live"><span /> ONLINE</span></div>
+              <div className="om-software-window-top"><span><i /> <i /> <i /></span><b>OMCAR / FIELD WORKSPACE</b><span className="om-software-live"><span /> ONLINE</span></div>
               <div className="om-software-preview-heading"><small>NEW INSPECTION</small><h2>Vehicle condition report</h2><p>Inspection checklist · Photo evidence · Report review</p></div>
               <div className="om-software-preview-steps">
                 <div className="is-done"><span><ClipboardCheck size={15} /></span><div><b>Vehicle details</b><small>Registration and identity</small></div><ShieldCheck size={15} /></div>

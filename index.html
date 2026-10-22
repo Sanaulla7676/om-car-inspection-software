@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,follow">
   <meta name="theme-color" content="#111111">
-  <meta http-equiv="refresh" content="0;url=https://om-car-inspection-software.vercel.app/login">
-  <title>OMKAR Car Inspection</title>
+  <meta http-equiv="refresh" content="0;url=https://om-car-inspection-software.vercel.app/omcar-inspection.html">
+  <title>OMCAR Car Inspection</title>
   <link rel="canonical" href="https://om-car-inspection-software.vercel.app/">
   <style>
     :root{color-scheme:dark;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#101010;color:#f7f4ed}
@@ -28,15 +28,15 @@
       var path = window.location.pathname || "/";
       var isLocalFile = window.location.protocol === "file:" ||
         /^\/[a-z]:\//i.test(path) ||
-        /(?:^|\/)(?:index|Software of Omkar Inspection)\.html$/i.test(path);
+        /(?:^|\/)(?:index|Software of OMCAR Inspection)\.html$/i.test(path);
 
-      // Local desktop files must open the React application, not route a local
+      // Local desktop files must open the OMCAR inspection software, not route a local
       // C:\\ path through the production website.
       if (isLocalFile || path === "/" || path === "/index.html") {
-        path = "/login";
+        path = "/omcar-inspection.html";
       } else {
         path = path.replace(/^\/om-car-inspection-software(?=\/|$)/, "");
-        if (!path) path = "/login";
+        if (!path) path = "/omcar-inspection.html";
       }
       window.location.replace(target + path + window.location.search + window.location.hash);
     })();
@@ -44,14 +44,14 @@
 </head>
 <body>
   <main>
-    <div class="mark">OMKAR CAR INSPECTION</div>
+    <div class="mark">OMCAR CAR INSPECTION</div>
     <h1>Inspect clearly. Decide confidently.</h1>
-    <p>Opening the official OMKAR Car Inspection website. If automatic redirection is blocked, use one of the links below.</p>
+    <p>Opening the original OMCAR Inspection Software. If automatic redirection is blocked, use one of the links below.</p>
     <nav>
-      <a class="primary" href="https://om-car-inspection-software.vercel.app/">Open public website</a>
-      <a class="secondary" href="https://om-car-inspection-software.vercel.app/login">Staff software sign-in</a>
+      <a class="primary" href="https://om-car-inspection-software.vercel.app/omcar-inspection.html">Open OMCAR software</a>
+      <a class="secondary" href="https://om-car-inspection-software.vercel.app/">Website Home</a>
     </nav>
-    <small>The inspection software is private. Staff sign-in is required.</small>
+    <small>The OMCAR prototype opens in the browser. Use Website Home to return to the public website.</small>
   </main>
 </body>
 </html>

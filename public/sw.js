@@ -1,5 +1,5 @@
-const CACHE_NAME = "om-car-inspection-v1";
-const APP_SHELL = ["/","/dashboard","/manifest.webmanifest","/icon.svg"];
+const CACHE_NAME = "omcar-inspection-v2";
+const APP_SHELL = ["/","/omcar-inspection.html","/manifest.webmanifest","/icon.svg"];
 
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)).then(() => self.skipWaiting()));
@@ -20,6 +20,6 @@ self.addEventListener("fetch", event => {
         caches.open(CACHE_NAME).then(cache => cache.put(request, copy)).catch(() => {});
         return response;
       })
-      .catch(() => caches.match(request).then(cached => cached || caches.match("/dashboard")))
+      .catch(() => caches.match(request).then(cached => cached || caches.match("/omcar-inspection.html")))
   );
 });

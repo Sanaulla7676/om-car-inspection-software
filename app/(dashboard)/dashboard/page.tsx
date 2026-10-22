@@ -1,10 +1,5 @@
-import { AppShell } from "@/components/app-shell";
-import { ProfessionalDashboard } from "@/components/professional-dashboard";
+import { redirect } from "next/navigation";
 
-export default function DashboardPage() {
-  return (
-    <AppShell module="dashboard">
-      <ProfessionalDashboard />
-    </AppShell>
-  );
+export default function DashboardPage(): never {
+  redirect("/omcar-inspection.html" as never);
 }
