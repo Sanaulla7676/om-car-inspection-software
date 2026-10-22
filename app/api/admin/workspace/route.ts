@@ -5,6 +5,10 @@ import { getWorkspaceAccess } from "@/lib/admin/workspace-access";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+// Reuse the immutable workspace template across warm serverless invocations.
+// The response itself remains private and non-cacheable because it requires a session.
+const workspaceHtmlPromise = readFile(join(process.cwd(), "private", "Software of OMCAR Inspection.html"), "utf8");
+
 export async function GET() {
   const access = await getWorkspaceAccess();
   if (!access) {
@@ -19,7 +23,7 @@ export async function GET() {
   }
 
   try {
-    const html = await readFile(join(process.cwd(), "private", "Software of OMCAR Inspection.html"), "utf8");
+    const html = await workspaceHtmlPromise;
     return new Response(html, {
       status: 200,
       headers: {
