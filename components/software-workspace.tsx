@@ -39,9 +39,17 @@ export function SoftwareWorkspace({ loginId, accessType }: Props) {
     <main className="omcar-workspace">
       <header className="omcar-workspace-bar">
         <a href="/" className="omcar-workspace-brand" aria-label="OMCAR website home">
-          <span className="omcar-workspace-mark">OC</span>
+          <img
+            className="omcar-workspace-logo-img"
+            src="https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/a526dc36-b0a0-4787-bbc3-bed064b316c1.png"
+            alt="OMKAR Inspection"
+            width={120}
+            height={46}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+          />
           <span className="omcar-workspace-brand-copy">
-            <strong>OMCAR</strong>
             <small>INSPECTION WORKSPACE</small>
           </span>
         </a>
