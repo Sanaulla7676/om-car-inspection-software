@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowUpRight, CheckCircle2, Home, LockKeyhole, LogOut, RefreshCw, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Home, LockKeyhole, LogOut, RefreshCw, ShieldCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 type Props = { loginId: string; accessType: "admin" | "staff" };
@@ -86,9 +86,6 @@ export function SoftwareWorkspace({ loginId, accessType }: Props) {
             <button type="button" className="omcar-workspace-btn" onClick={reloadWorkspace}><RefreshCw size={15} /> Try again</button>
             <a href="/">Return to OMCAR website <ArrowLeft size={14} /></a>
           </div>
-        )}
-        {frameState === "ready" && (
-          <div className="omcar-workspace-status" role="status"><CheckCircle2 size={14} /> Workspace ready</div>
         )}
         <iframe
           key={revision}
