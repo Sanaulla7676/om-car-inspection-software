@@ -50,7 +50,7 @@ export function SiteNavigation() {
     // This shortcut opens the protected React workspace. Unauthenticated visitors
     // are sent to login and returned here after a successful admin/staff sign-in.
     const workspaceShortcut = query.normalize("NFKC").replace(/\s+/g, "").toLocaleLowerCase("en-US");
-    if (workspaceShortcut === "iiii") { router.push("/software"); return; }
+    if (workspaceShortcut === "iiiii") { router.push("/login?next=%2Fsoftware"); return; }
     router.push(("/services?search=" + encodeURIComponent(query)) as never);
   }
 
@@ -59,7 +59,7 @@ export function SiteNavigation() {
       <div className="site-scroll-progress" aria-hidden="true"><span id="site-scroll-progress-fill" /></div>
       <header className={"site-header-v2 luxury-header" + (pathname === "/" ? " om-home-glass-header" : "")}>
         <Link href="/" className="site-brand-v2 luxury-brand" aria-label="OMCAR Car Inspection home" onClick={() => setMobileOpen(false)}>
-          <span className="omcar-wordmark"><span className="omcar-wordmark-mark">OC</span><span className="omcar-wordmark-type"><strong>OMCAR</strong><small>CAR INSPECTION</small></span></span>
+          <img className="lux-brand-logo-img" src="https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/a526dc36-b0a0-4787-bbc3-bed064b316c1.png" alt="OMKAR Inspection" width={120} height={46} loading="eager" fetchPriority="high" decoding="async" />
         </Link>
 
         <nav className={"capsule-nav luxury-capsule-nav" + (mobileOpen ? " capsule-nav-open" : "")} aria-label="Main navigation">
@@ -87,10 +87,9 @@ export function SiteNavigation() {
               <form id="omcar-site-search" className="omcar-site-search" role="search" onSubmit={submitSearch}>
                 <label htmlFor="omcar-site-search-input">Search OMCAR</label>
                 <div className="omcar-site-search-row">
-                  <input id="omcar-site-search-input" autoFocus value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="Search services or enter iiii" autoComplete="off" maxLength={120} />
+                  <input id="omcar-site-search-input" autoFocus value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="Search services" autoComplete="off" maxLength={120} />
                   <button type="submit" aria-label="Submit search"><Search size={17} /></button>
                 </div>
-                <p>{searchQuery.trim() && searchQuery.normalize("NFKC").replace(/\s+/g, "").toLocaleLowerCase("en-US") === "iiii" ? <>Open the secure inspection workspace. Sign in if prompted.</> : <>Enter <strong>iiii</strong> to open the inspection workspace.</>}</p>
               </form>
             )}
           </div>
