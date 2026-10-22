@@ -16,6 +16,9 @@ const productionOnlyHeaders =
 const nextConfig: NextConfig = {
   images: { remotePatterns: [] },
   typedRoutes: true,
+  outputFileTracingIncludes: {
+    "/api/admin/workspace": ["./private/Software of OMCAR Inspection.html"],
+  },
   async headers() {
     return [
       {

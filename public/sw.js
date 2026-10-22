@@ -1,5 +1,5 @@
-const CACHE_NAME = "omcar-inspection-v3";
-const APP_SHELL = ["/","/omcar-inspection.html","/manifest.webmanifest","/icon.svg"];
+const CACHE_NAME = "omcar-inspection-v4";
+const APP_SHELL = ["/","/manifest.webmanifest","/icon.svg"];
 
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)).then(() => self.skipWaiting()));
@@ -11,7 +11,8 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("fetch", event => {
   const request = event.request;
-  if (request.method !== "GET" || new URL(request.url).pathname.startsWith("/api/")) return;
+  const pathname = new URL(request.url).pathname;
+  if (request.method !== "GET" || pathname.startsWith("/api/") || pathname === "/software" || pathname === "/login" || pathname === "/admin" || pathname.endsWith("omcar-inspection.html") || pathname === "/Software of OMCAR Inspection.html") return;
 
   event.respondWith(
     fetch(request)
@@ -20,6 +21,6 @@ self.addEventListener("fetch", event => {
         caches.open(CACHE_NAME).then(cache => cache.put(request, copy)).catch(() => {});
         return response;
       })
-      .catch(() => caches.match(request).then(cached => cached || caches.match("/omcar-inspection.html")))
+      .catch(() => caches.match(request).then(cached => cached || caches.match("/")))
   );
 });

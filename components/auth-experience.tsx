@@ -49,7 +49,8 @@ export function AuthExperience({ mode }: { mode: AuthMode }) {
           setError(result.error || "The login ID or password is incorrect.");
         } else {
           setPassword("");
-          router.push("/admin");
+          const requestedPath = new URLSearchParams(window.location.search).get("next")?.split("?")[0];
+          router.push(requestedPath === "/software" ? "/software" : "/admin");
           router.refresh();
           return;
         }
@@ -87,9 +88,7 @@ export function AuthExperience({ mode }: { mode: AuthMode }) {
       });
       if (signInError) setError(signInError.message);
       else {
-        const requestedPath = new URLSearchParams(window.location.search).get("next")?.split("?")[0];
-        if (requestedPath === "/inspections/new") router.push("/inspections/new");
-        else router.push("/dashboard");
+        router.push("/software");
         router.refresh();
       }
     }

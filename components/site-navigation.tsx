@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ArrowRight, Menu, X, Search, UserRound, PhoneCall, MessageCircle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
 const links = [
   { label: "Home", href: "/" },
@@ -16,6 +16,9 @@ const links = [
 
 export function SiteNavigation() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [enquiryInView, setEnquiryInView] = useState(false);
 
@@ -33,6 +36,20 @@ export function SiteNavigation() {
     targets.forEach((target) => observer.observe(target));
     return () => observer.disconnect();
   }, [pathname]);
+
+  useEffect(() => {
+    setSearchOpen(false);
+    setMobileOpen(false);
+  }, [pathname]);
+
+  function submitSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const query = searchQuery.trim();
+    if (!query) return;
+    setSearchOpen(false);
+    if (query.toLocaleLowerCase("en-US") === "iiii") { router.push("/software"); return; }
+    router.push("/services?search=" + encodeURIComponent(query));
+  }
 
   return (
     <>
@@ -61,7 +78,19 @@ export function SiteNavigation() {
         </nav>
 
         <div className="lux-header-actions">
-          <Link href="/services" className="lux-header-icon" aria-label="Explore services"><Search size={17} /></Link>
+          <div className="omcar-search-wrap">
+            <button type="button" className="lux-header-icon omcar-search-toggle" aria-label="Search website" aria-expanded={searchOpen} aria-controls="omcar-site-search" onClick={() => setSearchOpen((open) => !open)}><Search size={17} /></button>
+            {searchOpen && (
+              <form id="omcar-site-search" className="omcar-site-search" role="search" onSubmit={submitSearch}>
+                <label htmlFor="omcar-site-search-input">Search OMCAR</label>
+                <div className="omcar-site-search-row">
+                  <input id="omcar-site-search-input" autoFocus value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="Search services or enter iiii" autoComplete="off" maxLength={120} />
+                  <button type="submit" aria-label="Submit search"><Search size={17} /></button>
+                </div>
+                <p>Enter <strong>iiii</strong> to open the inspection workspace.</p>
+              </form>
+            )}
+          </div>
           <Link href="/login" className="lux-header-icon" aria-label="Open sign-in"><UserRound size={17} /></Link>
           <Link href="/book-inspection" className="lux-header-login">Book Inspection <ArrowRight size={14} /></Link>
         </div>

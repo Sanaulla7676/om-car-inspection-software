@@ -2952,3 +2952,63 @@ body:has(.om17-home) { margin: 0 !important; }
 .lux-footer-logo .omcar-wordmark-type strong{font-size:17px;color:#19344a}
 .lux-footer-logo .omcar-wordmark-type small{font-size:8px}
 @media(max-width:420px){.omcar-wordmark{gap:7px}.omcar-wordmark-mark{width:33px;height:33px;border-radius:9px;font-size:11px}.omcar-wordmark-type strong{font-size:13px}.omcar-wordmark-type small{font-size:6px;letter-spacing:.12em}}
+
+
+/* OMCAR search shortcut and secure React workspace shell. */
+.omcar-search-wrap{position:relative;display:flex;align-items:center}
+.omcar-search-toggle{appearance:none;cursor:pointer}
+button.lux-header-icon.omcar-search-toggle{font:inherit}
+.omcar-site-search{position:absolute;z-index:120;right:0;top:calc(100% + 13px);width:min(355px,calc(100vw - 24px));padding:17px;border:1px solid rgba(255,255,255,.56);border-radius:17px;background:rgba(255,255,255,.97);box-shadow:0 20px 60px rgba(12,27,43,.22);backdrop-filter:blur(18px);color:#183248;animation:omcarSearchIn .18s cubic-bezier(.2,.8,.2,1)}
+.omcar-site-search label{display:block;margin:0 0 8px;font-size:10px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:#567286}
+.omcar-site-search-row{display:flex;align-items:center;gap:7px}
+.omcar-site-search-row input{width:100%;min-width:0;height:43px;border:1px solid #d9e2e8;border-radius:10px;background:#fff;padding:0 12px;color:#19344a;font:500 13px/1.3 "DM Sans",Arial,sans-serif;outline:none}
+.omcar-site-search-row input:focus{border-color:#7aa4b0;box-shadow:0 0 0 3px rgba(70,146,160,.12)}
+.omcar-site-search-row button{display:grid;place-items:center;width:43px;height:43px;flex:0 0 auto;border:0;border-radius:10px;background:#17394d;color:#fff;transition:transform .18s,background .18s}
+.omcar-site-search-row button:hover{transform:translateY(-1px);background:#245b70}
+.omcar-site-search p{margin:9px 0 0;color:#7b8d9b;font-size:10px;line-height:1.45}
+.omcar-site-search p strong{color:#96702b;letter-spacing:.08em}
+@keyframes omcarSearchIn{from{opacity:0;transform:translateY(-5px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+.omcar-workspace{min-height:100svh;background:#eef3f7;color:#172c40;overflow:hidden}
+.omcar-workspace-bar{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:22px;min-height:74px;padding:11px clamp(14px,3vw,36px);border-bottom:1px solid #dce6ec;background:rgba(255,255,255,.94);box-shadow:0 6px 24px rgba(26,54,77,.06);backdrop-filter:blur(18px);animation:omcarToolbarIn .35s ease both}
+@keyframes omcarToolbarIn{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:translateY(0)}}
+.omcar-workspace-brand{display:flex;align-items:center;gap:10px;min-width:0;text-decoration:none;color:#17384e}
+.omcar-workspace-mark{display:grid;place-items:center;width:40px;height:40px;flex:0 0 auto;border-radius:12px;background:linear-gradient(135deg,#f1cf81,#bd9139);color:#182c3d;font:950 12px/1 Arial,sans-serif;box-shadow:0 5px 16px rgba(113,83,25,.16)}
+.omcar-workspace-brand-copy{display:flex;flex-direction:column;gap:4px}
+.omcar-workspace-brand-copy strong{font:950 15px/1 Arial,sans-serif;letter-spacing:.13em}
+.omcar-workspace-brand-copy small{font:800 8px/1 Arial,sans-serif;letter-spacing:.12em;color:#7e909c}
+.omcar-workspace-secure{display:flex;align-items:center;gap:10px;min-width:0;margin-left:auto;margin-right:auto}
+.omcar-workspace-secure-icon{display:grid;place-items:center;width:34px;height:34px;border:1px solid #dcebe4;border-radius:11px;background:#f0faf4;color:#248059}
+.omcar-workspace-secure-copy{display:flex;flex-direction:column;gap:4px;min-width:0}
+.omcar-workspace-secure-copy strong{font-size:10px;font-weight:900;color:#305067}
+.omcar-workspace-secure-copy small{max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px;color:#80919e}
+.omcar-workspace-online-dot{width:7px;height:7px;flex:0 0 auto;border-radius:50%;background:#27a879;box-shadow:0 0 0 4px rgba(39,168,121,.12)}
+.omcar-workspace-actions{display:flex;align-items:center;justify-content:flex-end;gap:7px}
+.omcar-workspace-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:39px;padding:0 12px;border:1px solid #dbe5eb;border-radius:10px;background:#fff;color:#345369;text-decoration:none;font:800 10px/1 "DM Sans",Arial,sans-serif;white-space:nowrap;cursor:pointer;transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease}
+.omcar-workspace-btn:hover{transform:translateY(-1px);border-color:#9fb5c1;background:#f9fbfc;box-shadow:0 5px 14px rgba(25,53,73,.06)}
+.omcar-workspace-btn:disabled{opacity:.6;cursor:wait}
+.omcar-workspace-btn-home{background:#193b50;border-color:#193b50;color:#fff}
+.omcar-workspace-btn-home:hover{background:#25546c;border-color:#25546c}
+.omcar-workspace-btn-exit{color:#8d4b4d}
+.omcar-workspace-frame-wrap{position:relative;min-height:calc(100svh - 74px);height:calc(100svh - 74px);background:#f4f6f8}
+.omcar-workspace-frame{position:relative;z-index:2;display:block;width:100%;height:100%;min-height:480px;border:0;background:#f4f6f8}
+.omcar-workspace-loading{position:absolute;z-index:1;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:25px;background:radial-gradient(circle at 50% 35%,#fff 0%,#f1f6f8 54%,#eaf0f4 100%);color:#31536a;text-align:center}
+.omcar-loading-logo{display:grid;place-items:center;width:54px;height:54px;border-radius:16px;background:linear-gradient(140deg,#f2d38d,#c89d47);color:#193349;font:950 15px/1 Arial,sans-serif;box-shadow:0 10px 32px rgba(93,76,37,.17);animation:omcarLogoBob 1.8s ease-in-out infinite}
+@keyframes omcarLogoBob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-5px) rotate(-2deg)}}
+.omcar-loading-track{width:min(240px,75vw);height:3px;border-radius:999px;background:#dfe8ed;overflow:hidden}
+.omcar-loading-track span{display:block;width:40%;height:100%;border-radius:999px;background:linear-gradient(90deg,#b98b34,#4198a5);animation:omcarLoadLine 1.15s ease-in-out infinite}
+@keyframes omcarLoadLine{from{transform:translateX(-105%)}to{transform:translateX(280%)}}
+.omcar-workspace-loading strong{font-size:13px;font-weight:850}
+.omcar-workspace-loading p{margin:0;color:#8696a2;font-size:10px}
+.omcar-workspace-status{position:absolute;z-index:5;right:14px;top:12px;display:flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid #dcebe4;border-radius:999px;background:rgba(246,255,250,.94);color:#267552;font-size:9px;font-weight:850;box-shadow:0 4px 16px rgba(25,53,73,.06);animation:omcarStatusIn .22s ease both}
+@keyframes omcarStatusIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.omcar-workspace-error{position:absolute;z-index:6;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:11px;padding:24px;background:#f4f7f9;text-align:center}
+.omcar-workspace-error>span{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;background:#fff1e7;color:#a86330}
+.omcar-workspace-error h1{margin:0;color:#243f55;font-size:22px;letter-spacing:-.035em}
+.omcar-workspace-error p{max-width:420px;margin:0 0 7px;color:#718491;font-size:12px;line-height:1.7}
+.omcar-workspace-error a{display:inline-flex;align-items:center;gap:7px;margin-top:4px;color:#52778e;font-size:11px;font-weight:800;text-decoration:none}
+.omcar-refreshing{animation:omcarRotate .9s linear infinite}
+@keyframes omcarRotate{to{transform:rotate(360deg)}}
+@media(max-width:900px){.omcar-workspace-bar{gap:12px;padding:10px 14px}.omcar-workspace-secure{margin-left:auto;margin-right:0}.omcar-workspace-secure-copy small{max-width:130px}.omcar-workspace-actions{gap:5px}.omcar-workspace-btn{padding:0 10px}}
+@media(max-width:640px){.omcar-workspace-bar{min-height:66px;flex-wrap:wrap;gap:8px;padding:9px 11px}.omcar-workspace-brand{gap:7px}.omcar-workspace-mark{width:34px;height:34px;border-radius:10px;font-size:10px}.omcar-workspace-brand-copy strong{font-size:12px}.omcar-workspace-brand-copy small{font-size:6px;letter-spacing:.1em}.omcar-workspace-secure{display:none}.omcar-workspace-actions{margin-left:auto}.omcar-workspace-btn{min-height:34px;padding:0 8px;font-size:9px;gap:5px}.omcar-workspace-btn-home svg:last-child{display:none}.omcar-workspace-frame-wrap{height:calc(100svh - 66px);min-height:calc(100svh - 66px)}.omcar-workspace-frame{min-height:400px}.omcar-site-search{right:-65px;top:calc(100% + 10px);padding:14px}.omcar-workspace-status{right:7px;top:7px}}
+@media(max-width:390px){.omcar-workspace-btn-refresh span{display:none}.omcar-workspace-btn{padding:0 7px}.omcar-workspace-actions{gap:4px}.omcar-workspace-btn-home{max-width:120px;overflow:hidden}}
+@media(prefers-reduced-motion:reduce){.omcar-workspace-bar,.omcar-workspace-status,.omcar-loading-logo,.omcar-loading-track span,.omcar-refreshing,.omcar-site-search{animation:none!important;transition:none!important}}

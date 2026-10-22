@@ -92,9 +92,10 @@ export async function updateSession(request: NextRequest) {
     return withCookies(response, NextResponse.redirect(new URL("/dashboard?reason=admin", request.url)));
   }
 
-  // The requested OMCAR prototype replaces the retired React inspection UI.
+  // The protected React workspace hosts the original OMCAR inspection builder.
+  // Legacy static HTML paths redirect and do not contain the working inspection app.
   if (privatePage) {
-    return withCookies(response, NextResponse.redirect(new URL("/omcar-inspection.html", request.url)));
+    return withCookies(response, NextResponse.redirect(new URL("/software", request.url)));
   }
 
   return response;
