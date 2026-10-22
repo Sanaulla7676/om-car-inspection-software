@@ -1,4 +1,4 @@
-const CACHE_NAME = "omcar-inspection-v2";
+const CACHE_NAME = "omcar-inspection-v3";
 const APP_SHELL = ["/","/omcar-inspection.html","/manifest.webmanifest","/icon.svg"];
 
 self.addEventListener("install", event => {
