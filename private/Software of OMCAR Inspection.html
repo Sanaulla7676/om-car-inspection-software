@@ -294,6 +294,39 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  .launch-screen{display:none!important}
 }
 
+
+/* Guided report workflow and restrained motion, added without changing the inspection/report logic. */
+.omcar-workflow-rail{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:9px;margin:-2px 0 18px;border:1px solid #e0e7ec;border-radius:14px;background:rgba(255,255,255,.92);box-shadow:0 6px 20px rgba(22,36,49,.035)}
+.omcar-workflow-step{display:flex;align-items:center;gap:9px;min-width:0;min-height:43px;padding:8px 10px;border:1px solid transparent;border-radius:10px;background:transparent;color:#526473;text-align:left;font-size:11px;font-weight:800;transition:transform .18s ease,background .18s ease,border-color .18s ease,color .18s ease,box-shadow .18s ease}
+.omcar-workflow-step:hover{transform:translateY(-1px);background:#f7fafc;border-color:#e3eaf0}
+.omcar-workflow-step:focus-visible{outline:3px solid rgba(54,118,164,.25);outline-offset:2px}
+.omcar-workflow-step>span:first-child{display:grid;place-items:center;width:27px;height:27px;flex:0 0 auto;border-radius:8px;background:#edf2f6;color:#617889;font-size:9px;font-weight:950}
+.omcar-workflow-step>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.omcar-workflow-step.is-active{background:#172b3d;border-color:#172b3d;color:#fff;box-shadow:0 6px 16px rgba(23,43,61,.13)}
+.omcar-workflow-step.is-active>span:first-child{background:#d8ae4e;color:#201a0c}
+.omcar-workflow-step.is-complete>span:first-child{background:#e1f4e9;color:#18734b}
+.omcar-reveal{opacity:0;transform:translateY(13px);transition:opacity .48s ease,transform .48s cubic-bezier(.2,.72,.22,1);transition-delay:var(--omcar-reveal-delay,0ms)}
+.omcar-reveal.is-visible{opacity:1;transform:translateY(0)}
+.omcar-card-motion{opacity:0;transform:translateY(8px);transition:opacity .23s ease,transform .23s ease}
+.omcar-card-motion.is-visible{opacity:1;transform:translateY(0)}
+.finding-card{transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease}
+.finding-card:focus-within{border-color:#9eb4c1;box-shadow:0 8px 24px rgba(28,52,70,.07)}
+.metric{transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.metric:hover{transform:translateY(-2px);border-color:#cdd9e1;box-shadow:0 7px 18px rgba(22,36,49,.04)}
+.photo-preview img,.cover-preview img{animation:omcarPhotoArrive .24s ease both}
+@keyframes omcarPhotoArrive{from{opacity:.55;transform:scale(.985)}to{opacity:1;transform:scale(1)}}
+.launch-screen.open .launch-card{animation:omcarLaunchCardArrive .35s cubic-bezier(.18,.78,.24,1) both}
+.launch-screen.open .launch-option{animation:omcarLaunchOptionArrive .32s ease both}
+.launch-screen.open .launch-option:nth-child(1){animation-delay:35ms}
+.launch-screen.open .launch-option:nth-child(2){animation-delay:75ms}
+.launch-screen.open .launch-option:nth-child(3){animation-delay:115ms}
+@keyframes omcarLaunchCardArrive{from{opacity:0;transform:translateY(12px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes omcarLaunchOptionArrive{from{opacity:.4;transform:translateX(-5px)}to{opacity:1;transform:translateX(0)}}
+@media(max-width:760px){.omcar-workflow-rail{display:flex;gap:6px;padding:7px;margin-bottom:14px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}.omcar-workflow-step{flex:0 0 auto;min-width:128px;min-height:41px;padding:7px 9px;font-size:10px}.omcar-workflow-step>span:first-child{width:25px;height:25px}}
+@media(max-width:420px){.omcar-workflow-step{min-width:120px}.omcar-workflow-step>span:last-child{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.omcar-reveal,.omcar-card-motion,.finding-card,.metric,.photo-preview img,.cover-preview img,.launch-screen.open .launch-card,.launch-screen.open .launch-option{opacity:1!important;transform:none!important;animation:none!important;transition:none!important}}
+@media print{.omcar-workflow-rail{display:none!important}.omcar-reveal,.omcar-card-motion{opacity:1!important;transform:none!important;transition:none!important}}
+
 </style>
 </head>
 <body>
@@ -339,6 +372,14 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   </div>
   <div class="live-status"><span class="status-dot" id="statusDot"></span><span id="saveStatus">Opening local draft…</span></div>
  </div>
+
+
+  <nav class="omcar-workflow-rail" id="omcarWorkflowRail" aria-label="Inspection report workflow">
+   <button type="button" class="omcar-workflow-step is-active" data-omcar-step="vehicle" aria-current="step"><span>01</span><span>Vehicle details</span></button>
+   <button type="button" class="omcar-workflow-step" data-omcar-step="inspection"><span>02</span><span>Inspect parts</span></button>
+   <button type="button" class="omcar-workflow-step" data-omcar-step="result"><span>03</span><span>Result &amp; notes</span></button>
+   <button type="button" class="omcar-workflow-step" data-omcar-step="pdf"><span>04</span><span>Generate PDF</span></button>
+  </nav>
 
  <div class="notice" role="note">
   <div class="notice-icon">!</div>
@@ -1349,5 +1390,87 @@ document.addEventListener("DOMContentLoaded",function(){
 });
 })();
 </script>
+
+<script>
+(function(){
+ "use strict";
+ function initOmcWorkflow(){
+  var rail=document.getElementById("omcarWorkflowRail");
+  if(!rail)return;
+  var reduced=!!(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  var stepTargets={
+   vehicle:document.querySelector('[aria-labelledby="vehicleHeading"]'),
+   inspection:document.querySelector('[aria-labelledby="evidenceHeading"]'),
+   result:document.querySelector('[aria-labelledby="decisionHeading"]')
+  };
+  var buttons=Array.prototype.slice.call(rail.querySelectorAll("[data-omcar-step]"));
+  function setActiveStep(key){
+   buttons.forEach(function(button){
+    var active=button.dataset.omcarStep===key;
+    button.classList.toggle("is-active",active);
+    if(active)button.setAttribute("aria-current","step");
+    else button.removeAttribute("aria-current");
+    if(["vehicle","inspection","result"].indexOf(button.dataset.omcarStep)>=0){
+     var passed=["vehicle","inspection","result"].indexOf(button.dataset.omcarStep)<["vehicle","inspection","result"].indexOf(key);
+     button.classList.toggle("is-complete",passed);
+    }
+   });
+  }
+  rail.addEventListener("click",function(event){
+   var button=event.target.closest("[data-omcar-step]");
+   if(!button)return;
+   var key=button.dataset.omcarStep;
+   if(key==="pdf"){
+    var pdfButton=document.getElementById("printTopBtn");
+    if(pdfButton)pdfButton.click();
+    return;
+   }
+   var target=stepTargets[key];
+   if(target){
+    setActiveStep(key);
+    target.scrollIntoView({behavior:reduced?"auto":"smooth",block:"start"});
+   }
+  });
+  var targets=Object.keys(stepTargets).map(function(key){return {key:key,element:stepTargets[key]};}).filter(function(entry){return !!entry.element;});
+  if(!reduced&&"IntersectionObserver" in window){
+   var activeObserver=new IntersectionObserver(function(entries){
+    var visible=entries.filter(function(entry){return entry.isIntersecting;}).sort(function(a,b){return b.intersectionRatio-a.intersectionRatio;});
+    if(visible.length){
+     var match=targets.find(function(entry){return entry.element===visible[0].target;});
+     if(match)setActiveStep(match.key);
+    }
+   },{threshold:[0.12,0.3,0.55],rootMargin:"-12% 0px -52% 0px"});
+   targets.forEach(function(entry){activeObserver.observe(entry.element);});
+   var panelObserver=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+     if(entry.isIntersecting){entry.target.classList.add("is-visible");panelObserver.unobserve(entry.target);}
+    });
+   },{threshold:0.035,rootMargin:"0px 0px -24px 0px"});
+   Array.prototype.forEach.call(document.querySelectorAll(".shell > .panel"),function(panel,index){
+    panel.classList.add("omcar-reveal");
+    panel.style.setProperty("--omcar-reveal-delay",Math.min(index*60,120)+"ms");
+    panelObserver.observe(panel);
+   });
+   var list=document.getElementById("findingsList");
+   if(list){
+    function animateNewCards(){
+     Array.prototype.forEach.call(list.querySelectorAll(".finding-card:not(.omcar-card-motion)"),function(card){
+      card.classList.add("omcar-card-motion");
+      requestAnimationFrame(function(){card.classList.add("is-visible");});
+     });
+    }
+    animateNewCards();
+    new MutationObserver(animateNewCards).observe(list,{childList:true,subtree:true});
+   }
+  }else{
+   Array.prototype.forEach.call(document.querySelectorAll(".shell > .panel"),function(panel){panel.classList.add("omcar-reveal","is-visible");});
+   Array.prototype.forEach.call(document.querySelectorAll("#findingsList .finding-card"),function(card){card.classList.add("omcar-card-motion","is-visible");});
+  }
+ }
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initOmcWorkflow,{once:true});
+ else initOmcWorkflow();
+})();
+</script>
+
 </body>
 </html>

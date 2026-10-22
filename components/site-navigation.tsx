@@ -47,7 +47,10 @@ export function SiteNavigation() {
     const query = searchQuery.trim();
     if (!query) return;
     setSearchOpen(false);
-    if (query.toLocaleLowerCase("en-US") === "iiii") { router.push("/software"); return; }
+    // This shortcut opens the protected React workspace. Unauthenticated visitors
+    // are sent to login and returned here after a successful admin/staff sign-in.
+    const workspaceShortcut = query.normalize("NFKC").replace(/\s+/g, "").toLocaleLowerCase("en-US");
+    if (workspaceShortcut === "iiii") { router.push("/software"); return; }
     router.push(("/services?search=" + encodeURIComponent(query)) as never);
   }
 
@@ -87,7 +90,7 @@ export function SiteNavigation() {
                   <input id="omcar-site-search-input" autoFocus value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="Search services or enter iiii" autoComplete="off" maxLength={120} />
                   <button type="submit" aria-label="Submit search"><Search size={17} /></button>
                 </div>
-                <p>Enter <strong>iiii</strong> to open the inspection workspace.</p>
+                <p>{searchQuery.trim() && searchQuery.normalize("NFKC").replace(/\s+/g, "").toLocaleLowerCase("en-US") === "iiii" ? <>Open the secure inspection workspace. Sign in if prompted.</> : <>Enter <strong>iiii</strong> to open the inspection workspace.</>}</p>
               </form>
             )}
           </div>
