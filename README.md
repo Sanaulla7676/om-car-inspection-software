@@ -38,6 +38,7 @@ Do not apply this migration to an existing Supabase project that contains unrela
 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 `SUPABASE_SERVICE_ROLE_KEY` (optional for trusted maintenance scripts only; never expose it to the browser)
 `NEXT_PUBLIC_APP_URL`
+`OMCAR_ADMIN_RPC_SECRET` (server-only HMAC signing secret for the separate `/admin` portal)
 
 Optional integrations:
 `OPENAI_API_KEY`, `OPENAI_MODEL`
@@ -46,7 +47,7 @@ Optional integrations:
 `VEHICLE_LOOKUP_URL`
 `SUREPASS_API_KEY`
 `VEHICLE_PROVIDER_URL`, `VEHICLE_PROVIDER_TOKEN`
-`WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`
+`WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_OTP_TEMPLATE`, `WHATSAPP_OTP_LANGUAGE`, `WHATSAPP_GRAPH_API_VERSION`
 `RESEND_API_KEY`, `EMAIL_FROM`
 `SENTRY_DSN`
 
@@ -75,13 +76,14 @@ npm run build
 The repository also contains GitHub Actions CI configuration for those checks.
 
 
-## Public website and mock admin
+## Administrator portal
 
-- / is the public OM Car Inspection website: animated rotating hero copy, responsive navigation, service sections, six-day practical curriculum and public video references.
-- /book-inspection and /book-masterclass open a WhatsApp enquiry with the entered details. They do not create or confirm a reservation in a database.
-- /admin is a temporary, password-free mock preview that embeds public/admin-mock.html, the standalone sample inspection UI. Its records are demo data.
-- The production application remains on its existing application routes and its Supabase-authenticated dashboard layout is not disabled by this mock. Do not put real customer data in the public mock admin panel.
-
+- `/admin` is a separate, mobile-first admin console with animated React/GSAP interactions, workspace metrics, and account-security settings.
+- Admin credentials are stored as a salted scrypt hash in the private Supabase schema. The server issues an HttpOnly, SameSite session cookie with a 12-hour expiry, applies failed-login throttling, and revokes other sessions when credentials change.
+- Credential changes require a one-time code delivered to the configured WhatsApp number. Delivery uses the WhatsApp Cloud API and an approved message template; the app does not simulate or display an OTP.
+- Configure `OMCAR_ADMIN_RPC_SECRET` in Vercel as a sensitive server environment variable and in the private admin configuration row in Supabase. Never expose or commit this value.
+- WhatsApp verification also requires `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, and an approved `WHATSAPP_OTP_TEMPLATE` with one body text-code placeholder. Until these are configured, credential changes stay disabled.
+- `/login` and `/dashboard` retain their existing Supabase staff-authentication flow. The admin console does not bypass staff membership checks or change site domains, SSO protection or other Vercel settings.
 
 ## Public marketing website
 
@@ -102,7 +104,8 @@ The marketing site includes page-specific title tags, descriptions, canonical pa
 
 - Public business website: `/` (vehicle inspections, PDI training, service evidence and enquiry forms).
 - Private staff sign-in: `/login`.
-- Private admin/staff application: `/dashboard` (also reachable through `/admin`).
+- Private staff application: `/dashboard`.
+- Separate admin control panel: `/admin` (its own server-verified admin session and settings).
 - Booking requests submitted on the public website are stored in `booking_requests` and can be managed by workspace administrators at `/requests`.
 - Public visitors cannot read booking records or enter the inspection dashboard. Private pages and APIs fail closed when authentication or an active staff membership cannot be verified.
 - Inspection creation and report finalisation use transactional database functions. Completed report snapshots are not overwritten; public report links expire after one year and can be revoked by an administrator.

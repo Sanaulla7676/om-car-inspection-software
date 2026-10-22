@@ -9,7 +9,7 @@ function startsAt(pathname: string, root: string) {
 
 function isPrivatePage(pathname: string) {
   return [
-    "/dashboard", "/admin", "/inspections", "/reports", "/vehicles", "/customers",
+    "/dashboard", "/inspections", "/reports", "/vehicles", "/customers",
     "/analytics", "/calendar", "/reinspections", "/templates", "/faults", "/scoring",
     "/settings", "/audit", "/inspectors", "/onboarding", "/requests"
   ].some((root) => startsAt(pathname, root));
