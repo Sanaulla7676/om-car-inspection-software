@@ -628,7 +628,7 @@ html{scroll-behavior:smooth}
   .lux-brand-mark small{font-size:7px}
   .luxury-header .site-mobile-toggle{display:grid!important;flex:0 0 39px;order:4}
   .lux-header-actions{margin-left:auto;gap:5px}
-  .lux-header-icon:first-child{display:none}
+  .lux-header-actions > .lux-header-icon:first-child{display:none!important}
   .lux-header-icon{width:34px;height:34px}
   .lux-header-login{min-height:35px;padding:0 11px;font-size:10px}
   .luxury-capsule-nav{display:none!important;position:absolute!important;left:0;right:0;top:calc(100% + 8px);width:100%!important;margin:0!important;padding:9px!important;border-radius:18px!important;flex-direction:column!important;align-items:stretch!important;background:rgba(255,255,255,.98)!important;box-shadow:0 14px 36px rgba(20,32,43,.16)!important;gap:4px!important}
@@ -922,7 +922,7 @@ html{scroll-behavior:smooth}
   .lux-brand-word{font-size:18px!important}
   .luxury-nav-link{padding:8px 7px!important;font-size:9px!important}
   .lux-header-actions{gap:4px!important}
-  .lux-header-icon:first-child{display:none!important}
+  .lux-header-actions > .lux-header-icon:first-child{display:none!important}
   .lux-header-login{padding:0 10px!important}
 }
 @media(max-width:780px){
@@ -1310,7 +1310,7 @@ html{scroll-behavior:smooth}
   .site-header-v2.luxury-header .lux-brand-word{font-size:17px!important}
   .site-header-v2.luxury-header .lux-brand-mark small{font-size:6px!important;letter-spacing:.14em!important}
   .site-header-v2.luxury-header .lux-nav-link{padding-left:7px!important;padding-right:7px!important;font-size:9px!important}
-  .site-header-v2.luxury-header .lux-header-icon:first-child{display:none!important}
+  .site-header-v2.luxury-header .lux-header-actions > .lux-header-icon:first-child{display:none!important}
   .site-header-v2.luxury-header .lux-header-actions{gap:4px!important}
   .site-header-v2.luxury-header .lux-header-login{font-size:10px!important;padding-left:9px!important;padding-right:9px!important}
 }
@@ -3007,6 +3007,6 @@ button.lux-header-icon.omcar-search-toggle{font:inherit}
 .omcar-refreshing{animation:omcarRotate .9s linear infinite}
 @keyframes omcarRotate{to{transform:rotate(360deg)}}
 @media(max-width:900px){.omcar-workspace-bar{gap:12px;padding:10px 14px}.omcar-workspace-secure{margin-left:auto;margin-right:0}.omcar-workspace-secure-copy small{max-width:130px}.omcar-workspace-actions{gap:5px}.omcar-workspace-btn{padding:0 10px}}
-@media(max-width:640px){.omcar-workspace-bar{min-height:66px;flex-wrap:wrap;gap:8px;padding:9px 11px}.omcar-workspace-brand{gap:7px}.omcar-workspace-mark{width:34px;height:34px;border-radius:10px;font-size:10px}.omcar-workspace-brand-copy strong{font-size:12px}.omcar-workspace-brand-copy small{font-size:6px;letter-spacing:.1em}.omcar-workspace-secure{display:none}.omcar-workspace-actions{margin-left:auto}.omcar-workspace-btn{min-height:34px;padding:0 8px;font-size:9px;gap:5px}.omcar-workspace-btn-home svg:last-child{display:none}.omcar-workspace-frame-wrap{height:calc(100svh - 66px);min-height:calc(100svh - 66px)}.omcar-workspace-frame{min-height:400px}.omcar-site-search{right:-65px;top:calc(100% + 10px);padding:14px}}
+@media(max-width:640px){.omcar-workspace-bar{min-height:66px;flex-wrap:wrap;gap:8px;padding:9px 11px}.omcar-workspace-brand{gap:7px}.omcar-workspace-mark{width:34px;height:34px;border-radius:10px;font-size:10px}.omcar-workspace-brand-copy strong{font-size:12px}.omcar-workspace-brand-copy small{font-size:6px;letter-spacing:.1em}.omcar-workspace-secure{display:none}.omcar-workspace-actions{margin-left:auto}.omcar-workspace-btn{min-height:34px;padding:0 8px;font-size:9px;gap:5px}.omcar-workspace-btn-home svg:last-child{display:none}.omcar-workspace-frame-wrap{height:calc(100svh - 66px);min-height:calc(100svh - 66px)}.omcar-workspace-frame{min-height:400px}.omcar-site-search{position:fixed;left:12px;right:12px;top:calc(72px + env(safe-area-inset-top,0px));width:auto;padding:14px}}
 @media(max-width:390px){.omcar-workspace-btn-refresh span{display:none}.omcar-workspace-btn{padding:0 7px}.omcar-workspace-actions{gap:4px}.omcar-workspace-btn-home{max-width:120px;overflow:hidden}}
 @media(prefers-reduced-motion:reduce){.omcar-workspace-bar,.omcar-workspace-status,.omcar-loading-logo,.omcar-loading-track span,.omcar-refreshing,.omcar-site-search{animation:none!important;transition:none!important}}
