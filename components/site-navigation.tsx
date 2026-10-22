@@ -48,7 +48,7 @@ export function SiteNavigation() {
     if (!query) return;
     setSearchOpen(false);
     if (query.toLocaleLowerCase("en-US") === "iiii") { router.push("/software"); return; }
-    router.push("/services?search=" + encodeURIComponent(query));
+    router.push(("/services?search=" + encodeURIComponent(query)) as never);
   }
 
   return (

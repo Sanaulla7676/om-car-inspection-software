@@ -2991,7 +2991,7 @@ button.lux-header-icon.omcar-search-toggle{font:inherit}
 .omcar-workspace-btn-exit{color:#8d4b4d}
 .omcar-workspace-frame-wrap{position:relative;min-height:calc(100svh - 74px);height:calc(100svh - 74px);background:#f4f6f8}
 .omcar-workspace-frame{position:relative;z-index:2;display:block;width:100%;height:100%;min-height:480px;border:0;background:#f4f6f8}
-.omcar-workspace-loading{position:absolute;z-index:1;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:25px;background:radial-gradient(circle at 50% 35%,#fff 0%,#f1f6f8 54%,#eaf0f4 100%);color:#31536a;text-align:center}
+.omcar-workspace-loading{position:absolute;z-index:3;pointer-events:none;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:25px;background:radial-gradient(circle at 50% 35%,#fff 0%,#f1f6f8 54%,#eaf0f4 100%);color:#31536a;text-align:center}
 .omcar-loading-logo{display:grid;place-items:center;width:54px;height:54px;border-radius:16px;background:linear-gradient(140deg,#f2d38d,#c89d47);color:#193349;font:950 15px/1 Arial,sans-serif;box-shadow:0 10px 32px rgba(93,76,37,.17);animation:omcarLogoBob 1.8s ease-in-out infinite}
 @keyframes omcarLogoBob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-5px) rotate(-2deg)}}
 .omcar-loading-track{width:min(240px,75vw);height:3px;border-radius:999px;background:#dfe8ed;overflow:hidden}

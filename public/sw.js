@@ -12,7 +12,7 @@ self.addEventListener("activate", event => {
 self.addEventListener("fetch", event => {
   const request = event.request;
   const pathname = new URL(request.url).pathname;
-  if (request.method !== "GET" || pathname.startsWith("/api/") || pathname === "/software" || pathname === "/login" || pathname === "/admin" || pathname.endsWith("omcar-inspection.html") || pathname === "/Software of OMCAR Inspection.html") return;
+  if (request.method !== "GET" || pathname.startsWith("/api/") || pathname === "/software" || pathname === "/login" || pathname === "/admin" || pathname.endsWith("omcar-inspection.html") || pathname.toLowerCase().includes("software%20of%20omcar%20inspection.html") || pathname.toLowerCase().includes("software of omcar inspection.html")) return;
 
   event.respondWith(
     fetch(request)
