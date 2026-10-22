@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type CSSProperties } from "react";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, ShieldCheck } from "lucide-react";
 
 type HeroCar = {
   id: string;
@@ -96,6 +96,7 @@ export function HomeHero() {
           <div className="om-car-showcase__actions">
             <Link href="/book-inspection" className="om-car-showcase__primary">Book an Inspection <ArrowRight size={16} /></Link>
             <Link href="/services/used-car-inspection" className="om-car-showcase__secondary">Explore Our Services</Link>
+            <Link href="/software" className="om-car-showcase__software-link"><ShieldCheck size={14} /> Inspection Software <ArrowRight size={14} /></Link>
           </div>
           <p className="om-car-showcase__proof"><CheckCircle2 size={14} /> EVIDENCE-LED CHECKS <span /> CLEAR REPORTING</p>
         </div>

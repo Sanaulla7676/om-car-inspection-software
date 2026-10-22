@@ -64,6 +64,7 @@ export async function updateSession(request: NextRequest) {
     if (privateApi) return withCookies(response, NextResponse.json({ error: "Authentication required." }, { status: 401 }));
     const login = new URL("/login", request.url);
     login.searchParams.set("reason", "sign-in");
+    login.searchParams.set("next", pathname + request.nextUrl.search);
     return withCookies(response, NextResponse.redirect(login));
   }
 

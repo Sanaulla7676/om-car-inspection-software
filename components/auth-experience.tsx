@@ -60,7 +60,12 @@ export function AuthExperience({ mode }: { mode: AuthMode }) {
       });
       if (signInError) setError(signInError.message);
       else {
-        router.push("/dashboard");
+        const requestedPath = new URLSearchParams(window.location.search).get("next");
+        const safePath = requestedPath && requestedPath.startsWith("/") &&
+          !requestedPath.startsWith("//") && !requestedPath.includes("\\")
+          ? requestedPath
+          : "/dashboard";
+        router.push(safePath);
         router.refresh();
       }
     }
