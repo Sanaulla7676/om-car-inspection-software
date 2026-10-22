@@ -25,8 +25,19 @@
   <script>
     (function () {
       var target = "https://om-car-inspection-software.vercel.app";
-      var path = window.location.pathname.replace(/^\/om-car-inspection-software(?=\/|$)/, "");
-      if (!path || path === "/" || path === "/index.html") path = "/login";
+      var path = window.location.pathname || "/";
+      var isLocalFile = window.location.protocol === "file:" ||
+        /^\/[a-z]:\//i.test(path) ||
+        /(?:^|\/)(?:index|Software of Omkar Inspection)\.html$/i.test(path);
+
+      // Local desktop files must open the React application, not route a local
+      // C:\\ path through the production website.
+      if (isLocalFile || path === "/" || path === "/index.html") {
+        path = "/login";
+      } else {
+        path = path.replace(/^\/om-car-inspection-software(?=\/|$)/, "");
+        if (!path) path = "/login";
+      }
       window.location.replace(target + path + window.location.search + window.location.hash);
     })();
   </script>
