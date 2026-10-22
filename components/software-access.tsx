@@ -15,7 +15,7 @@ export function SoftwareAccess() {
             <h1 id="om-software-title">Your inspection software.<br /><em>Ready wherever you work.</em></h1>
             <p className="om-software-lead">Access the live vehicle inspection workspace from your desktop, tablet or phone. Record findings, attach photo evidence and prepare structured inspection reports online.</p>
             <div className="om-software-actions">
-              <Link className="om-software-primary" href="/login?next=%2Finspections%2Fnew">Open inspection software <ArrowRight size={17} /></Link>
+              <Link className="om-software-primary" href="/login?next=%2Fsoftware">Open inspection software <ArrowRight size={17} /></Link>
               <Link className="om-software-secondary" href="/admin"><ShieldCheck size={16} /> Admin portal</Link>
             </div>
             <p className="om-software-note"><LockKeyhole size={14} /> Staff and administrator access is protected by sign-in.</p>
@@ -42,7 +42,7 @@ export function SoftwareAccess() {
         </section>
         <section className="om-software-bottom-cta">
           <div><p className="om-software-eyebrow"><span /> START FROM ANY DEVICE</p><h2>Open the workspace and continue your inspection.</h2><p>The public homepage remains available at Home. Inspection records require the appropriate staff account.</p></div>
-          <Link className="om-software-primary" href="/login?next=%2Finspections%2Fnew">Sign in and start <ArrowRight size={17} /></Link>
+          <Link className="om-software-primary" href="/login?next=%2Fsoftware">Sign in and start <ArrowRight size={17} /></Link>
         </section>
       </main>
       <SiteFooter />
