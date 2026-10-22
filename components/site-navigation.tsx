@@ -6,6 +6,7 @@ import { ArrowRight, Menu, X, Search, UserRound, PhoneCall, MessageCircle } from
 import { useEffect, useState } from "react";
 
 const links = [
+  { label: "Home", href: "/" },
   { label: "Vehicle Inspections", href: "/services" },
   { label: "PDI Training", href: "/masterclass" },
   { label: "Reports & Evidence", href: "/services/inspection-report" },

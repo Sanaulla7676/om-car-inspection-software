@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,follow">
   <meta name="theme-color" content="#111111">
-  <meta http-equiv="refresh" content="0;url=https://om-car-inspection-software.vercel.app/">
+  <meta http-equiv="refresh" content="0;url=https://om-car-inspection-software.vercel.app/login">
   <title>OMKAR Car Inspection</title>
   <link rel="canonical" href="https://om-car-inspection-software.vercel.app/">
   <style>
@@ -26,7 +26,7 @@
     (function () {
       var target = "https://om-car-inspection-software.vercel.app";
       var path = window.location.pathname.replace(/^\/om-car-inspection-software(?=\/|$)/, "");
-      if (!path) path = "/";
+      if (!path || path === "/" || path === "/index.html") path = "/login";
       window.location.replace(target + path + window.location.search + window.location.hash);
     })();
   </script>
