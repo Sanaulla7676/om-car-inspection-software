@@ -60,12 +60,9 @@ export function AuthExperience({ mode }: { mode: AuthMode }) {
       });
       if (signInError) setError(signInError.message);
       else {
-        const requestedPath = new URLSearchParams(window.location.search).get("next");
-        const safePath = requestedPath && requestedPath.startsWith("/") &&
-          !requestedPath.startsWith("//") && !requestedPath.includes("\\")
-          ? requestedPath
-          : "/dashboard";
-        router.push(safePath);
+        const requestedPath = new URLSearchParams(window.location.search).get("next")?.split("?")[0];
+        if (requestedPath === "/inspections/new") router.push("/inspections/new");
+        else router.push("/dashboard");
         router.refresh();
       }
     }
