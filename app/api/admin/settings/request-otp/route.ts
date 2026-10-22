@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     const otp=String(randomInt(0,1_000_000)).padStart(6,"0");
     const saved=await adminRpc<{ok?:boolean;rate_limited?:boolean}>("otp-store",{session_hash:sessionHash,otp_hash:hashOtp(sessionHash,otp)});
     if(!saved.ok)return jsonNoStore({ok:false,error:saved.rate_limited?"Wait one minute before requesting another code.":"Could not create a verification code. Please retry."},saved.rate_limited?429:503);
-    const version=process.env.WHATSAPP_GRAPH_API_VERSION||"v23.0";
+    const version=process.env.WHATSAPP_GRAPH_API_VERSION||"v26.0";
     const endpoint="https://graph.facebook.com/"+version+"/"+encodeURIComponent(phoneNumberId)+"/messages";
     let sent=false;
     try {
