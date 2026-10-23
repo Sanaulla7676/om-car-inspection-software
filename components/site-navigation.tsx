@@ -9,7 +9,6 @@ const links = [
   { label: "Home", href: "/" },
   { label: "Vehicle Inspections", href: "/services" },
   { label: "PDI Training", href: "/masterclass" },
-  { label: "Reports & Evidence", href: "/services/inspection-report" },
   { label: "About", href: "/about" }
 ];
 
