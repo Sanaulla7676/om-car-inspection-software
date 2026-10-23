@@ -1198,7 +1198,7 @@ function startInspection(type){
 function newReport(){
  var hasContent=report.inspectionType||report.make||report.model||report.location||report.coverPhoto||report.items.some(isPartActive)||report.customer;
  if(hasContent && !confirm("Start a new inspection? The current draft will be replaced on this device."))return;
- report=freshReport();currentFilter="all";hasChosenInspectionType=false;renderAll();scheduleSave();window.scrollTo({top:0,behavior:"smooth"});
+ report=freshReport();currentFilter="all";hasChosenInspectionType=!!String(report.inspectionType||"").trim();renderAll();scheduleSave();window.scrollTo({top:0,behavior:"smooth"});
 }
 async function restoreDraft(){
  database=await openDatabase();
