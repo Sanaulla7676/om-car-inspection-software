@@ -3031,3 +3031,7 @@ button.lux-header-icon.omcar-search-toggle{font:inherit}
 .omcar-loading-logo{width:150px;height:74px;border-radius:12px;background:#fff;overflow:hidden;padding:8px;animation:none;box-shadow:0 8px 24px rgba(93,76,37,.12)}
 .omcar-loading-logo img{display:block;width:100%;height:100%;object-fit:contain}
 @media(max-width:640px){.omcar-workspace-logo{width:88px;max-height:36px}.omcar-loading-logo{width:124px;height:62px}}
+
+
+/* Admin-only workspace shortcut must never appear on the public hero. */
+.om-car-showcase__software-link{display:none!important;visibility:hidden!important;pointer-events:none!important}
