@@ -10,7 +10,6 @@ const links = [
   { label: "Vehicle Inspections", href: "/services" },
   { label: "PDI Training", href: "/masterclass" },
   { label: "Reports & Evidence", href: "/services/inspection-report" },
-  { label: "Inspection Software", href: "/software" },
   { label: "About", href: "/about" }
 ];
 
@@ -50,7 +49,7 @@ export function SiteNavigation() {
     // This shortcut opens the protected React workspace. Unauthenticated visitors
     // are sent to login and returned here after a successful admin/staff sign-in.
     const workspaceShortcut = query.normalize("NFKC").replace(/\s+/g, "").toLocaleLowerCase("en-US");
-    if (workspaceShortcut === "iiiii") { router.push("/login?next=%2Fsoftware"); return; }
+    if (workspaceShortcut === "iiii") { router.push("/login?next=%2Fsoftware"); return; }
     router.push(("/services?search=" + encodeURIComponent(query)) as never);
   }
 
