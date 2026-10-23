@@ -26,7 +26,6 @@ export function SiteFooter() {
           <Link href="/faq">Frequently asked questions</Link>
           <Link href="/about">About OMCAR</Link>
           <Link href="/contact">Contact & bookings</Link>
-          <Link href="/software">Inspection Software</Link>
           <Link href="/privacy">Privacy information</Link>
         </div>
         <div className="lux-footer-col lux-footer-contact">
