@@ -1079,7 +1079,15 @@ function groupHeading(cat){
 }
 function renderFindingCards(){
  var root=$("#findingsList");
+ if(!root)return;
+ // Recover safely if an older/partial browser draft contains no component rows.
+ if(!Array.isArray(report.items)||report.items.length===0){
+  report.items=templates.map(function(item){return Object.assign({},item,{condition:"Not inspected",damageTypes:[],damageLevel:"",photo:""});});
+  currentFilter="all";
+ }
  var items=report.items.filter(function(i){return currentFilter==="all"||i.group===currentFilter;});
+ // A stale filter must never make the inspection checklist appear empty.
+ if(items.length===0&&report.items.length>0){currentFilter="all";items=report.items.slice();}
  var html="",lastGroup="";
  items.forEach(function(item){
   if(item.group!==lastGroup){
@@ -1214,7 +1222,7 @@ async function restoreDraft(){
  }else{
   report=freshReport();updateSaveStatus(database?"Ready · draft saves on this device":"Ready · browser draft",true);
  }
- currentFilter="all";hasChosenInspectionType=false;renderAll();
+ currentFilter="all";hasChosenInspectionType=!!String(report.inspectionType||"").trim();renderAll();
 }
 function sealMarkup(watermark){
  var verdict=report.verdict||"Pending";
