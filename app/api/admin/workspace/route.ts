@@ -53,8 +53,9 @@ export async function GET() {
   });
 })();
 </script>`;
-    const enhancedHtml = /<\\/body\\s*>/i.test(html)
-      ? html.replace(/<\\/body\\s*>/i, inspectionNavigation + "</body>")
+    const bodyClose = html.toLowerCase().lastIndexOf("</body>");
+    const enhancedHtml = bodyClose >= 0
+      ? html.slice(0, bodyClose) + inspectionNavigation + html.slice(bodyClose)
       : html + inspectionNavigation;
     return new Response(enhancedHtml, {
       status: 200,
