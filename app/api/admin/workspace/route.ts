@@ -25,7 +25,38 @@ export async function GET() {
   try {
     workspaceHtmlPromise ??= readFile(join(process.cwd(), "private", "Software of OMCAR Inspection.html"), "utf8");
     const html = await workspaceHtmlPromise;
-    return new Response(html, {
+    // Bring inspectors directly to the per-component evidence checklist after they
+    // select an inspection type. The vehicle-details step remains available in the workflow rail.
+    const inspectionNavigation = `<script>
+(function(){
+  function focusInspectionParts(){
+    var target=document.querySelector('section[aria-labelledby="evidenceHeading"]');
+    if(!target)return;
+    var rail=document.getElementById("omcarWorkflowRail");
+    if(rail){
+      rail.querySelectorAll("[data-omcar-step]").forEach(function(button){
+        var active=button.dataset.omcarStep==="inspection";
+        button.classList.toggle("is-active",active);
+        if(active)button.setAttribute("aria-current","step");
+        else button.removeAttribute("aria-current");
+      });
+    }
+    target.scrollIntoView({behavior:"auto",block:"start"});
+  }
+  document.addEventListener("click",function(event){
+    if(event.target.closest("#launchScreen [data-start-type]")){
+      window.setTimeout(focusInspectionParts,180);
+    }
+    if(event.target.closest('#omcarWorkflowRail [data-omcar-step="inspection"]')){
+      window.setTimeout(focusInspectionParts,0);
+    }
+  });
+})();
+</script>`;
+    const enhancedHtml = /<\\/body\\s*>/i.test(html)
+      ? html.replace(/<\\/body\\s*>/i, inspectionNavigation + "</body>")
+      : html + inspectionNavigation;
+    return new Response(enhancedHtml, {
       status: 200,
       headers: {
         "Content-Type": "text/html; charset=utf-8",
