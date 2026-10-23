@@ -32,6 +32,9 @@ export async function GET() {
   function focusInspectionParts(){
     var target=document.querySelector('section[aria-labelledby="evidenceHeading"]');
     if(!target)return;
+    // Explicitly reveal this long panel; its height can keep intersection-based fades hidden.
+    target.classList.add("is-visible");
+    target.querySelectorAll(".finding-card").forEach(function(card){card.classList.add("is-visible");});
     var rail=document.getElementById("omcarWorkflowRail");
     if(rail){
       rail.querySelectorAll("[data-omcar-step]").forEach(function(button){
