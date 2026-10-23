@@ -45,7 +45,7 @@ export async function GET() {
   }
   document.addEventListener("click",function(event){
     if(event.target.closest("#launchScreen [data-start-type]")){
-      window.setTimeout(focusInspectionParts,180);
+      window.setTimeout(focusInspectionParts,650);
     }
     if(event.target.closest('#omcarWorkflowRail [data-omcar-step="inspection"]')){
       window.setTimeout(focusInspectionParts,0);
