@@ -80,7 +80,7 @@ export function SoftwareWorkspace({ loginId, accessType }: Props) {
       <section className="omcar-workspace-frame-wrap" aria-label="Inspection application">
         {frameState === "loading" && (
           <div className="omcar-workspace-loading" aria-live="polite">
-            <div className="omcar-loading-logo">OC</div>
+            <div className="omcar-loading-logo"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/a526dc36-b0a0-4787-bbc3-bed064b316c1.png" alt="" width={120} height={46} decoding="async" /></div>
             <div className="omcar-loading-track"><span /></div>
             <strong>Opening your inspection workspace</strong>
             <p>Loading the original OMCAR report builder securely.</p>
