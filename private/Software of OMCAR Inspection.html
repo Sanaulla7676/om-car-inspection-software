@@ -910,6 +910,20 @@ function buildLocalInspectionSummary(){
  if(String(report.generalNotes||"").trim())lines.push("INSPECTOR NOTES: "+String(report.generalNotes).trim());
  return capSummaryText(lines.join("\n"));
 }
+function inspectionSummaryFingerprint(){
+ var payload={
+  inspectionType:report.inspectionType,make:report.make,model:report.model,vehicleYear:report.vehicleYear,vehicleColor:report.vehicleColor,
+  registration:report.registration,inspector:report.inspector,verdict:report.verdict,score:report.score,scoreLabel:report.scoreLabel,
+  generalNotes:report.generalNotes,scope:report.scope,
+  items:(Array.isArray(report.items)?report.items:[]).map(function(item){return {
+   title:item.title,scope:item.scope,condition:item.condition,damageTypes:Array.isArray(item.damageTypes)?item.damageTypes:[],
+   damageLevel:item.damageLevel,levelUnit:item.levelUnit,description:item.description,notes:item.notes,score:item.score,photoAttached:!!item.photo
+  };})
+ };
+ var raw=JSON.stringify(payload),hash=2166136261;
+ for(var i=0;i<raw.length;i++){hash^=raw.charCodeAt(i);hash=Math.imul(hash,16777619);}
+ return (hash>>>0).toString(16);
+}
 function updateDescriptionCount(){
  var field=$("#generatedDescription"),counter=$("#descriptionCharCount");
  if(field&&counter)counter.textContent=String(field.value.length)+" / 800 characters";
@@ -918,7 +932,7 @@ async function generateInspectionDescription(quiet){
  var button=$("#generateDescriptionBtn"),status=$("#descriptionStatus");
  if(button){button.disabled=true;button.textContent="Generating description…";}
  if(status)status.textContent="Reviewing the recorded checklist, condition labels and inspector notes…";
- var summary="",source="local";
+ var summary="",source="local",inputFingerprint=inspectionSummaryFingerprint();
  try{
   var payload={report:{
    inspectionType:report.inspectionType,make:report.make,model:report.model,vehicleYear:report.vehicleYear,vehicleColor:report.vehicleColor,
@@ -926,7 +940,7 @@ async function generateInspectionDescription(quiet){
    generalNotes:report.generalNotes,scope:report.scope,
    items:(Array.isArray(report.items)?report.items:[]).map(function(item){return {
     title:item.title,scope:item.scope,condition:item.condition,damageTypes:Array.isArray(item.damageTypes)?item.damageTypes:[],
-    damageLevel:item.damageLevel,description:item.description,notes:item.notes,score:item.score,photoAttached:!!item.photo
+    damageLevel:item.damageLevel,levelUnit:item.levelUnit,description:item.description,notes:item.notes,score:item.score,photoAttached:!!item.photo
    };})
   }};
   var response=await fetch("/api/admin/workspace/summary",{method:"POST",credentials:"same-origin",cache:"no-store",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
@@ -936,6 +950,7 @@ async function generateInspectionDescription(quiet){
   summary=capSummaryText(data.summary);source=data.source==="ai"?"ai":"deterministic";
  }catch(e){summary=buildLocalInspectionSummary();source="local";}
  report.generatedDescription=summary;
+ report.generatedDescriptionFor=inputFingerprint;
  var field=$("#generatedDescription");if(field)field.value=summary;
  updateDescriptionCount();scheduleSave();
  if(status)status.textContent=source==="ai"?"AI description generated from the recorded inspection. Review before PDF export.":"A summary was created from the recorded entries, but the AI service was unavailable. Review before PDF export.";
@@ -955,7 +970,7 @@ function generatePrintReport(){
 }
 async function doPrint(){
  try{
-  await generateInspectionDescription(true);
+  if(!String(report.generatedDescription||"").trim()||report.generatedDescriptionFor!==inspectionSummaryFingerprint())await generateInspectionDescription(true);
   await persistDraft();
   generatePrintReport();
   showToast("Print dialog opened - choose Save as PDF");
@@ -1097,7 +1112,7 @@ groupMeta = {
 };
 function freshReport(){
  var date=isoDate();
- return {schemaVersion:2,inspectionType:"",make:"",model:"",vehicleYear:"",vehicleColor:"",vehicleVariant:"",registration:"",chassis:"",odometer:"",customer:"",location:"",date:date,time:"",reference:makeReference(date),companyContact:"8880339999",inspector:"",verdict:"Pending",score:"",scoreLabel:"",scope:"Exterior and interior visual inspection. Photos are optional for each component. Record only observed conditions, available evidence, and measurements actually taken. This report does not establish hidden damage, repair history, factory tolerance, mechanical condition or roadworthiness unless separately checked.",generalNotes:"",generatedDescription:"",coverPhoto:"",items:templates.map(function(x){return Object.assign({},x,{damageTypes:[]});})};
+ return {schemaVersion:2,inspectionType:"",make:"",model:"",vehicleYear:"",vehicleColor:"",vehicleVariant:"",registration:"",chassis:"",odometer:"",customer:"",location:"",date:date,time:"",reference:makeReference(date),companyContact:"8880339999",inspector:"",verdict:"Pending",score:"",scoreLabel:"",scope:"Exterior and interior visual inspection. Photos are optional for each component. Record only observed conditions, available evidence, and measurements actually taken. This report does not establish hidden damage, repair history, factory tolerance, mechanical condition or roadworthiness unless separately checked.",generalNotes:"",generatedDescription:"",generatedDescriptionFor:"",coverPhoto:"",items:templates.map(function(x){return Object.assign({},x,{damageTypes:[]});})};
 }
 function statusText(v){
  if(v==="Passed" || v==="Accepted")return "PASSED";
