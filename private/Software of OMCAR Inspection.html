@@ -327,6 +327,14 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 @media(prefers-reduced-motion:reduce){.omcar-reveal,.omcar-card-motion,.finding-card,.metric,.photo-preview img,.cover-preview img,.launch-screen.open .launch-card,.launch-screen.open .launch-option{opacity:1!important;transform:none!important;animation:none!important;transition:none!important}}
 @media print{.omcar-workflow-rail{display:none!important}.omcar-reveal,.omcar-card-motion{opacity:1!important;transform:none!important;transition:none!important}}
 
+
+/* Final summary editor and PDF presentation */
+.description-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:9px}
+.description-actions .btn{min-height:40px}
+#descriptionStatus{display:block;margin:6px 0 0;line-height:1.45}
+#generateDescriptionBtn:disabled{opacity:.68;cursor:wait}
+.pdf-ai-summary{position:relative;z-index:1;border:1px solid #cbd4dc;border-left:3px solid #d8ae4e;border-radius:2mm;padding:3mm 3.5mm;margin:3.5mm 0 4mm;background:#fbfcfd;font-size:8pt;line-height:1.45;white-space:pre-line;overflow-wrap:anywhere}
+.pdf-ai-summary h3{font-size:9pt;letter-spacing:.04em;margin:0 0 2mm;color:#172b3d}
 </style>
 </head>
 <body>
@@ -504,6 +512,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
     <div class="field"><label for="scoreLabel">Score label (optional)</label><input id="scoreLabel" data-field="scoreLabel" placeholder="e.g. Exterior condition only"></div>
     <div class="field full"><label for="scope">Inspection scope and limitations</label><textarea id="scope" data-field="scope" rows="3">Photo-based visual observations only. Photos do not establish hidden damage, repair or accident history, factory panel-gap tolerances, mechanical condition, or roadworthiness unless those checks were separately performed.</textarea><span class="hint">This wording is included in the PDF. Edit it to match the checks actually performed.</span></div>
     <div class="field full"><label for="generalNotes">Additional inspector notes (optional)</label><textarea id="generalNotes" data-field="generalNotes" rows="3" placeholder="Add recommendations, next steps, or context that should appear in the report."></textarea></div>
+    <div class="field full"><label for="generatedDescription">Final inspection description (maximum 800 characters)</label><textarea id="generatedDescription" data-field="generatedDescription" rows="5" maxlength="800" placeholder="Generate a plain-English summary from the inspector's recorded results, issues and notes."></textarea><div class="description-actions"><button class="btn primary" id="generateDescriptionBtn" type="button">Generate description with AI</button><span id="descriptionCharCount" class="hint" aria-live="polite">0 / 800 characters</span></div><p id="descriptionStatus" class="hint">The description uses only the recorded inspection results. Review it before generating the PDF.</p></div>
    </div>
    <div class="assessment-totals" id="assessmentTotals"></div>
    <p class="score-note">Damage points and evaluation grades are calculated from the damage types and levels selected, using the bands visible in your reference sheet. The inspector must still choose Passed or Rejected; the result is not automatically decided by the score.</p>
@@ -873,6 +882,68 @@ function evidencePage(group,pageNo){
  var grid="pdf-evidence-grid"+(items.length===1?" single":"");
  return '<section class="pdf-page pdf-additional-page">'+pdfTopline()+'<p class="pdf-section-kicker">'+esc(group.meta.kicker)+'</p><h2 class="pdf-heading">'+esc(group.meta.title)+'</h2><p class="pdf-evidence-intro">'+esc(intro)+'</p><div class="'+grid+'">'+items.map(evidenceCard).join("")+'</div>'+sealMarkup(true)+pdfFooter(pageNo)+'</section>';
 }
+
+function capSummaryText(value){
+ var text=String(value||"").replace(/\r/g,"").replace(/[ \t]+\n/g,"\n").trim();
+ if(text.length<=800)return text;
+ var prefix=text.slice(0,800),breakAt=prefix.lastIndexOf("\n");
+ if(breakAt>=560)return prefix.slice(0,breakAt).trim();
+ var sentence=prefix.lastIndexOf(". ");
+ if(sentence>=560)return prefix.slice(0,sentence+1).trim();
+ return prefix.slice(0,797).trimEnd()+"...";
+}
+function buildLocalInspectionSummary(){
+ var items=Array.isArray(report.items)?report.items:[];
+ var good=items.filter(function(i){return ["No visible damage","Pass"].indexOf(String(i.condition||""))>=0;});
+ var issues=items.filter(function(i){return ["Damage found","Fail","Advisory"].indexOf(String(i.condition||""))>=0;});
+ var unchecked=items.filter(function(i){return !i.condition||["Not inspected","Not assessed"].indexOf(String(i.condition))>=0;});
+ var vehicle=[String(report.make||"").trim(),String(report.model||"").trim()].filter(Boolean).join(" ")||"Vehicle";
+ var verdict=String(report.verdict||"Pending").trim();
+ var lines=["RESULT: "+verdict+" for "+vehicle+"."];
+ if(good.length)lines.push("GOOD CONDITION: "+good.slice(0,4).map(function(i){return String(i.title||"part");}).join(", ")+(good.length>4?" and "+(good.length-4)+" more":"")+" marked with no visible damage.");
+ if(issues.length)lines.push("ISSUES FOUND: "+issues.slice(0,3).map(function(i){return String(i.title||"Part")+(partAssessment(i)?" ("+partAssessment(i)+")":"");}).join("; ")+(issues.length>3?"; plus "+(issues.length-3)+" more issue(s)":"")+".");
+ else lines.push("ISSUES FOUND: No items were marked as damaged in the recorded checklist.");
+ if(unchecked.length)lines.push("NOT INSPECTED: "+unchecked.length+" component(s) have no completed result. A missing result does not mean the part passed.");
+ if(verdict==="Rejected")lines.push("REASON: Rejected was selected by the inspector. The explanation is limited to recorded issues above.");
+ else if(verdict==="Passed")lines.push("REASON: Passed was selected by the inspector."+(issues.length?" Recorded issues remain; confirm they are acceptable before release.":unchecked.length?" Some parts remain unchecked; verify them before relying on this result.":" All listed parts have recorded no-visible-damage results."));
+ else lines.push("REASON: No final pass/reject result has been selected.");
+ if(String(report.generalNotes||"").trim())lines.push("INSPECTOR NOTES: "+String(report.generalNotes).trim());
+ return capSummaryText(lines.join("\n"));
+}
+function updateDescriptionCount(){
+ var field=$("#generatedDescription"),counter=$("#descriptionCharCount");
+ if(field&&counter)counter.textContent=String(field.value.length)+" / 800 characters";
+}
+async function generateInspectionDescription(quiet){
+ var button=$("#generateDescriptionBtn"),status=$("#descriptionStatus");
+ if(button){button.disabled=true;button.textContent="Generating description…";}
+ if(status)status.textContent="Reviewing the recorded checklist, condition labels and inspector notes…";
+ var summary="",source="local";
+ try{
+  var payload={report:{
+   inspectionType:report.inspectionType,make:report.make,model:report.model,vehicleYear:report.vehicleYear,vehicleColor:report.vehicleColor,
+   registration:report.registration,inspector:report.inspector,verdict:report.verdict,score:report.score,scoreLabel:report.scoreLabel,
+   generalNotes:report.generalNotes,scope:report.scope,
+   items:(Array.isArray(report.items)?report.items:[]).map(function(item){return {
+    title:item.title,scope:item.scope,condition:item.condition,damageTypes:Array.isArray(item.damageTypes)?item.damageTypes:[],
+    damageLevel:item.damageLevel,description:item.description,notes:item.notes,score:item.score,photoAttached:!!item.photo
+   };})
+  }};
+  var response=await fetch("/api/admin/workspace/summary",{method:"POST",credentials:"same-origin",cache:"no-store",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+  if(!response.ok)throw new Error("Summary service unavailable");
+  var data=await response.json();
+  if(!data||typeof data.summary!=="string"||!data.summary.trim())throw new Error("No summary returned");
+  summary=capSummaryText(data.summary);source=data.source==="ai"?"ai":"deterministic";
+ }catch(e){summary=buildLocalInspectionSummary();source="local";}
+ report.generatedDescription=summary;
+ var field=$("#generatedDescription");if(field)field.value=summary;
+ updateDescriptionCount();scheduleSave();
+ if(status)status.textContent=source==="ai"?"AI description generated from the recorded inspection. Review before PDF export.":"A summary was created from the recorded entries, but the AI service was unavailable. Review before PDF export.";
+ if(button){button.disabled=false;button.textContent="Regenerate description";}
+ if(!quiet)showToast(source==="ai"?"Inspection description generated":"Inspection summary generated from recorded entries");
+ return summary;
+}
+
 function generatePrintReport(){
  var evidence=groupItems();
  var summaries=summaryPartPages();
@@ -882,11 +953,14 @@ function generatePrintReport(){
  $("#printReport").innerHTML=pages.join("");
  $("#printReport").setAttribute("aria-hidden","false");
 }
-function doPrint(){
- persistDraft();
- generatePrintReport();
- showToast("Print dialog opened - choose Save as PDF");
- setTimeout(function(){window.print();},160);
+async function doPrint(){
+ try{
+  await generateInspectionDescription(true);
+  await persistDraft();
+  generatePrintReport();
+  showToast("Print dialog opened - choose Save as PDF");
+  setTimeout(function(){window.print();},160);
+ }catch(e){showToast("Could not prepare the report. Please retry.");}
 }
 function exportBackup(){
  var blob=new Blob([JSON.stringify(report,null,2)],{type:"application/json"});
@@ -1023,7 +1097,7 @@ groupMeta = {
 };
 function freshReport(){
  var date=isoDate();
- return {schemaVersion:2,inspectionType:"",make:"",model:"",vehicleYear:"",vehicleColor:"",vehicleVariant:"",registration:"",chassis:"",odometer:"",customer:"",location:"",date:date,time:"",reference:makeReference(date),companyContact:"8880339999",inspector:"",verdict:"Pending",score:"",scoreLabel:"",scope:"Exterior and interior visual inspection. Photos are optional for each component. Record only observed conditions, available evidence, and measurements actually taken. This report does not establish hidden damage, repair history, factory tolerance, mechanical condition or roadworthiness unless separately checked.",generalNotes:"",coverPhoto:"",items:templates.map(function(x){return Object.assign({},x,{damageTypes:[]});})};
+ return {schemaVersion:2,inspectionType:"",make:"",model:"",vehicleYear:"",vehicleColor:"",vehicleVariant:"",registration:"",chassis:"",odometer:"",customer:"",location:"",date:date,time:"",reference:makeReference(date),companyContact:"8880339999",inspector:"",verdict:"Pending",score:"",scoreLabel:"",scope:"Exterior and interior visual inspection. Photos are optional for each component. Record only observed conditions, available evidence, and measurements actually taken. This report does not establish hidden damage, repair history, factory tolerance, mechanical condition or roadworthiness unless separately checked.",generalNotes:"",generatedDescription:"",coverPhoto:"",items:templates.map(function(x){return Object.assign({},x,{damageTypes:[]});})};
 }
 function statusText(v){
  if(v==="Passed" || v==="Accepted")return "PASSED";
@@ -1158,6 +1232,7 @@ function renderAll(){
  renderCoverPreview();
  renderFindingCards();
  updateMetrics();
+ updateDescriptionCount();
  $("#appLogo").src=OMCAR_LOGO_SRC;
  $("#launchScreen .launch-brand img").src=OMCAR_LOGO_SRC;
  var overlay=$("#launchScreen");
@@ -1179,6 +1254,7 @@ function fieldChange(e){
  var target=e.target;
  if(target.matches("[data-field]")){
   var key=target.dataset.field;report[key]=target.value;
+  if(key==="generatedDescription")updateDescriptionCount();
   if(key==="date" && (!report.reference || report.reference===makeReference(report._lastDate))){report.reference=makeReference(target.value);var ref=$("#reference");if(ref)ref.value=report.reference;}
   report._lastDate=target.value;updateMetrics();scheduleSave();
  }else if(target.matches("[data-item-field]")){
@@ -1257,7 +1333,10 @@ function overviewPage(){
  var totals='<div class="pdf-score-strip">'+box("Exterior evaluation",ex)+box("Interior evaluation",inn)+'</div>';
  var scope='<div class="pdf-scope"><strong>Damage classification used by inspectors</strong>Paint/surface damage means the finish or surface is affected; deformation means a part has changed shape; a cut, crack, hole or missing component is recorded in descriptive terms. Exterior extent bands: 0-2 inches, 2-6 inches, and 6 inches or more. Interior extent bands: up to 1/4 of a part, up to 1/2, and over 1/2. A windshield crack is treated as the maximum crack classification in the supplied standard.<br><br><strong>Scope and limitations</strong>'+esc(report.scope||"No scope statement provided.")+(report.generalNotes?'<br><br><strong>Additional inspector notes</strong>'+esc(report.generalNotes):"")+'</div>';
  return '<section class="pdf-page">'+pdfTopline()+'<p class="pdf-section-kicker">INSPECTION OVERVIEW</p><h2 class="pdf-heading">Vehicle and customer details</h2><p class="pdf-intro">This '+esc(report.inspectionType||"vehicle")+' report lists each component, its recorded result, any damage description, and optional supporting photo evidence.</p>'+
- '<table class="pdf-detail-table"><tbody>'+detailsRows()+'</tbody></table>'+totals+scope+pdfFooter(2)+'</section>';
+ var writtenSummary=String(report.generatedDescription||"").trim();
+ var summaryBox=writtenSummary?'<div class="pdf-ai-summary"><h3>FINAL INSPECTION DESCRIPTION</h3><div>'+esc(writtenSummary)+'</div></div>':"";
+ return '<section class="pdf-page">'+pdfTopline()+'<p class="pdf-section-kicker">INSPECTION OVERVIEW</p><h2 class="pdf-heading">Vehicle and customer details</h2><p class="pdf-intro">This '+esc(report.inspectionType||"vehicle")+' report lists each component, its recorded result, any damage description, and optional supporting photo evidence.</p>'+
+ '<table class="pdf-detail-table"><tbody>'+detailsRows()+'</tbody></table>'+summaryBox+totals+scope+pdfFooter(2)+'</section>';
 }
 function partSummaryDescription(item){
  var base=partConditionText(item);
@@ -1372,6 +1451,7 @@ function bindEvents(){
   if(clear){var item=itemById(clear.dataset.clearPhoto);if(item){item.photo="";renderFindingCards();scheduleSave();}return;}
   var remove=e.target.closest("[data-remove-finding]");if(remove)removeFinding(remove.dataset.removeFinding);
  });
+ $("#generateDescriptionBtn").addEventListener("click",function(){generateInspectionDescription(false);});
  $("#addFindingBtn").addEventListener("click",addFinding);
  $("#clearCover").addEventListener("click",function(){report.coverPhoto="";renderCoverPreview();scheduleSave();});
  ["printTopBtn","printBottomBtn","printMobileBtn"].forEach(function(id){var el=$("#"+id);if(el)el.addEventListener("click",doPrint);});
