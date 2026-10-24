@@ -14,6 +14,7 @@ type InspectionItem = {
   notes?: string;
   score?: string | number;
   photoAttached?: boolean;
+  levelUnit?: string;
 };
 
 type ReportInput = {
@@ -147,8 +148,19 @@ export async function POST(request: Request) {
                 part: shortText(item.title, 100),
                 category: shortText(item.scope, 30),
                 status: shortText(item.condition, 40) || "Not inspected",
-                damageTypes: Array.isArray(item.damageTypes) ? item.damageTypes.slice(0, 3).map((code) => shortText(code, 4)) : [],
-                extent: shortText(item.damageLevel, 20),
+                damageTypes: Array.isArray(item.damageTypes) ? item.damageTypes.slice(0, 3).map((code) => ({
+                  P: "paint or surface damage",
+                  B: "panel deformation or change in shape",
+                  X: "cut, crack, hole or missing part",
+                }[code] || shortText(code, 4))) : [],
+                extent: (() => {
+                  const level = shortText(item.damageLevel, 5);
+                  if (!level) return "";
+                  if (item.scope === "Exterior" || item.levelUnit === "inch") {
+                    return level === "1" ? "0-2 inches" : level === "2" ? "2-6 inches" : level === "3" ? "6 inches or more" : "";
+                  }
+                  return level === "1" ? "up to one-quarter of the part" : level === "2" ? "up to one-half of the part" : level === "3" ? "more than one-half of the part" : "";
+                })(),
                 observation: shortText(item.description, 180),
                 inspectorNotes: shortText(item.notes, 180),
                 itemScore: shortText(item.score, 12),
