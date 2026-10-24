@@ -3035,3 +3035,9 @@ button.lux-header-icon.omcar-search-toggle{font:inherit}
 
 /* Admin-only workspace shortcut must never appear on the public hero. */
 .om-car-showcase__software-link{display:none!important;visibility:hidden!important;pointer-events:none!important}
+
+
+/* Remove the legacy admin-only workspace button from every public homepage variant. */
+.om-car-showcase__software-link,
+.om-car-showcase__actions a[href="/software"],
+.om-car-showcase__actions a[href^="/login?next=%2Fsoftware"]{display:none!important;visibility:hidden!important;pointer-events:none!important}
