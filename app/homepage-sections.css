@@ -2187,3 +2187,27 @@ body .om17-home .om-car-showcase__car--incoming {
     animation: none !important;
   }
 }
+
+
+/* Platform height correction: bring the deck up to the tyre contact line. */
+body .om17-home .om-car-showcase .om-car-showcase__platform {
+  bottom: 10.6% !important;
+}
+
+@media (max-width: 900px) {
+  body .om17-home .om-car-showcase .om-car-showcase__platform {
+    bottom: 10.8% !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body .om17-home .om-car-showcase .om-car-showcase__platform {
+    bottom: 8.2% !important;
+  }
+}
+
+@media (max-width: 390px) {
+  body .om17-home .om-car-showcase .om-car-showcase__platform {
+    bottom: 8.4% !important;
+  }
+}
