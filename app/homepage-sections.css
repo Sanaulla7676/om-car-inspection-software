@@ -2239,3 +2239,27 @@ body .om17-home .om-car-showcase .om-car-showcase__car {
     bottom: 13.1% !important;
   }
 }
+
+
+/* Close the remaining tyre gap with a stronger platform lift. */
+body .om17-home .om-car-showcase .om-car-showcase__platform {
+  bottom: 23.5% !important;
+}
+
+@media (max-width: 900px) {
+  body .om17-home .om-car-showcase .om-car-showcase__platform {
+    bottom: 25.5% !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body .om17-home .om-car-showcase .om-car-showcase__platform {
+    bottom: 18% !important;
+  }
+}
+
+@media (max-width: 390px) {
+  body .om17-home .om-car-showcase .om-car-showcase__platform {
+    bottom: 18.3% !important;
+  }
+}
