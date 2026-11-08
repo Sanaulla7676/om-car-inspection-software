@@ -151,6 +151,17 @@ export default function PublicLanding() {
         {/* 02 / Hero: the main value proposition and next action */}
         <HomeHero />
 
+        {/* 02A / Full-width OMCAR promo animation, directly after the hero */}
+        <section className="om17-promo-animation" aria-label="OMCAR car inspection animation">
+          <iframe
+            title="OMCAR 15-second car inspection animation"
+            src="/omcar-promo-animation.html"
+            loading="lazy"
+            allow="autoplay"
+            scrolling="no"
+          />
+        </section>
+
         {/* Animated PDI pathways sit directly beside the hero journey. */}
         <PdiPathwayHub />
         <RoadJourney />
