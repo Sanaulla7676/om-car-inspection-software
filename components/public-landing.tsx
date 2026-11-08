@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import {
   ArrowDownRight,
@@ -139,6 +140,22 @@ function openWhatsAppEnquiry(event: FormEvent<HTMLFormElement>) {
 }
 
 export default function PublicLanding() {
+  const promoSectionRef = useRef<HTMLElement | null>(null);
+  const [promoVisible, setPromoVisible] = useState(false);
+
+  useEffect(() => {
+    const section = promoSectionRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setPromoVisible(Boolean(entry?.isIntersecting)),
+      { threshold: 0.25 }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="marketing-site om-editorial-home om17-home">
       <HeroIntro />
@@ -152,14 +169,19 @@ export default function PublicLanding() {
         <HomeHero />
 
         {/* 02A / Full-width OMCAR promo animation, directly after the hero */}
-        <section className="om17-promo-animation" aria-label="OMCAR car inspection animation">
-          <iframe
-            title="OMCAR 15-second car inspection animation"
-            src="/omcar-promo-animation.html"
-            loading="lazy"
-            allow="autoplay"
-            scrolling="no"
-          />
+        <section
+          ref={promoSectionRef}
+          className="om17-promo-animation"
+          aria-label="OMCAR car inspection animation"
+        >
+          {promoVisible ? (
+            <iframe
+              title="OMCAR 15-second car inspection animation"
+              src="/omcar-promo-animation.html"
+              allow="autoplay"
+              scrolling="no"
+            />
+          ) : null}
         </section>
 
         {/* Animated PDI pathways sit directly beside the hero journey. */}
