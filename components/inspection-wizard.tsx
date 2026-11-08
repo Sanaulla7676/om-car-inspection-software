@@ -10,10 +10,10 @@ import { conditionOptionsFor, isIssueCode, normalizeConditionCode, normalizeRoad
 import type { InspectionDraft, Severity } from "@/lib/types";
 import { createDefaultValuation } from "@/lib/valuation";
 import { ValuationSheet } from "@/components/valuation-sheet";
-import { VehicleModelViewer, type VehiclePartPick } from "@/components/car-model-viewer";
+import { VehicleModelViewer, type VehiclePartPick } from "@/components/vehicle-model-viewer";
 
-type Stage = "Car" | "Exterior" | "Interior" | "Mechanical" | "Road Test" | "Valuation" | "Evidence" | "Review";
-const stages: Stage[] = ["Car","Exterior","Interior","Mechanical","Road Test","Valuation","Evidence","Review"];
+type Stage = "Vehicle" | "Exterior" | "Interior" | "Mechanical" | "Road Test" | "Valuation" | "Evidence" | "Review";
+const stages: Stage[] = ["Vehicle","Exterior","Interior","Mechanical","Road Test","Valuation","Evidence","Review"];
 const sectionItems: Record<string,string[]> = {
   Exterior:["Front Spoiler","Front Bumper","Grille","Bonnet Hood","Front Fender L","Front Fender R","Rear Fender L","Rear Fender R","Roof","Door FL","Door FR","Door RL","Door RR","Rocker Panel L","Rocker Panel R","Quarter Panel L","Quarter Panel R","Trunk Hood","Hood","End Panel","Rear Bumper","Rear Spoiler","Mud Flap L","Mud Flap R","Windshield","Rear Windshield","Side Window L","Side Window R","Door Handle L","Door Handle R","Side Mirror L","Side Mirror R","Headlights","Fog lamps","Tail lamps","Number plates","Parking sensors","Reverse camera","Panel gaps","ORVM left","ORVM right"],
   Interior:["Instrument cluster","Warning lights","Infotainment","AC controls","Steering controls","Horn","Airbag indicator","USB / charging ports","Speakers","Driver seat","Passenger seat","Rear seats","Seat belts","Upholstery","Door trims","Dashboard","Instrument Panel","Steering Wheel","Front Left Seat","Front Right Seat","Rear Seat","Third Seat","Front Left Door Trim","Front Right Door Trim","Rear Left Door Trim","Rear Right Door Trim","Carpet","Roof Lining","Back Door Trim","Center Console","Boot Trim","Center console","Boot interior"],
@@ -356,12 +356,12 @@ async function mergeReportPdf(){
   const titles:Record<Stage,string>={Vehicle:"Identify the car",Exterior:"Check the exterior",Interior:"Check the cabin",Mechanical:"Check mechanical systems","Road Test":"Run the road test",Evidence:"Build the evidence pack",Valuation:"Complete legacy valuation sheet",Review:"Preflight and publish"};
 
   return <div className="om-wiz">
-    <header className="om-wiz-head"><div><span>0{stage+1} / 08 • {role||"INSPECTOR"}</span><h1>{titles[name]}</h1><p>{name==="Car"?"Enter identity once. Everything else stays attached.":"Tap the normal state. Exceptions reveal the detail controls."}</p></div><div className="om-wiz-pills"><span className={online?"online":""}>{online?<Wifi size={13}/>:<CloudOff size={13}/>} {online?"Online":"Offline"}</span><span><Cloud size={13}/> {saving?"Syncing":"Autosave"}</span></div></header>
-    <nav className="om-wiz-steps">{stages.map((s,i)=><button className={i===stage?"active":i<stage?"done":""} key={s} onClick={()=>void jumpToStage(i)}><b>{i<stage?<Check size={12}/>:i+1}</b><span>{s}</span></button>)}</nav>
+    <header className="om-wiz-head"><div><span>0{stage+1} / 08 • {role||"INSPECTOR"}</span><h1>{titles[name]}</h1><p>{name==="Vehicle"?"Enter identity once. Everything else stays attached.":"Tap the normal state. Exceptions reveal the detail controls."}</p></div><div className="om-wiz-pills"><span className={online?"online":""}>{online?<Wifi size={13}/>:<CloudOff size={13}/>} {online?"Online":"Offline"}</span><span><Cloud size={13}/> {saving?"Syncing":"Autosave"}</span></div></header>
+    <nav className="om-wiz-steps">{stages.map((s,i)=><button className={i===stage?"active":i<stage?"done":""} key={s} onClick={()=>void jumpToStage(i)}><b>{i<stage?<Check size={12}/>:i+1}</b><span>{s === "Vehicle" ? "Car" : s}</span></button>)}</nav>
 
     <div className="om-wiz-grid"><main>
       <VehicleModelViewer section={name} onApply={applyDiagramSelection}/>
-      {name==="Car"&&<VehicleStage draft={draft} updateVehicle={updateVehicle} updateDraft={updateDraft} upload={uploadEvidence} lookup={lookupVehicle} lookupBusy={lookupBusy} lookupMessage={lookupMessage} lookupSource={lookupSource}/>}
+      {name==="Vehicle"&&<VehicleStage draft={draft} updateVehicle={updateVehicle} updateDraft={updateDraft} upload={uploadEvidence} lookup={lookupVehicle} lookupBusy={lookupBusy} lookupMessage={lookupMessage} lookupSource={lookupSource}/>}
       {(name==="Exterior"||name==="Interior")&&<Checklist section={name} draft={draft} updateItem={updateItem} upload={uploadEvidence}/>}
       {name==="Mechanical"&&<Mechanical tab={mechTab} setTab={setMechTab} draft={draft} updateItem={updateItem} upload={uploadEvidence}/>}
       {name==="Road Test"&&<RoadTest draft={draft} updateDraft={updateDraft}/>}
