@@ -10,10 +10,10 @@ import { conditionOptionsFor, isIssueCode, normalizeConditionCode, normalizeRoad
 import type { InspectionDraft, Severity } from "@/lib/types";
 import { createDefaultValuation } from "@/lib/valuation";
 import { ValuationSheet } from "@/components/valuation-sheet";
-import { VehicleModelViewer, type VehiclePartPick } from "@/components/vehicle-model-viewer";
+import { VehicleModelViewer, type VehiclePartPick } from "@/components/car-model-viewer";
 
-type Stage = "Vehicle" | "Exterior" | "Interior" | "Mechanical" | "Road Test" | "Valuation" | "Evidence" | "Review";
-const stages: Stage[] = ["Vehicle","Exterior","Interior","Mechanical","Road Test","Valuation","Evidence","Review"];
+type Stage = "Car" | "Exterior" | "Interior" | "Mechanical" | "Road Test" | "Valuation" | "Evidence" | "Review";
+const stages: Stage[] = ["Car","Exterior","Interior","Mechanical","Road Test","Valuation","Evidence","Review"];
 const sectionItems: Record<string,string[]> = {
   Exterior:["Front Spoiler","Front Bumper","Grille","Bonnet Hood","Front Fender L","Front Fender R","Rear Fender L","Rear Fender R","Roof","Door FL","Door FR","Door RL","Door RR","Rocker Panel L","Rocker Panel R","Quarter Panel L","Quarter Panel R","Trunk Hood","Hood","End Panel","Rear Bumper","Rear Spoiler","Mud Flap L","Mud Flap R","Windshield","Rear Windshield","Side Window L","Side Window R","Door Handle L","Door Handle R","Side Mirror L","Side Mirror R","Headlights","Fog lamps","Tail lamps","Number plates","Parking sensors","Reverse camera","Panel gaps","ORVM left","ORVM right"],
   Interior:["Instrument cluster","Warning lights","Infotainment","AC controls","Steering controls","Horn","Airbag indicator","USB / charging ports","Speakers","Driver seat","Passenger seat","Rear seats","Seat belts","Upholstery","Door trims","Dashboard","Instrument Panel","Steering Wheel","Front Left Seat","Front Right Seat","Rear Seat","Third Seat","Front Left Door Trim","Front Right Door Trim","Rear Left Door Trim","Rear Right Door Trim","Carpet","Roof Lining","Back Door Trim","Center Console","Boot Trim","Center console","Boot interior"],
@@ -104,7 +104,7 @@ export function InspectionWizard() {
   const totalItems=useMemo(()=>Object.values(sectionItems).flat().length,[]);
   const reviewed=useMemo(()=>Object.values(draft.sections).flatMap(s=>Object.values(s)).filter(v=>v.status!=="NT").length,[draft.sections]);
   const evidenceSynced=draft.photos.some(p=>p.mediaType==="image"||!p.mediaType)&&draft.photos.every(p=>Boolean(p.path));
-  const readinessRules=[{label:"Vehicle identity",done:Boolean(draft.vehicle.registration.trim())},{label:"Checklist reviewed",done:reviewed>=totalItems-1},{label:"Evidence captured",done:draft.photos.filter(p=>Boolean(p.path)&&(p.mediaType==="image"||!p.mediaType)).length>=4},{label:"All evidence synced",done:evidenceSynced},{label:"Recommendation ready",done:Boolean(recommendation)},{label:"Reviewer sign-off",done:signed}];
+  const readinessRules=[{label:"Car identity",done:Boolean(draft.vehicle.registration.trim())},{label:"Checklist reviewed",done:reviewed>=totalItems-1},{label:"Evidence captured",done:draft.photos.filter(p=>Boolean(p.path)&&(p.mediaType==="image"||!p.mediaType)).length>=4},{label:"All evidence synced",done:evidenceSynced},{label:"Recommendation ready",done:Boolean(recommendation)},{label:"Reviewer sign-off",done:signed}];
   const readiness=Math.round(readinessRules.filter(x=>x.done).length/readinessRules.length*100),canFinalize=readiness>=80&&Boolean(draft.vehicle.registration.trim())&&evidenceSynced;
 
   function updateDraft(p:Partial<InspectionDraft>){setDraft(d=>({...d,...p,updatedAt:new Date().toISOString()}))}
@@ -282,18 +282,18 @@ export function InspectionWizard() {
   const chassis=draft.vehicle.vin.trim().toUpperCase().replace(/\\s+/g,"");
   const engine=draft.vehicle.engineNumber.trim().toUpperCase().replace(/\\s+/g,"");
   if(!chassis){setLookupMessage("Enter the chassis / VIN first.");return}
-  setLookupBusy(true);setLookupMessage("Verifying vehicle…");setLookupSource("");
+  setLookupBusy(true);setLookupMessage("Verifying car…");setLookupSource("");
   try{
     const r=await fetch("/api/vehicle-lookup",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({chassis_number:chassis,engine_number:engine})});
     const j=await r.json();
-    if(!r.ok)throw new Error(j.error||"Vehicle lookup failed.");
+    if(!r.ok)throw new Error(j.error||"Car lookup failed.");
     const d=j.data||{};
     setDraft(prev=>{
       const vehicle={...prev.vehicle,registration:d.registration||prev.vehicle.registration,vin:d.vin||prev.vehicle.vin,engineNumber:d.engineNumber||prev.vehicle.engineNumber,make:d.make||prev.vehicle.make,model:d.model||prev.vehicle.model,variant:d.variant||prev.vehicle.variant,year:d.year||prev.vehicle.year,fuel:d.fuel?capitalize(d.fuel):prev.vehicle.fuel,transmission:d.transmission?capitalize(d.transmission):prev.vehicle.transmission,color:d.color||prev.vehicle.color,registryDetails:{registrationDate:d.registrationDate,category:d.category,bodyType:d.bodyType,emissionNorm:d.emissionNorm,fitnessValidUntil:d.fitnessValidUntil,insuranceValidUntil:d.insuranceValidUntil,puccValidUntil:d.puccValidUntil,permitValidUntil:d.permitValidUntil,rcStatus:d.rcStatus,blacklistStatus:d.blacklistStatus,financer:d.financer,ownerName:d.ownerName,ownerCount:d.ownerCount,provider:j.provider,fetchedAt:new Date().toISOString()}};
       return {...prev,vehicle,valuation:syncValuationVehicle(vehicle,prev.valuation),updatedAt:new Date().toISOString()};
     });
-    setLookupSource(j.provider||"Verified registry");setLookupMessage("Vehicle details attached to this inspection.");
-  }catch(e){setLookupMessage(e instanceof Error?e.message:"Could not verify vehicle.")}finally{setLookupBusy(false)}
+    setLookupSource(j.provider||"Verified registry");setLookupMessage("Car details attached to this inspection.");
+  }catch(e){setLookupMessage(e instanceof Error?e.message:"Could not verify car.")}finally{setLookupBusy(false)}
 }
 function capitalize(v:string){return v? v.charAt(0).toUpperCase()+v.slice(1).toLowerCase() : v}
 
@@ -353,15 +353,15 @@ async function mergeReportPdf(){
 
   if(loading)return <div className="om-wiz"><div className="om-wiz-loading"><Loader2 className="spin" size={22}/> Loading workspace…</div></div>;
   const name=stages[stage] as Stage;
-  const titles:Record<Stage,string>={Vehicle:"Identify the vehicle",Exterior:"Check the exterior",Interior:"Check the cabin",Mechanical:"Check mechanical systems","Road Test":"Run the road test",Evidence:"Build the evidence pack",Valuation:"Complete legacy valuation sheet",Review:"Preflight and publish"};
+  const titles:Record<Stage,string>={Vehicle:"Identify the car",Exterior:"Check the exterior",Interior:"Check the cabin",Mechanical:"Check mechanical systems","Road Test":"Run the road test",Evidence:"Build the evidence pack",Valuation:"Complete legacy valuation sheet",Review:"Preflight and publish"};
 
   return <div className="om-wiz">
-    <header className="om-wiz-head"><div><span>0{stage+1} / 08 • {role||"INSPECTOR"}</span><h1>{titles[name]}</h1><p>{name==="Vehicle"?"Enter identity once. Everything else stays attached.":"Tap the normal state. Exceptions reveal the detail controls."}</p></div><div className="om-wiz-pills"><span className={online?"online":""}>{online?<Wifi size={13}/>:<CloudOff size={13}/>} {online?"Online":"Offline"}</span><span><Cloud size={13}/> {saving?"Syncing":"Autosave"}</span></div></header>
+    <header className="om-wiz-head"><div><span>0{stage+1} / 08 • {role||"INSPECTOR"}</span><h1>{titles[name]}</h1><p>{name==="Car"?"Enter identity once. Everything else stays attached.":"Tap the normal state. Exceptions reveal the detail controls."}</p></div><div className="om-wiz-pills"><span className={online?"online":""}>{online?<Wifi size={13}/>:<CloudOff size={13}/>} {online?"Online":"Offline"}</span><span><Cloud size={13}/> {saving?"Syncing":"Autosave"}</span></div></header>
     <nav className="om-wiz-steps">{stages.map((s,i)=><button className={i===stage?"active":i<stage?"done":""} key={s} onClick={()=>void jumpToStage(i)}><b>{i<stage?<Check size={12}/>:i+1}</b><span>{s}</span></button>)}</nav>
 
     <div className="om-wiz-grid"><main>
       <VehicleModelViewer section={name} onApply={applyDiagramSelection}/>
-      {name==="Vehicle"&&<VehicleStage draft={draft} updateVehicle={updateVehicle} updateDraft={updateDraft} upload={uploadEvidence} lookup={lookupVehicle} lookupBusy={lookupBusy} lookupMessage={lookupMessage} lookupSource={lookupSource}/>}
+      {name==="Car"&&<VehicleStage draft={draft} updateVehicle={updateVehicle} updateDraft={updateDraft} upload={uploadEvidence} lookup={lookupVehicle} lookupBusy={lookupBusy} lookupMessage={lookupMessage} lookupSource={lookupSource}/>}
       {(name==="Exterior"||name==="Interior")&&<Checklist section={name} draft={draft} updateItem={updateItem} upload={uploadEvidence}/>}
       {name==="Mechanical"&&<Mechanical tab={mechTab} setTab={setMechTab} draft={draft} updateItem={updateItem} upload={uploadEvidence}/>}
       {name==="Road Test"&&<RoadTest draft={draft} updateDraft={updateDraft}/>}
@@ -370,7 +370,7 @@ async function mergeReportPdf(){
       {name==="Review"&&<Review draft={draft} score={score.overall} counts={score.counts} recommendation={recommendation} readiness={readiness} rules={readinessRules} signatureRef={signatureRef} draw={draw} clear={clearSignature} signed={signed} aiSummary={aiSummary} updateDraft={updateDraft} finalize={finalize} canFinalize={canFinalize}/>}
     </main><aside className="om-wiz-aside">
       <div className="om-aside-dark"><small>NEXT BEST ACTION</small><strong>{stage===7?"Complete preflight":`Continue ${stages[stage+1]}`}</strong><p>{stage===0?"Registration is the only hard gate before capture.":"Keep moving. Exceptions get detail only when they appear."}</p><div className="om-aside-readiness"><span>Readiness</span><b>{readiness}%</b></div><div className="om-mini"><i style={{width:`${readiness}%`}}/></div></div>
-      <div className="om-aside-box"><b>Vehicle health</b><div className="om-score">{score.overall}</div><small>{recommendation}</small><div className="om-mini-stats"><span>{score.counts.Critical}<i>critical</i></span><span>{score.counts.Major}<i>major</i></span><span>{draft.photos.length}<i>evidence</i></span></div></div>
+      <div className="om-aside-box"><b>Car health</b><div className="om-score">{score.overall}</div><small>{recommendation}</small><div className="om-mini-stats"><span>{score.counts.Critical}<i>critical</i></span><span>{score.counts.Major}<i>major</i></span><span>{draft.photos.length}<i>evidence</i></span></div></div>
       <div className="om-aside-box"><b><ShieldCheck size={14}/> Data protection</b><p>Local cache first. Protected organization sync when connected.</p><span className="om-sync"><i className={online?"live":""}/>{online?"Connected to sync":"Working offline"}</span></div>
     </aside></div>
 
@@ -408,8 +408,8 @@ async function mergeReportPdf(){
 
 function VehicleStage({draft,updateVehicle,updateDraft,upload,lookup,lookupBusy,lookupMessage,lookupSource}:{draft:InspectionDraft;updateVehicle:(k:keyof InspectionDraft["vehicle"],v:string)=>void;updateDraft:(p:Partial<InspectionDraft>)=>void;upload:(f:File,l:string)=>Promise<void>;lookup:()=>Promise<void>;lookupBusy:boolean;lookupMessage:string;lookupSource:string}) {
   return <div className="om-stage">
-    <div className="om-stage-head"><div><h2>Vehicle identity</h2><p className="sub">Start with the physical vehicle. Chassis lookup can attach the available registry data automatically.</p></div><span className="om-chip">{lookupSource?"Verified":"Lookup ready"}</span></div>
-    <div className="om-lookup-card"><div className="om-lookup-main"><ScanLine size={19}/><div><b>Automatic India vehicle lookup</b><span>Enter the chassis / VIN. The registry connector can return registration, make, model, fuel, colour and compliance information in seconds.</span></div></div><button className="om-lookup-btn" type="button" onClick={()=>void lookup()} disabled={lookupBusy}>{lookupBusy?<Loader2 className="spin" size={14}/>:<SearchIcon size={14}/>} {lookupBusy?"Verifying…":"Lookup vehicle"}</button></div><div className="om-lookup-consent"><ShieldCheck size={11}/><span>Use only for an authorized inspection / verification purpose.</span></div>
+    <div className="om-stage-head"><div><h2>Car identity</h2><p className="sub">Start with the physical car. Chassis lookup can attach the available registry data automatically.</p></div><span className="om-chip">{lookupSource?"Verified":"Lookup ready"}</span></div>
+    <div className="om-lookup-card"><div className="om-lookup-main"><ScanLine size={19}/><div><b>Automatic India car lookup</b><span>Enter the chassis / VIN. The registry connector can return registration, make, model, fuel, colour and compliance information in seconds.</span></div></div><button className="om-lookup-btn" type="button" onClick={()=>void lookup()} disabled={lookupBusy}>{lookupBusy?<Loader2 className="spin" size={14}/>:<SearchIcon size={14}/>} {lookupBusy?"Verifying…":"Lookup car"}</button></div><div className="om-lookup-consent"><ShieldCheck size={11}/><span>Use only for an authorized inspection / verification purpose.</span></div>
     {lookupMessage&&<div className={lookupSource?"om-lookup-success":"om-lookup-message"}><ShieldCheck size={13}/><span>{lookupMessage}</span></div>}
     <div className="om-fields">
       <div className="om-field full"><label>Chassis / VIN *</label><input value={draft.vehicle.vin} onChange={e=>updateVehicle("vin",e.target.value.toUpperCase())} placeholder="17-character VIN / chassis number"/></div>
@@ -417,7 +417,7 @@ function VehicleStage({draft,updateVehicle,updateDraft,upload,lookup,lookupBusy,
       {([["engineNumber","Engine number"],["make","Make"],["model","Model"],["variant","Variant"],["year","Year"],["fuel","Fuel"],["transmission","Transmission"],["color","Color"],["odometer","Odometer"],["ownership","Ownership"]] as const).map(([k,l])=><div className="om-field" key={k}><label>{l}</label>{["fuel","transmission","ownership"].includes(k)?<select value={draft.vehicle[k]} onChange={e=>updateVehicle(k,e.target.value)}>{(k==="fuel"?["Petrol","Diesel","EV","Hybrid"]:k==="transmission"?["Manual","Automatic","CVT","DCT"]:["1st owner","2nd owner","3+ owners"]).map(o=><option key={o}>{o}</option>)}</select>:<input value={draft.vehicle[k]} onChange={e=>updateVehicle(k,e.target.value)}/>}</div>)}
     </div>
     {lookupSource&&draft.vehicle.registryDetails&&<div className="om-registry-panel">
-      <div className="om-registry-head"><div><b>Verified vehicle registry</b><small>Attached to this inspection and report</small></div><span>{lookupSource}</span></div>
+      <div className="om-registry-head"><div><b>Verified car registry</b><small>Attached to this inspection and report</small></div><span>{lookupSource}</span></div>
       <div className="om-registry-grid">
         {[
           ["RC status",draft.vehicle.registryDetails.rcStatus],["Registration date",draft.vehicle.registryDetails.registrationDate],
@@ -431,9 +431,9 @@ function VehicleStage({draft,updateVehicle,updateDraft,upload,lookup,lookupBusy,
       {draft.vehicle.registryDetails.ownerName&&<div className="om-registry-owner"><span>Registered owner</span><b>{draft.vehicle.registryDetails.ownerName}</b></div>}
     </div>}
     <div className="om-tool-row"><label className="om-tool"><ScanLine size={16}/><div>Scan VIN<small>Choose or capture a VIN photo</small></div><input type="file" accept="image/*" capture="environment" className="hidden" onChange={e=>{const file=e.currentTarget.files?.[0];e.currentTarget.value="";if(file)void upload(file,"VIN scan")}}/></label>
-      <label className="om-tool"><Paperclip size={16}/><div>Vehicle document<small>RC / insurance / PUC</small></div><input type="file" accept=".pdf,image/*" className="hidden" onChange={e=>{const f=e.currentTarget.files?.[0];e.currentTarget.value="";if(f)void upload(f,"Vehicle document")}}/></label>
+      <label className="om-tool"><Paperclip size={16}/><div>Car document<small>RC / insurance / PUC</small></div><input type="file" accept=".pdf,image/*" className="hidden" onChange={e=>{const f=e.currentTarget.files?.[0];e.currentTarget.value="";if(f)void upload(f,"Car document")}}/></label>
     </div>
-    <div className="om-callout"><ShieldCheck size={14}/><span>Verified registry data is attached to the vehicle record. Manual edits remain available for observations such as odometer and ownership.</span></div>
+    <div className="om-callout"><ShieldCheck size={14}/><span>Verified registry data is attached to the car record. Manual edits remain available for observations such as odometer and ownership.</span></div>
   </div>
 }
 function Checklist({section,draft,updateItem,upload}:{section:"Exterior"|"Interior";draft:InspectionDraft;updateItem:(s:string,i:string,k:"status"|"severity"|"notes",v:string)=>void;upload:(f:File,l:string)=>Promise<void>}) {
@@ -463,10 +463,10 @@ function Review({draft,score,counts,recommendation,readiness,rules,signatureRef,
   return <div className="om-review"><div className="om-stage"><div className="om-stage-head"><div><h2>Final preflight</h2><p className="sub">One control surface before a client-facing record is published.</p></div><span className="om-chip">Versioned</span></div>
     <div className="om-preflight">{rules.map(r=><div className={`om-preflight-row ${r.done?"done":"todo"}`} key={r.label}>{r.done?<CheckCircle2 size={13}/>:<X size={13}/>}<span>{r.label}</span><span style={{marginLeft:"auto"}}>{r.done?"Ready":"Needs action"}</span></div>)}</div>
     <div className="om-ready" style={{"--ready":`${readiness}%`} as CSSProperties}><div className="om-ready-ring"><span>{readiness}%</span></div><div><b>Inspection readiness</b><small>{canFinalize?"Ready for report generation.":"Resolve the remaining preflight items."}</small></div></div>
-    <div className="om-score-banner"><div><small>DETERMINISTIC VEHICLE SCORE</small><strong>{score}</strong></div><span className="om-reco">{recommendation}</span></div>
+    <div className="om-score-banner"><div><small>DETERMINISTIC CAR SCORE</small><strong>{score}</strong></div><span className="om-reco">{recommendation}</span></div>
     <div className="om-field" style={{marginTop:10}}><label>Reviewer / client summary</label><textarea value={draft.reviewerComments} onChange={e=>updateDraft({reviewerComments:e.target.value})} placeholder="Write only verified observations. AI polishes language, never facts."/></div>
     <button className="om-tool" style={{marginTop:8}} type="button" onClick={aiSummary}><Sparkles size={14}/> Draft summary with evidence-aware AI</button>
     <div className="om-sign"><div style={{display:"flex",justifyContent:"space-between",fontSize:10}}><b>Reviewer sign-off</b><button type="button" className="btn" onClick={clear}><PenLine size={11}/> Clear</button></div><canvas ref={signatureRef} width={900} height={230} onPointerDown={draw}/><small style={{fontSize:8,color:"#8693a2"}}>{signed?"Signature captured":"Draw with mouse, stylus or touch"}</small></div>
     <button className="om-primary-action om-tool" type="button" onClick={finalize} disabled={!canFinalize}><FileText size={14}/> Generate final report</button>
-  </div><div className="om-stage"><div className="om-stage-head"><div><h2>Client package</h2><p className="sub">Share after publishing, or package the report with supporting PDFs.</p></div></div><div className="om-tool-row"><button className="om-tool" onClick={()=>navigator.clipboard?.writeText(draft.inspectionNumber)}>Copy inspection ID<small>{draft.inspectionNumber}</small></button><button className="om-tool" onClick={()=>alert("Secure share is available from Reports after publishing.")}>Secure share<small>Post-publish</small></button><button className="om-tool" onClick={()=>alert("WhatsApp and email sharing are available from Reports.")}>WhatsApp / Email<small>Reports workspace</small></button></div><div className="om-callout"><FileText size={14}/><span>Vehicle timeline, re-inspection carry-forward, secure verification and PDF Studio continue from the workspace after publication.</span></div><div className="om-callout"><ShieldCheck size={14}/><span>{counts.Critical} critical • {counts.Major} major • {draft.photos.length} evidence files. The recommendation is rule-based.</span></div></div></div>
+  </div><div className="om-stage"><div className="om-stage-head"><div><h2>Client package</h2><p className="sub">Share after publishing, or package the report with supporting PDFs.</p></div></div><div className="om-tool-row"><button className="om-tool" onClick={()=>navigator.clipboard?.writeText(draft.inspectionNumber)}>Copy inspection ID<small>{draft.inspectionNumber}</small></button><button className="om-tool" onClick={()=>alert("Secure share is available from Reports after publishing.")}>Secure share<small>Post-publish</small></button><button className="om-tool" onClick={()=>alert("WhatsApp and email sharing are available from Reports.")}>WhatsApp / Email<small>Reports workspace</small></button></div><div className="om-callout"><FileText size={14}/><span>Car timeline, re-inspection carry-forward, secure verification and PDF Studio continue from the workspace after publication.</span></div><div className="om-callout"><ShieldCheck size={14}/><span>{counts.Critical} critical • {counts.Major} major • {draft.photos.length} evidence files. The recommendation is rule-based.</span></div></div></div>
 }

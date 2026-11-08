@@ -13,7 +13,7 @@ export function SoftwareAccess() {
           <div className="om-software-copy">
             <p className="om-software-eyebrow"><span /> OMCAR INSPECTION WORKSPACE</p>
             <h1 id="om-software-title">Your inspection software.<br /><em>Ready wherever you work.</em></h1>
-            <p className="om-software-lead">Access the live vehicle inspection workspace from your desktop, tablet or phone. Record findings, attach photo evidence and prepare structured inspection reports online.</p>
+            <p className="om-software-lead">Access the live car inspection workspace from your desktop, tablet or phone. Record findings, attach photo evidence and prepare structured inspection reports online.</p>
             <div className="om-software-actions">
               <Link className="om-software-primary" href="/login?next=%2Fsoftware">Open inspection software <ArrowRight size={17} /></Link>
               <Link className="om-software-secondary" href="/admin"><ShieldCheck size={16} /> Admin portal</Link>
@@ -23,9 +23,9 @@ export function SoftwareAccess() {
           <div className="om-software-visual" aria-label="Inspection software features">
             <div className="om-software-window">
               <div className="om-software-window-top"><span><i /> <i /> <i /></span><b>OMCAR / FIELD WORKSPACE</b><span className="om-software-live"><span /> ONLINE</span></div>
-              <div className="om-software-preview-heading"><small>NEW INSPECTION</small><h2>Vehicle condition report</h2><p>Inspection checklist · Photo evidence · Report review</p></div>
+              <div className="om-software-preview-heading"><small>NEW INSPECTION</small><h2>Car condition report</h2><p>Inspection checklist · Photo evidence · Report review</p></div>
               <div className="om-software-preview-steps">
-                <div className="is-done"><span><ClipboardCheck size={15} /></span><div><b>Vehicle details</b><small>Registration and identity</small></div><ShieldCheck size={15} /></div>
+                <div className="is-done"><span><ClipboardCheck size={15} /></span><div><b>Car details</b><small>Registration and identity</small></div><ShieldCheck size={15} /></div>
                 <div><span><Camera size={15} /></span><div><b>Capture evidence</b><small>Photos from camera or gallery</small></div><Smartphone size={15} /></div>
                 <div><span><FileText size={15} /></span><div><b>Generate report</b><small>Review and export a PDF</small></div><ArrowRight size={15} /></div>
               </div>
@@ -36,7 +36,7 @@ export function SoftwareAccess() {
           </div>
         </section>
         <section className="om-software-feature-strip" aria-label="Software capabilities">
-          <article><span><ClipboardCheck size={18} /></span><div><b>Guided inspection</b><p>Work through the existing checklist and capture vehicle details.</p></div></article>
+          <article><span><ClipboardCheck size={18} /></span><div><b>Guided inspection</b><p>Work through the existing checklist and capture car details.</p></div></article>
           <article><span><Camera size={18} /></span><div><b>Photo evidence</b><p>Use a compatible mobile camera picker or choose existing files.</p></div></article>
           <article><span><FileText size={18} /></span><div><b>Inspection reports</b><p>Review inspection records and continue to report generation.</p></div></article>
         </section>

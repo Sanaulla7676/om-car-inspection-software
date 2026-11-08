@@ -121,7 +121,7 @@ function Diagram({mode,selected}:{mode:Mode;selected:Part}) {
         <text x="360" y="185" fill="#294965" stroke="none" textAnchor="middle" fontSize="12" fontWeight="700">ROOF / DOORS</text>
         <text x="360" y="233" fill="#294965" stroke="none" textAnchor="middle" fontSize="11" fontWeight="700">TRUNK / REAR PANEL</text>
         <text x="145" y="159" fill="#294965" stroke="none" textAnchor="middle" fontSize="11" fontWeight="700">LEFT</text><text x="575" y="159" fill="#294965" stroke="none" textAnchor="middle" fontSize="11" fontWeight="700">RIGHT</text>
-        <text x="360" y="296" fill="#607f99" stroke="none" textAnchor="middle" fontSize="10">2D BODY-PANEL MAP · NOT A VEHICLE MODEL</text>
+        <text x="360" y="296" fill="#607f99" stroke="none" textAnchor="middle" fontSize="10">2D BODY-PANEL MAP · NOT A CAR MODEL</text>
       </g>}
       {mode==="Interior"&&<g stroke="#325676" strokeWidth="2" strokeLinejoin="round">
         <rect x="135" y="25" width="450" height="250" rx="35" fill="#e5f1f9"/>
@@ -248,7 +248,7 @@ export function VehicleModelViewer({section,onApply}:Props) {
   return (
     <section className="om-model-panel om-diagram-panel" aria-label="2D part-by-part inspection reference">
       <div className="om-model-top">
-        <div className="om-model-title"><span className="om-model-icon"><Layers3 size={17}/></span><div><b>2D inspection reference map</b><small>Fast schematic · labeled components · no external vehicle viewer</small></div></div>
+        <div className="om-model-title"><span className="om-model-icon"><Layers3 size={17}/></span><div><b>2D inspection reference map</b><small>Fast schematic · labeled components · no external car viewer</small></div></div>
         <span className="om-model-badge">2D GUIDE</span>
       </div>
       <div className="om-model-shortcuts om-diagram-tabs" role="tablist" aria-label="Inspection system diagrams">

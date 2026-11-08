@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "OMCAR Inspection Workspace",
-  description: "Secure OMCAR vehicle inspection workspace.",
+  description: "Secure OMCAR car inspection workspace.",
   robots: { index: false, follow: false },
 };
 

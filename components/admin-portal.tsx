@@ -144,7 +144,7 @@ export function AdminPortal() {
     return <main className="om-admin-login" ref={rootRef}>
       <div className="admin-orb admin-orb-one" aria-hidden="true" /><div className="admin-orb admin-orb-two" aria-hidden="true" />
       <header className="admin-login-top admin-enter">
-        <a className="admin-brand" href="/" aria-label="OMCAR Inspection home"><span className="admin-brand-mark"><CarFront size={22} strokeWidth={1.8} /></span><span><strong>OMCAR</strong><small>VEHICLE INSPECTION</small></span></a>
+        <a className="admin-brand" href="/" aria-label="OMCAR Inspection home"><span className="admin-brand-mark"><CarFront size={22} strokeWidth={1.8} /></span><span><strong>OMCAR</strong><small>CAR INSPECTION</small></span></a>
         <span className="admin-portal-tag"><ShieldCheck size={14} /> Administrator portal</span>
       </header>
       <div className="admin-login-grid">
@@ -223,11 +223,11 @@ export function AdminPortal() {
               <div className="admin-progress-number"><strong>{formatNumber(metrics.completed)}</strong><span>of {formatNumber(metrics.inspections)} inspections completed</span></div><div className="admin-progress-track"><span style={{ width: completion + "%" }} /></div><div className="admin-progress-foot"><span><i className="admin-dot-green" /> Completed</span><span><i className="admin-dot-grey" /> Remaining</span></div>
             </article>
             <article className="admin-overview-card admin-overview-card-dark admin-enter"><div className="admin-card-heading"><div><span className="admin-card-eyebrow">RECORDS</span><h2>Workspace inventory</h2><p>Records in the existing OMCAR workspace.</p></div><span className="admin-inventory-icon"><CarFront size={21} /></span></div>
-              <div className="admin-inventory-grid"><div><span>Vehicles</span><b>{formatNumber(metrics.vehicles)}</b></div><div><span>Customers</span><b>{formatNumber(metrics.customers)}</b></div><div><span>Reports</span><b>{formatNumber(metrics.reports)}</b></div></div>
+              <div className="admin-inventory-grid"><div><span>Cars</span><b>{formatNumber(metrics.vehicles)}</b></div><div><span>Customers</span><b>{formatNumber(metrics.customers)}</b></div><div><span>Reports</span><b>{formatNumber(metrics.reports)}</b></div></div>
             </article>
           </section>
           <section className="admin-bottom-grid">
-            <article className="admin-action-card admin-enter"><div className="admin-action-icon"><ClipboardCheck size={20} /></div><div><h3>Inspection workspace</h3><p>Continue the existing staff workflow for vehicle records, evidence and report generation. Staff authentication remains separate.</p></div><a href="/dashboard" className="admin-secondary-button">Open workspace <ArrowUpRight size={15} /></a></article>
+            <article className="admin-action-card admin-enter"><div className="admin-action-icon"><ClipboardCheck size={20} /></div><div><h3>Inspection workspace</h3><p>Continue the existing staff workflow for car records, evidence and report generation. Staff authentication remains separate.</p></div><a href="/dashboard" className="admin-secondary-button">Open workspace <ArrowUpRight size={15} /></a></article>
             <article className="admin-action-card admin-enter"><div className="admin-action-icon admin-action-icon-green"><ShieldCheck size={20} /></div><div><h3>Protect admin access</h3><p>Update the login ID and password after WhatsApp verification.</p></div><button type="button" className="admin-secondary-button" onClick={() => openView("settings")}>Security settings <ArrowRight size={15} /></button></article>
           </section>
           <div className="admin-quiet-footer"><ShieldCheck size={14} /><span>Admin authentication is isolated from the public website. Inspection staff sign-in is unchanged.</span><span>{formatExpiry(admin.expiresAt)}</span></div>

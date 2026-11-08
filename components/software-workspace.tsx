@@ -99,7 +99,7 @@ export function SoftwareWorkspace({ loginId, accessType }: Props) {
           key={revision}
           className="omcar-workspace-frame"
           src="/api/admin/workspace"
-          title="OMCAR Inspection vehicle report builder"
+          title="OMCAR Inspection car report builder"
           referrerPolicy="no-referrer"
           onLoad={() => setFrameState("ready")}
           onError={() => setFrameState("error")}

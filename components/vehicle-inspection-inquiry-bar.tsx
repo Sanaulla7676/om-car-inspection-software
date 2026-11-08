@@ -143,7 +143,7 @@ export function VehicleInspectionInquiryBar() {
             </div>
             {vehiclePickerOpen && <div className="lux-vehicle-suggestions" id="lux-vehicle-suggestions" role="dialog" aria-label="Car make and model examples">
               <p>Type your model or choose an example</p>
-              <div>{exampleVehicles.filter((item) => !car || item.toLowerCase().includes(car.toLowerCase()) || car.length < 2).map((item) => <button type="button" key={item} onClick={() => { setVehicle(item); setVehiclePickerOpen(false); }}>{item}<ArrowRight size={12} /></button>)}</div>
+              <div>{exampleVehicles.filter((item) => !vehicle || item.toLowerCase().includes(vehicle.toLowerCase()) || vehicle.length < 2).map((item) => <button type="button" key={item} onClick={() => { setVehicle(item); setVehiclePickerOpen(false); }}>{item}<ArrowRight size={12} /></button>)}</div>
             </div>}
           </div>
 
