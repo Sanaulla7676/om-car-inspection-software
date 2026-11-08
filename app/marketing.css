@@ -3077,7 +3077,7 @@ button.lux-header-icon.omcar-search-toggle{font:inherit}
 .pdi-motion-stage-heading strong { color:#f4f8fb;font:400 clamp(29px,3.4vw,46px)/.91 "Bebas Neue",Impact,sans-serif;letter-spacing:.015em; }
 .pdi-motion-stage-heading em { color:var(--pdi-cyan-bright);font-style:normal; }
 .pdi-motion-orbit { position:absolute;z-index:1;left:50%;top:59%;aspect-ratio:1;border:1px solid rgba(34,191,208,.18);border-radius:50%;transform:translate(-50%,-50%) scaleY(.38);pointer-events:none; }
-.pdi-motion-orbit--outer { width:82%;animation:pdiMotionOrbit 19s linear infinite; }.pdi-motion-orbit--inner { width:62%;border-style:dashed;border-color:rgba(158,203,255,.23);animation:pdiMotionOrbit 24s linear infinite reverse; }
+.pdi-motion-orbit--outer { width:82%;animation:pdiMotionEllipseOrbit 19s linear infinite; }.pdi-motion-orbit--inner { width:62%;border-style:dashed;border-color:rgba(158,203,255,.23);animation:pdiMotionEllipseOrbit 24s linear infinite reverse; }
 .pdi-motion-platform { position:absolute;z-index:1;left:10%;bottom:13%;width:80%;height:19%;border:1px solid rgba(77,203,218,.44);border-radius:50%;background:radial-gradient(ellipse at 50% 30%,rgba(158,203,255,.2),rgba(34,191,208,.09) 42%,rgba(5,12,18,.68) 74%);box-shadow:0 0 32px rgba(34,191,208,.12),inset 0 6px 18px rgba(158,203,255,.11),0 26px 36px rgba(0,0,0,.28);transform:perspective(470px) rotateX(58deg); }
 .pdi-motion-platform span { position:absolute;inset:14% 8%;border:1px solid rgba(158,203,255,.3);border-radius:50%;box-shadow:0 0 14px rgba(34,191,208,.2); }
 .pdi-motion-platform i { position:absolute;left:50%;top:50%;width:48%;height:1px;background:linear-gradient(90deg,transparent,rgba(84,213,225,.7),transparent);transform:translate(-50%,-50%); }
@@ -3109,6 +3109,7 @@ button.lux-header-icon.omcar-search-toggle{font:inherit}
 @keyframes pdiMotionPulse { 0%,100%{opacity:.58;transform:scale(.85)}50%{opacity:1;transform:scale(1.12)} }
 @keyframes pdiMotionScan { 0%{transform:translateX(-20px);opacity:0}12%{opacity:1}88%{opacity:.9}100%{transform:translateX(1400px);opacity:0} }
 @keyframes pdiMotionOrbit { to{transform:rotate(360deg)} }
+@keyframes pdiMotionEllipseOrbit { from{transform:translate(-50%,-50%) scaleY(.38) rotate(0deg)}to{transform:translate(-50%,-50%) scaleY(.38) rotate(360deg)} }
 @keyframes pdiMotionGlow { from{opacity:.55;transform:scale(.92)}to{opacity:.95;transform:scale(1.08)} }
 @keyframes pdiMotionCarFloat { 0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)} }
 @keyframes pdiMotionMark { 0%,60%,100%{background:transparent;box-shadow:none}72%{background:rgba(34,191,208,.18);box-shadow:0 0 13px rgba(34,191,208,.23)} }
