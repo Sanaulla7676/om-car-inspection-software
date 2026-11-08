@@ -14,7 +14,7 @@ const pathways = [
   {
     number: "01",
     title: "New Car PDI",
-    detail: "Review delivery condition, equipment, visible finish and handover records before accepting the vehicle.",
+    detail: "Review delivery condition, equipment, visible finish and handover records before accepting the car.",
     href: "/services/new-car-pdi",
     tag: "BEFORE HANDOVER",
     Icon: CarFront,
@@ -133,7 +133,7 @@ export function PdiPathwayHub() {
             <p className="pdi-hub-eyebrow"><span /> YOUR NEXT MOVE</p>
             <h2 id="pdi-pathways-heading">Pick your inspection lane.</h2>
           </div>
-          <p>Three clear paths. Start with the vehicle or start learning the method.</p>
+          <p>Three clear paths. Start with the car or start learning the method.</p>
         </AnimatedContent>
 
         <div className="pdi-speedway" aria-hidden="true">

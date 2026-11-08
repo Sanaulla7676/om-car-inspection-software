@@ -4,8 +4,8 @@ import { useState, type FormEvent } from "react";
 import { ArrowRight, Check, GraduationCap, MessageCircle } from "lucide-react";
 
 const trainingOptions = [
-  "New Vehicle PDI",
-  "Pre-Owned Vehicle Inspection",
+  "New Car PDI",
+  "Pre-Owned Car Inspection",
   "PDI Coaching",
   "Inspection Report & Valuation",
   "Not sure yet"
@@ -27,7 +27,7 @@ export function CoachingInquiryForm() {
     const preferredTime = String(data.get("preferredTime") || "Flexible");
     const message = String(data.get("message") || "").trim();
     const text = [
-      "Hello, I would like to enquire about vehicle inspection / PDI coaching.",
+      "Hello, I would like to enquire about car inspection / PDI coaching.",
       "",
       "Name: " + name,
       "Mobile: " + phone,
@@ -49,7 +49,7 @@ export function CoachingInquiryForm() {
     <section className="lux-coaching-enquiry" id="coaching-enquiry" aria-labelledby="lux-coaching-form-title">
       <div className="lux-form-intro">
         <p className="lux-eyebrow"><span /> ENQUIRE ABOUT COACHING</p>
-        <h2 id="lux-coaching-form-title">Learn vehicle inspection with a clear method.</h2>
+        <h2 id="lux-coaching-form-title">Learn car inspection with a clear method.</h2>
         <p>Tell us a little about yourself. Your details will be placed into a WhatsApp enquiry so you can review and send it.</p>
         <div className="lux-form-feature"><span><GraduationCap size={19} /></span><div><b>Practical PDI coaching</b><small>Inspection sequence · Condition marking · Evidence and reports</small></div></div>
         <div className="lux-form-feature"><span><MessageCircle size={19} /></span><div><b>Direct follow-up</b><small>Ask about upcoming batches, format, fees and venue.</small></div></div>
