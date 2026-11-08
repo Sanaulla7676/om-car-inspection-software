@@ -2211,3 +2211,31 @@ body .om17-home .om-car-showcase .om-car-showcase__platform {
     bottom: 8.4% !important;
   }
 }
+
+
+/* Final tyre-to-platform contact adjustment: lift the deck into the tyre shadow. */
+body .om17-home .om-car-showcase .om-car-showcase__platform {
+  bottom: 17.8% !important;
+}
+
+body .om17-home .om-car-showcase .om-car-showcase__car {
+  z-index: 3 !important;
+}
+
+@media (max-width: 900px) {
+  body .om17-home .om-car-showcase .om-car-showcase__platform {
+    bottom: 18.5% !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body .om17-home .om-car-showcase .om-car-showcase__platform {
+    bottom: 12.8% !important;
+  }
+}
+
+@media (max-width: 390px) {
+  body .om17-home .om-car-showcase .om-car-showcase__platform {
+    bottom: 13.1% !important;
+  }
+}
