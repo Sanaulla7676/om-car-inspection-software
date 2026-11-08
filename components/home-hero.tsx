@@ -15,7 +15,6 @@ type HeroCar = {
 const cars: HeroCar[] = [
   { id: "dark-blue-suv", name: "Premium SUV", image: "/car-assets/01_dark_blue_SUV.png", color: "#087b91", glow: "8, 142, 165" },
   { id: "black-bmw-coupe", name: "Black Luxury Coupe", image: "/car-assets/02_black_BMW_coupe.png", color: "#727b86", glow: "113, 126, 143" },
-  { id: "red-wagonr", name: "Urban Hatchback", image: "/car-assets/03_red_WagonR.png", color: "#c92f3a", glow: "210, 40, 55" },
   { id: "white-toyota-prado", name: "White Luxury SUV", image: "/car-assets/05_white_Toyota_Prado.png", color: "#b9c6d2", glow: "183, 198, 211" },
   { id: "white-fortuner", name: "White Fortuner", image: "/car-assets/06_white_Toyota_Fortuner.png", color: "#c4d5e4", glow: "187, 211, 230" },
   { id: "blue-audi-coupe", name: "Blue Sport Coupe", image: "/car-assets/07_blue_Audi_coupe.png", color: "#1758d3", glow: "23, 87, 220" },
