@@ -29,54 +29,17 @@
     height: 100%;
     display: block;
   }
-  #ui-overlay {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(11, 14, 19, 0.75);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    padding: 8px 18px;
-    border-radius: 30px;
-    color: #fff;
-    font-size: 14px;
-    font-weight: 600;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  body:hover #ui-overlay {
-    opacity: 1;
-  }
-  .badge {
-    background: #0084FF;
-    color: #fff;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 700;
-  }
 </style>
 </head>
 <body>
 <div id="wrapper">
   <canvas id="c" width="1920" height="1080"></canvas>
-  <div id="ui-overlay">
-    <span class="badge">120 BPM</span>
-    <span id="time-display">0.0s / 15.0s</span>
-    <span>• Click or Space: Play/Pause • Arrows: Step • R: Restart</span>
-  </div>
 </div>
 
 <script>
 const W = 1920, H = 1080;
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
-const timeDisplay = document.getElementById('time-display');
 
 
 // ─── OMCAR BRAND ASSETS (logo + exactly three photographs) ───
@@ -1093,29 +1056,6 @@ try {
   audioObj.preload = 'auto';
 } catch(e) {}
 
-function startPlayback() {
-  isPlaying = true;
-  startTime = performance.now() - (currentTime * 1000);
-  if (audioObj) {
-    try {
-      audioObj.currentTime = currentTime;
-      audioObj.play().catch(() => {});
-    } catch(e) {}
-  }
-}
-
-function pausePlayback() {
-  isPlaying = false;
-  if (audioObj) {
-    try { audioObj.pause(); } catch(e) {}
-  }
-}
-
-function togglePlayback() {
-  if (isPlaying) pausePlayback();
-  else startPlayback();
-}
-
 function loop(now) {
   if (isPlaying) {
     currentTime = (now - startTime) / 1000;
@@ -1130,36 +1070,14 @@ function loop(now) {
       }
     }
     window.seek(currentTime);
-    if (timeDisplay) {
-      timeDisplay.textContent = currentTime.toFixed(1) + 's / 15.0s';
-    }
   }
   requestAnimationFrame(loop);
 }
 
-window.addEventListener('click', togglePlayback);
-window.addEventListener('keydown', (e) => {
-  if (e.code === 'Space') {
-    e.preventDefault();
-    togglePlayback();
-  } else if (e.code === 'ArrowLeft') {
-    pausePlayback();
-    currentTime = Math.max(0, currentTime - 0.25);
-    window.seek(currentTime);
-  } else if (e.code === 'ArrowRight') {
-    pausePlayback();
-    currentTime = Math.min(DURATION, currentTime + 0.25);
-    window.seek(currentTime);
-  } else if (e.code === 'KeyR') {
-    currentTime = 0;
-    startPlayback();
-  }
-});
-
 // Start loop
 window.seek(0);
 requestAnimationFrame(loop);
-console.log("OMCAR Inspection Animation ready. Space to play/pause, Arrows to scrub, R to restart.");
+console.log("OMCAR Inspection Animation running in an automatic loop.");
 </script>
 </body>
 </html>
