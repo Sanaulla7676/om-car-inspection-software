@@ -61,7 +61,7 @@ export function BookingPage({ type }: BookingPageProps) {
         "Preferred date: " + payload.preferredDate,
         isClass
           ? "Experience level: " + payload.experienceLevel + "\nLearning goals: " + payload.learningGoals
-          : "Vehicle: " + payload.vehicleMakeModel + (payload.modelYear ? " (" + payload.modelYear + ")" : "") + "\nInspection type: " + payload.inspectionType + "\nLocation: " + payload.vehicleLocation + "\nNotes: " + payload.notes,
+          : "Car: " + payload.vehicleMakeModel + (payload.modelYear ? " (" + payload.modelYear + ")" : "") + "\nInspection type: " + payload.inspectionType + "\nLocation: " + payload.vehicleLocation + "\nNotes: " + payload.notes,
         "Please contact me to confirm availability and next steps.",
       ].filter(Boolean).join("\n\n");
 
@@ -81,9 +81,9 @@ export function BookingPage({ type }: BookingPageProps) {
       <SiteNavigation />
       <main className="booking-shell-v2">
         <div className="booking-intro-v2" data-reveal>
-          <p className="eyebrow"><span className="eyebrow-live-dot" /> {isClass ? "PRACTICAL TRAINING" : "VEHICLE SERVICES"}</p>
+          <p className="eyebrow"><span className="eyebrow-live-dot" /> {isClass ? "PRACTICAL TRAINING" : "CAR SERVICES"}</p>
           <h1>{isClass ? <>Learn to inspect.<span>Build real skill.</span></> : <>Book an inspection.<span>Decide with clarity.</span></>}</h1>
-          <p>{isClass ? "Request a place in the six-day hands-on masterclass. Share your preferred batch details and the team can discuss dates, venue and fees before confirmation." : "Tell us about the vehicle and the inspection you need. The team can confirm availability, location, scope and pricing before your booking is final."}</p>
+          <p>{isClass ? "Request a place in the six-day hands-on masterclass. Share your preferred batch details and the team can discuss dates, venue and fees before confirmation." : "Tell us about the car and the inspection you need. The team can confirm availability, location, scope and pricing before your booking is final."}</p>
           <div className="booking-benefits-v2">
             <div className="booking-benefit-v2"><span className="booking-benefit-icon-v2"><CheckCircle2 size={17}/></span><div><b>{isClass ? "Practical learning outline" : "Structured inspection"}</b><small>{isClass ? "Guided exercises across six days" : "Visible checks and documented observations"}</small></div></div>
             <div className="booking-benefit-v2"><span className="booking-benefit-icon-v2"><Clock3 size={17}/></span><div><b>Request first, confirmation next</b><small>Your request is saved. The team must still confirm availability.</small></div></div>
@@ -102,11 +102,11 @@ export function BookingPage({ type }: BookingPageProps) {
               <label className="span-two">Your experience level<select name="Experience level" defaultValue="" required><option value="" disabled>Select one</option><option>Beginner</option><option>Automotive student</option><option>Workshop / service experience</option><option>Existing inspector</option><option>Career change</option></select></label>
               <label className="span-two">What would you like to learn?<textarea name="Learning goals" rows={3} maxLength={1500} placeholder="For example: used-car checks, PDI, reporting…" /></label>
             </> : <>
-              <label>Vehicle make and model<input required name="Vehicle make and model" maxLength={120} placeholder="e.g. Hyundai Creta" /></label>
+              <label>Car make and model<input required name="Vehicle make and model" maxLength={120} placeholder="e.g. Hyundai Creta" /></label>
               <label>Model year<input name="Model year" inputMode="numeric" maxLength={4} placeholder="e.g. 2022" /></label>
-              <label>Inspection type<select name="Inspection type" defaultValue="Used car inspection"><option>Used car inspection</option><option>New car PDI</option><option>Used-vehicle PDI</option><option>Pre-purchase inspection</option><option>Diagnostic assessment</option><option>Fleet / dealer support</option><option>Other / not sure</option></select></label>
+              <label>Inspection type<select name="Inspection type" defaultValue="Used car inspection"><option>Used car inspection</option><option>New car PDI</option><option>Used-car PDI</option><option>Pre-purchase inspection</option><option>Diagnostic assessment</option><option>Fleet / dealer support</option><option>Other / not sure</option></select></label>
               <label>Preferred date<input required name="Preferred date" type="date" /></label>
-              <label className="span-two">Vehicle location<input required name="Vehicle location" maxLength={200} placeholder="Area / city / workshop or dealership" /></label>
+              <label className="span-two">Car location<input required name="Vehicle location" maxLength={200} placeholder="Area / city / workshop or dealership" /></label>
               <label className="span-two">Additional information<textarea name="Notes" rows={3} maxLength={2000} placeholder="Anything the inspector should know?" /></label>
             </>}
             <label aria-hidden="true" style={{position:"absolute",left:"-10000px",width:"1px",height:"1px",overflow:"hidden"}}>Leave this field empty<input name="Website" tabIndex={-1} autoComplete="off" /></label>

@@ -18,7 +18,7 @@ export function MarketingIndexPage({ kind, pages }: { kind: "service" | "guide";
           <div className="marketing-hero-content">
             <p className="eyebrow eyebrow-on-dark"><span className="eyebrow-live-dot" /> {isGuide ? "KNOWLEDGE LIBRARY" : "INSPECTION SERVICES"}</p>
             <h1>{isGuide ? "Learn what to check." : "Choose the right inspection."}<span>{isGuide ? "Understand what it can prove." : "Know the scope before you book."}</span></h1>
-            <p>{isGuide ? "Practical vehicle inspection guides on condition checks, PDI, photos, diagnostics, reports and the limits of a visual assessment." : "Separate service pages explain the purpose, typical checks and limitations of each option. The final scope, availability and fees are confirmed before booking."}</p>
+            <p>{isGuide ? "Practical car inspection guides on condition checks, PDI, photos, diagnostics, reports and the limits of a visual assessment." : "Separate service pages explain the purpose, typical checks and limitations of each option. The final scope, availability and fees are confirmed before booking."}</p>
             <div className="marketing-hero-actions"><Link href={isGuide ? "/services" : "/book-inspection"} className="site-button-v2 button-bright">{isGuide ? "Explore inspection services" : "Request a booking"} <ArrowRight size={15} /></Link>{isGuide && <Link href="/masterclass" className="site-button-v2 button-glass">Learn inspection skills <ArrowRight size={15} /></Link>}</div>
           </div>
           <div className="marketing-page-hero-photo marketing-index-hero-photo" data-gsap-page-expand>
@@ -26,10 +26,10 @@ export function MarketingIndexPage({ kind, pages }: { kind: "service" | "guide";
               src={isGuide
                 ? "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/40087/thar-exterior-right-front-three-quarter-37.jpeg?isig=0&q=80"
                 : "https://htcms-prod-images.s3.ap-south-1.amazonaws.com/htmobile1/hyundai_new-verna/images/colours_hyundai-verna_titan-grey_1920x1033.jpg"}
-              alt={isGuide ? "Vehicle inspection coaching in a workshop" : "Luxury SUV in a bright showroom"}
+              alt={isGuide ? "Car inspection coaching in a workshop" : "Luxury SUV in a bright showroom"}
               fetchPriority="high"
             />
-            <div className="marketing-page-photo-label"><span>{isGuide ? "PRACTICAL INSPECTION LEARNING" : "VEHICLE PDI & INSPECTION"}</span><b>{isGuide ? "Learn the method" : "Choose the right inspection"}</b></div>
+            <div className="marketing-page-photo-label"><span>{isGuide ? "PRACTICAL INSPECTION LEARNING" : "CAR PDI & INSPECTION"}</span><b>{isGuide ? "Learn the method" : "Choose the right inspection"}</b></div>
           </div>
         </section>
         <section className="marketing-index-section">

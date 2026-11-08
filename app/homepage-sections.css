@@ -2036,3 +2036,154 @@ body .om17-home main > .pdi-pathway-hub .pdi-speed-car {
     visibility: visible !important;
   }
 }
+
+
+/* OMCAR hero: a grounded circular display plinth beneath the rotating car lineup. */
+body .om17-home .om-car-showcase .om-car-showcase__platform {
+  position: absolute !important;
+  z-index: 1 !important;
+  right: 2% !important;
+  bottom: 3.6% !important;
+  width: min(48vw, 700px) !important;
+  height: clamp(66px, 8.8vw, 116px) !important;
+  pointer-events: none !important;
+  isolation: isolate;
+  filter: drop-shadow(0 24px 27px rgb(0 0 0 / .34));
+}
+
+body .om17-home .om-car-showcase__platform-base {
+  position: absolute;
+  z-index: 0;
+  inset: 13px 0 -19px;
+  border: 1px solid rgb(202 218 231 / .24);
+  border-radius: 50%;
+  background:
+    linear-gradient(180deg, #718391 0%, #344858 20%, #182633 56%, #09121b 100%);
+  box-shadow:
+    0 18px 25px rgb(0 0 0 / .42),
+    inset 0 2px 4px rgb(255 255 255 / .2),
+    inset 0 -8px 14px rgb(0 0 0 / .55);
+}
+
+body .om17-home .om-car-showcase__platform-deck {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  border: 1px solid rgb(225 235 244 / .48);
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at 50% 32%, rgb(255 255 255 / .2) 0%, transparent 42%),
+    radial-gradient(ellipse at 50% 58%, rgb(var(--car-glow) / .22) 0%, transparent 58%),
+    linear-gradient(180deg, #425565 0%, #263947 48%, #14222e 100%);
+  box-shadow:
+    inset 0 3px 7px rgb(255 255 255 / .24),
+    inset 0 -9px 16px rgb(0 0 0 / .48),
+    0 0 22px rgb(var(--car-glow) / .16);
+}
+
+body .om17-home .om-car-showcase__platform-deck::before {
+  content: "";
+  position: absolute;
+  inset: 9% 5%;
+  border: 1px solid rgb(255 255 255 / .11);
+  border-radius: 50%;
+  box-shadow: inset 0 1px 2px rgb(255 255 255 / .08);
+}
+
+body .om17-home .om-car-showcase__platform-ring {
+  position: absolute;
+  z-index: 2;
+  inset: 10% 4%;
+  border: 1px solid rgb(var(--car-glow) / .82);
+  border-radius: 50%;
+  box-shadow:
+    0 0 13px rgb(var(--car-glow) / .34),
+    inset 0 0 12px rgb(var(--car-glow) / .2);
+  animation: omCarPlatformPulse 4.2s ease-in-out infinite;
+}
+
+body .om17-home .om-car-showcase__platform-center {
+  position: absolute;
+  z-index: 2;
+  inset: 21% 13%;
+  border: 1px solid rgb(255 255 255 / .1);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgb(6 13 20 / .06) 0%, rgb(6 13 20 / .16) 70%, transparent 100%);
+}
+
+@keyframes omCarPlatformPulse {
+  0%, 100% { opacity: .68; filter: brightness(.92); }
+  50% { opacity: 1; filter: brightness(1.22); }
+}
+
+/* The car now settles onto the plinth with a small weighted landing instead of a hover-like glide. */
+body .om17-home .om-car-showcase__car--incoming {
+  animation: omCarHeroDock 2.2s cubic-bezier(.16,.72,.2,1) both !important;
+}
+
+@keyframes omCarHeroDock {
+  0% {
+    opacity: 0;
+    transform: translate3d(112vw, 10px, 0) scale(.94);
+    filter: blur(5px) drop-shadow(0 25px 35px rgb(0 0 0 / .12));
+  }
+  70% {
+    opacity: 1;
+    transform: translate3d(2.2%, 0, 0) scale(1.012);
+    filter: blur(0) drop-shadow(0 25px 30px rgb(0 0 0 / .4));
+  }
+  84% {
+    opacity: 1;
+    transform: translate3d(-.35%, 5px, 0) scale(.996);
+    filter: blur(0) drop-shadow(0 25px 30px rgb(0 0 0 / .4));
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0) drop-shadow(0 25px 30px rgb(0 0 0 / .4));
+  }
+}
+
+@media (max-width: 900px) {
+  body .om17-home .om-car-showcase .om-car-showcase__platform {
+    right: 1% !important;
+    width: 55vw !important;
+    height: 82px !important;
+    bottom: 3.8% !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body .om17-home .om-car-showcase .om-car-showcase__platform {
+    right: 6% !important;
+    width: 88vw !important;
+    height: 64px !important;
+    bottom: 4.2% !important;
+  }
+  body .om17-home .om-car-showcase__platform-base {
+    inset: 9px 0 -13px;
+  }
+  body .om17-home .om-car-showcase__platform-deck {
+    box-shadow:
+      inset 0 2px 5px rgb(255 255 255 / .2),
+      inset 0 -6px 11px rgb(0 0 0 / .46),
+      0 0 16px rgb(var(--car-glow) / .14);
+  }
+}
+
+@media (max-width: 390px) {
+  body .om17-home .om-car-showcase .om-car-showcase__platform {
+    right: 6% !important;
+    width: 88vw !important;
+    height: 58px !important;
+    bottom: 4.4% !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body .om17-home .om-car-showcase__platform-ring,
+  body .om17-home .om-car-showcase__car--incoming {
+    animation: none !important;
+  }
+}

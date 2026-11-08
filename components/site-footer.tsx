@@ -9,14 +9,14 @@ export function SiteFooter() {
           <Link href="/" className="lux-footer-logo" aria-label="OMCAR Car Inspection home">
             <img className="lux-footer-logo-img" src="https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeOp1GtU8b1ixSM0D/a526dc36-b0a0-4787-bbc3-bed064b316c1.png" alt="OMKAR Inspection" width={150} height={58} loading="lazy" decoding="async" />
           </Link>
-          <p>Professional vehicle inspection, structured valuation and evidence-led reporting for clearer decisions.</p>
+          <p>Professional car inspection, structured valuation and evidence-led reporting for clearer decisions.</p>
           <Link className="lux-footer-admin" href="/login"><ShieldCheck size={15} /> Team sign-in <ArrowUpRight size={13} /></Link>
         </div>
         <div className="lux-footer-col">
           <h3>INSPECTION SERVICES</h3>
-          <Link href="/services/new-car-pdi">New Vehicle PDI</Link>
-          <Link href="/services/used-car-inspection">Pre-Owned Vehicle Inspection</Link>
-          <Link href="/#valuation-reports">Vehicle valuation</Link>
+          <Link href="/services/new-car-pdi">New Car PDI</Link>
+          <Link href="/services/used-car-inspection">Pre-Owned Car Inspection</Link>
+          <Link href="/#valuation-reports">Car valuation</Link>
           <Link href="/services/inspection-report">Reports & documentation</Link>
           <Link href="/services">Explore all services <ArrowRight size={13} /></Link>
         </div>

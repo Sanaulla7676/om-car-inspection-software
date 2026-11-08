@@ -7,7 +7,7 @@ import { useEffect, useState, type FormEvent } from "react";
 
 const links = [
   { label: "Home", href: "/" },
-  { label: "Vehicle Inspections", href: "/services" },
+  { label: "Car Inspections", href: "/services" },
   { label: "PDI Training", href: "/masterclass" },
   { label: "About", href: "/about" }
 ];
@@ -21,7 +21,7 @@ export function SiteNavigation() {
   const [enquiryInView, setEnquiryInView] = useState(false);
 
   useEffect(() => {
-    const targets = Array.from(document.querySelectorAll<HTMLElement>("#vehicle-inquiry, .lux-coaching-enquiry"));
+    const targets = Array.from(document.querySelectorAll<HTMLElement>("#car-inquiry, .lux-coaching-enquiry"));
     if (!targets.length || !("IntersectionObserver" in window)) return;
     const visibleTargets = new Set<Element>();
     const observer = new IntersectionObserver((entries) => {

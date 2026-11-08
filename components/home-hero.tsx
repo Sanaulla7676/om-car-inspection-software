@@ -88,11 +88,17 @@ export function HomeHero() {
         </div>
         <div className="om-car-showcase__grain" aria-hidden="true" />
         <div className="om-car-showcase__glow" aria-hidden="true" />
+        <div className="om-car-showcase__platform" aria-hidden="true">
+          <span className="om-car-showcase__platform-base" />
+          <span className="om-car-showcase__platform-deck" />
+          <span className="om-car-showcase__platform-ring" />
+          <span className="om-car-showcase__platform-center" />
+        </div>
         <div className="om-car-showcase__copy">
           <p className="om-car-showcase__eyebrow"><span /> OMCAR CAR INSPECTION</p>
           <p className="om-car-showcase__kicker">CONFIDENCE STARTS BEFORE THE DRIVE</p>
           <h1>SEE BEYOND<br /><em>THE SURFACE.</em></h1>
-          <p className="om-car-showcase__description">Expert-led vehicle inspections. Clear evidence. Better-informed decisions before you buy or accept delivery.</p>
+          <p className="om-car-showcase__description">Expert-led car inspections. Clear evidence. Better-informed decisions before you buy or accept delivery.</p>
           <div className="om-car-showcase__actions">
             <Link href="/book-inspection" className="om-car-showcase__primary">Book an Inspection <ArrowRight size={16} /></Link>
             <Link href="/services/used-car-inspection" className="om-car-showcase__secondary">Explore Our Services</Link>
@@ -116,7 +122,7 @@ export function HomeHero() {
           fetchPriority="high"
         />
         <div className="om-car-showcase__vehicle-label" aria-live="polite">
-          <span>FEATURED VEHICLE</span>
+          <span>FEATURED CAR</span>
           <strong>{car.name}</strong>
           <i>{String(activeIndex + 1).padStart(2, "0")} <b>/</b> {cars.length}</i>
         </div>

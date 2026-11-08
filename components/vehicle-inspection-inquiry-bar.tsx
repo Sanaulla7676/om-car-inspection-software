@@ -4,8 +4,8 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { ArrowRight, CalendarDays, CarFront, Check, ChevronLeft, ChevronRight, MessageCircle, Search } from "lucide-react";
 
 const inspectionTypes = [
-  { value: "New Vehicle PDI", label: "New Vehicle PDI", detail: "Pre-delivery inspection" },
-  { value: "Pre-Owned Vehicle PDI", label: "Pre-Owned PDI", detail: "Pre-purchase inspection" }
+  { value: "New Car PDI", label: "New Car PDI", detail: "Pre-delivery inspection" },
+  { value: "Pre-Owned Car PDI", label: "Pre-Owned PDI", detail: "Pre-purchase inspection" }
 ];
 
 const exampleVehicles = ["Hyundai Verna", "Toyota Fortuner", "Mahindra Thar", "Mahindra XUV700", "Mercedes-Benz"];
@@ -83,11 +83,11 @@ export function VehicleInspectionInquiryBar() {
     const registration = String(values.get("registration") || "").trim();
     const notes = String(values.get("notes") || "").trim();
     const message = [
-      "Hello, I would like to enquire about a vehicle inspection.",
+      "Hello, I would like to enquire about a car inspection.",
       "",
       "Name: " + customer,
       "Contact number: " + phone,
-      "Vehicle make / model: " + vehicle.trim(),
+      "Car make / model: " + vehicle.trim(),
       "Inspection type: " + service,
       "Preferred date: " + prettyDate(selectedDate),
       city.trim() ? "City / location: " + city.trim() : "",
@@ -110,8 +110,8 @@ export function VehicleInspectionInquiryBar() {
       <div className="lux-inspection-inquiry-top">
         <div className="lux-inquiry-heading">
           <span className="lux-inquiry-step">INSPECTION ENQUIRY</span>
-          <h2 id="lux-inspection-inquiry-title">Book a vehicle inspection.</h2>
-          <p>Choose the inspection type, tell us which vehicle you have and select your preferred date. The team will confirm availability on WhatsApp.</p>
+          <h2 id="lux-inspection-inquiry-title">Book a car inspection.</h2>
+          <p>Choose the inspection type, tell us which car you have and select your preferred date. The team will confirm availability on WhatsApp.</p>
         </div>
         <span className="lux-inquiry-icon" aria-hidden="true"><CarFront size={23} /></span>
       </div>
@@ -135,15 +135,15 @@ export function VehicleInspectionInquiryBar() {
           <label className="lux-inspection-field"><span>Mobile / WhatsApp *</span><input name="phone" type="tel" inputMode="tel" autoComplete="tel" required pattern="[+0-9 ()-]{8,20}" placeholder="+91 98765 43210" /></label>
 
           <div className="lux-inspection-field lux-vehicle-picker" ref={vehicleWrap}>
-            <label htmlFor="lux-vehicle-model"><span>Vehicle make & model *</span></label>
+            <label htmlFor="lux-vehicle-model"><span>Car make & model *</span></label>
             <div className="lux-vehicle-entry">
               <CarFront size={17} aria-hidden="true" />
-              <input id="lux-vehicle-model" name="vehicle" value={vehicle} onChange={(event) => { setVehicle(event.target.value); if (event.target.value.trim()) setVehiclePickerOpen(false); }} onFocus={() => { if (!vehicle.trim()) setVehiclePickerOpen(true); }} required minLength={2} autoComplete="off" placeholder="e.g. Toyota Fortuner" aria-expanded={vehiclePickerOpen} aria-controls="lux-vehicle-suggestions" />
-              <button type="button" aria-label="Choose an example vehicle" aria-expanded={vehiclePickerOpen} onClick={() => setVehiclePickerOpen((open) => !open)}><Search size={16} /></button>
+              <input id="lux-vehicle-model" name="vehicle" value={vehicle} onChange={(event) => { setVehicle(event.target.value); if (event.target.value.trim()) setVehiclePickerOpen(false); }} onFocus={() => { if (!vehicle.trim()) setVehiclePickerOpen(true); }} required minLength={2} autoComplete="off" placeholder="e.g. Toyota Fortuner" aria-expanded={vehiclePickerOpen} aria-controls="lux-car-suggestions" />
+              <button type="button" aria-label="Choose an example car" aria-expanded={vehiclePickerOpen} onClick={() => setVehiclePickerOpen((open) => !open)}><Search size={16} /></button>
             </div>
-            {vehiclePickerOpen && <div className="lux-vehicle-suggestions" id="lux-vehicle-suggestions" role="dialog" aria-label="Vehicle make and model examples">
+            {vehiclePickerOpen && <div className="lux-vehicle-suggestions" id="lux-vehicle-suggestions" role="dialog" aria-label="Car make and model examples">
               <p>Type your model or choose an example</p>
-              <div>{exampleVehicles.filter((item) => !vehicle || item.toLowerCase().includes(vehicle.toLowerCase()) || vehicle.length < 2).map((item) => <button type="button" key={item} onClick={() => { setVehicle(item); setVehiclePickerOpen(false); }}>{item}<ArrowRight size={12} /></button>)}</div>
+              <div>{exampleVehicles.filter((item) => !car || item.toLowerCase().includes(car.toLowerCase()) || car.length < 2).map((item) => <button type="button" key={item} onClick={() => { setVehicle(item); setVehiclePickerOpen(false); }}>{item}<ArrowRight size={12} /></button>)}</div>
             </div>}
           </div>
 
@@ -191,7 +191,7 @@ export function VehicleInspectionInquiryBar() {
         <details className="lux-inquiry-extra" open={optionalOpen} onToggle={(event) => setOptionalOpen(event.currentTarget.open)}>
           <summary>Registration number or additional details (optional)</summary>
           <div className="lux-inquiry-extra-fields">
-            <label><span>Vehicle registration</span><input name="registration" placeholder="e.g. KA 03 XX 1234" /></label>
+            <label><span>Car registration</span><input name="registration" placeholder="e.g. KA 03 XX 1234" /></label>
             <label><span>Additional details</span><input name="notes" placeholder="New / used, preferred time, concerns…" /></label>
           </div>
         </details>

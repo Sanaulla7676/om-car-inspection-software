@@ -37,21 +37,21 @@ const TRAINING_IMAGE = "https://d2ol7oe51mr4n9.cloudfront.net/user_35mtirXTBJzeO
 const services = [
   {
     number: "01",
-    label: "NEW VEHICLE",
+    label: "NEW CAR",
     title: "Pre-delivery inspection",
     text: "Review visible finish, panels, glass, cabin details, accessible functions and delivery documents before accepting a new car.",
     image: NEW_CAR_IMAGE,
-    alt: "Vehicle prepared for a new-car pre-delivery inspection",
+    alt: "Car prepared for a new-car pre-delivery inspection",
     href: "/services/new-car-pdi",
     link: "Explore new-car PDI"
   },
   {
     number: "02",
-    label: "PRE-OWNED VEHICLE",
+    label: "PRE-OWNED CAR",
     title: "Used-car condition review",
     text: "Document visible body condition, wear, tyres, cabin details and issues that may warrant a specialist follow-up.",
     image: "https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/40087/thar-exterior-right-front-three-quarter-37.jpeg?isig=0&q=80",
-    alt: "Pre-owned vehicle shown for a condition review",
+    alt: "Pre-owned car shown for a condition review",
     href: "/services/used-car-inspection",
     link: "Explore pre-owned inspection"
   },
@@ -61,7 +61,7 @@ const services = [
     title: "Clear inspection reporting",
     text: "Understand how observations, relevant photographs, inspection scope and limitations are brought together in a report.",
     image: INSPECTION_IMAGE,
-    alt: "Inspector documenting vehicle condition",
+    alt: "Inspector documenting car condition",
     href: "/services/inspection-report",
     link: "Explore reporting"
   },
@@ -71,14 +71,14 @@ const services = [
     title: "Learn the inspection method",
     text: "Explore a guided six-day learning path covering inspection sequence, visible checks, evidence capture and report writing.",
     image: TRAINING_IMAGE,
-    alt: "Practical vehicle PDI training",
+    alt: "Practical car PDI training",
     href: "/masterclass",
     link: "Explore PDI training"
   }
 ];
 
 const steps = [
-  { n: "01", title: "Tell us what you need", text: "Choose an inspection or training path and share the vehicle, location or learning details." },
+  { n: "01", title: "Tell us what you need", text: "Choose an inspection or training path and share the car, location or learning details." },
   { n: "02", title: "Confirm the scope", text: "The team confirms availability, inspection scope, location and fees before finalizing the booking." },
   { n: "03", title: "Inspect and document", text: "Relevant observations and available photo evidence are recorded within the agreed scope." }
 ];
@@ -94,7 +94,7 @@ const faqs = [
   },
   {
     q: "Can I request an inspection before buying a used car?",
-    a: "You can submit a request for a pre-owned vehicle condition review. Availability, access to the vehicle and the agreed scope must be confirmed before the appointment."
+    a: "You can submit a request for a pre-owned car condition review. Availability, access to the car and the agreed scope must be confirmed before the appointment."
   },
   {
     q: "Does an inspection guarantee that a car has no faults?",
@@ -102,11 +102,11 @@ const faqs = [
   },
   {
     q: "How much does an inspection cost?",
-    a: "The fee depends on factors such as vehicle type, location, access and the requested scope. The team confirms the applicable fee before a booking is finalized."
+    a: "The fee depends on factors such as car type, location, access and the requested scope. The team confirms the applicable fee before a booking is finalized."
   },
   {
     q: "Where are inspections available?",
-    a: "Share your vehicle's location when enquiring. The team will confirm whether the requested location and timing can be supported before you commit."
+    a: "Share your car's location when enquiring. The team will confirm whether the requested location and timing can be supported before you commit."
   },
   {
     q: "What does the six-day PDI training include?",
@@ -131,7 +131,7 @@ function openWhatsAppEnquiry(event: FormEvent<HTMLFormElement>) {
     "Name: " + name,
     "Interested in: " + path,
     "Location: " + location,
-    vehicle ? "Vehicle details: " + vehicle : "",
+    vehicle ? "Car details: " + vehicle : "",
     details ? "Additional details: " + details : "",
     "Please confirm availability, scope and fees before booking."
   ].filter(Boolean).join("\n");
@@ -191,7 +191,7 @@ export default function PublicLanding() {
             <div className="om17-pathway-grid" aria-label="Choose your OMKAR pathway">
               <Link href="/book-inspection" className="om17-pathway-card">
                 <span className="om17-pathway-icon"><CarFront size={22} /></span>
-                <span className="om17-pathway-copy"><small>FOR CAR OWNERS & BUYERS</small><b>Need a vehicle inspected?</b><span>Request new-car PDI or a pre-owned condition review.</span></span>
+                <span className="om17-pathway-copy"><small>FOR CAR OWNERS & BUYERS</small><b>Need a car inspected?</b><span>Request new-car PDI or a pre-owned condition review.</span></span>
                 <ArrowRight className="om17-pathway-arrow" size={18} />
               </Link>
               <Link href="/masterclass" className="om17-pathway-card om17-pathway-training">
@@ -220,7 +220,7 @@ export default function PublicLanding() {
             <div className="om17-training-outline">
               <div><p className="om17-kicker"><span /> SIX-DAY PDI LEARNING PATH</p><h3>Learn the sequence, not just the checklist.</h3><p>Training details are confirmed before enrolment. This outline describes the intended learning topics, not a job or income promise.</p></div>
               <div className="om17-learning-steps">
-                <article><span>DAYS 01–02</span><b>Foundations & exterior</b><p>Inspection order, vehicle identity, panels, paint, glass, lights, tyres and wheels.</p></article>
+                <article><span>DAYS 01–02</span><b>Foundations & exterior</b><p>Inspection order, car identity, panels, paint, glass, lights, tyres and wheels.</p></article>
                 <article><span>DAYS 03–04</span><b>Cabin & accessible systems</b><p>Cabin controls, safe visual observations and diagnostic-code awareness.</p></article>
                 <article><span>DAY 05</span><b>Evidence & reporting</b><p>Record observations, connect photographs and describe uncertainty.</p></article>
                 <article><span>DAY 06</span><b>Guided practice</b><p>Review an inspection sequence and practise customer-ready reporting.</p></article>
@@ -252,11 +252,11 @@ export default function PublicLanding() {
           <div className="om17-container om17-feature-layout">
             <div className="om17-report-preview" aria-label="Illustrative report layout preview">
               <div className="om17-report-top"><span>OMKAR / REPORT FORMAT</span><span>EXAMPLE LAYOUT</span></div>
-              <div className="om17-report-meta"><div><small>REPORT TYPE</small><b>Vehicle condition review</b></div><div><small>RECORD STYLE</small><b>Observation + evidence</b></div></div>
+              <div className="om17-report-meta"><div><small>REPORT TYPE</small><b>Car condition review</b></div><div><small>RECORD STYLE</small><b>Observation + evidence</b></div></div>
               <div className="om17-report-row"><span className="om17-report-index">01</span><div><b>Observed item</b><p>Describe the visible condition in plain, specific language.</p></div><span className="om17-report-tag">OBSERVED</span></div>
               <div className="om17-report-row"><span className="om17-report-index">02</span><div><b>Photo reference</b><p>Attach the relevant photograph to the related observation.</p></div><span className="om17-report-tag">EVIDENCE</span></div>
               <div className="om17-report-row"><span className="om17-report-index">03</span><div><b>Scope limitation</b><p>Record what could not be verified and what may need follow-up.</p></div><span className="om17-report-tag">LIMIT</span></div>
-              <div className="om17-report-bottom"><ShieldCheck size={18} /><span>This is a layout illustration, not an actual vehicle report.</span></div>
+              <div className="om17-report-bottom"><ShieldCheck size={18} /><span>This is a layout illustration, not an actual car report.</span></div>
             </div>
             <div className="om17-section-heading">
               <p className="om17-kicker"><span /> SEE HOW FINDINGS ARE PRESENTED</p>
@@ -308,18 +308,18 @@ export default function PublicLanding() {
               <article><span className="om17-case-step">02 / DOCUMENT</span><h3>Link supporting evidence</h3><p>Record a clear photo from a useful angle and connect it to the written observation in the report.</p></article>
               <article><span className="om17-case-step">03 / EXPLAIN</span><h3>State the limitation</h3><p>Explain that a visual observation alone does not establish underlying damage. Recommend further assessment when appropriate.</p></article>
             </div>
-            <p className="om17-case-note">This example explains a reporting method. It is not evidence from an actual OMKAR inspection and does not describe a real customer's vehicle or outcome.</p>
+            <p className="om17-case-note">This example explains a reporting method. It is not evidence from an actual OMKAR inspection and does not describe a real customer's car or outcome.</p>
           </div>
         </section>
 
         {/* 11 / About the company */}
         <section className="om17-section om17-about" aria-labelledby="om17-about-title">
           <div className="om17-container om17-about-layout">
-            <div className="om17-about-mark"><img src="/car-assets/01_dark_blue_SUV.png" alt="Dark blue SUV representing vehicles reviewed by OMKAR" loading="lazy" /><span>OM / INSPECTION</span></div>
+            <div className="om17-about-mark"><img src="/car-assets/01_dark_blue_SUV.png" alt="Dark blue SUV representing cars reviewed by OMKAR" loading="lazy" /><span>OM / INSPECTION</span></div>
             <div className="om17-section-heading">
               <p className="om17-kicker"><span /> ABOUT OMKAR</p>
               <h2 id="om17-about-title">Built around practical checks, not confident guesses.</h2>
-              <p>OMKAR brings a process-first approach to vehicle condition reviews: a repeatable checklist, relevant photo evidence, clear findings and an honest record of what still needs verification. The same principles shape the PDI learning roadmap.</p>
+              <p>OMKAR brings a process-first approach to car condition reviews: a repeatable checklist, relevant photo evidence, clear findings and an honest record of what still needs verification. The same principles shape the PDI learning roadmap.</p>
               <p>From planning a new-car handover to asking better questions before a used-car purchase, the aim is straightforward: help people make informed decisions with a clearer view of the evidence, the limitations and the next step.</p>
               <div className="om17-about-principles" aria-label="OMKAR approach">
                 <span><b>01</b><strong>Observe</strong><small>Use a repeatable sequence</small></span>
@@ -337,14 +337,14 @@ export default function PublicLanding() {
             <div className="om17-section-heading">
               <p className="om17-kicker"><span /> PRICING & SCOPE</p>
               <h2 id="om17-pricing-title">Know the fee before confirming.</h2>
-              <p>We do not display an unverified fixed price here. Request a quote for your vehicle and location; the applicable fee should be confirmed before the booking is finalized.</p>
+              <p>We do not display an unverified fixed price here. Request a quote for your car and location; the applicable fee should be confirmed before the booking is finalized.</p>
             </div>
             <div className="om17-price-grid">
-              <article><span>01</span><h3>Vehicle and service</h3><p>New-car PDI, pre-owned condition review or a reporting-related request may require different scopes.</p></article>
-              <article><span>02</span><h3>Location and access</h3><p>Availability, travel and access to the vehicle affect what can be arranged.</p></article>
+              <article><span>01</span><h3>Car and service</h3><p>New-car PDI, pre-owned condition review or a reporting-related request may require different scopes.</p></article>
+              <article><span>02</span><h3>Location and access</h3><p>Availability, travel and access to the car affect what can be arranged.</p></article>
               <article><span>03</span><h3>Agreed scope</h3><p>Confirm the checks included, limits, deliverable and any follow-up expectations before committing.</p></article>
             </div>
-            <div className="om17-quote-cta"><span><b>Need an exact fee?</b><small>Share the vehicle and location so the team can confirm scope and availability.</small></span><Link href="/book-inspection" className="om17-button om17-button-dark">Request a quote <ArrowRight size={16} /></Link></div>
+            <div className="om17-quote-cta"><span><b>Need an exact fee?</b><small>Share the car and location so the team can confirm scope and availability.</small></span><Link href="/book-inspection" className="om17-button om17-button-dark">Request a quote <ArrowRight size={16} /></Link></div>
           </div>
         </section>
 
@@ -384,7 +384,7 @@ export default function PublicLanding() {
           <div className="om17-container om17-contact-layout">
             <div className="om17-section-heading">
               <p className="om17-kicker"><span /> LOCATION & AVAILABILITY</p>
-              <h2 id="om17-contact-title">Tell us where the vehicle is.</h2>
+              <h2 id="om17-contact-title">Tell us where the car is.</h2>
               <p>Inspection coverage and appointment availability must be confirmed for your location. Share the city or area when enquiring; do not assume every location is currently covered.</p>
             </div>
             <div className="om17-contact-actions">
@@ -412,13 +412,13 @@ export default function PublicLanding() {
               <select id="om17-path" name="path" required defaultValue="">
                 <option value="" disabled>Select a service</option>
                 <option>New-car PDI inspection</option>
-                <option>Pre-owned vehicle inspection</option>
+                <option>Pre-owned car inspection</option>
                 <option>Inspection report information</option>
                 <option>Six-day PDI training</option>
               </select>
-              <label htmlFor="om17-location">Vehicle or course location</label>
+              <label htmlFor="om17-location">Car or course location</label>
               <input id="om17-location" name="location" required maxLength={120} placeholder="City or area" />
-              <label htmlFor="om17-vehicle">Vehicle make / model (optional)</label>
+              <label htmlFor="om17-vehicle">Car make / model (optional)</label>
               <input id="om17-vehicle" name="vehicle" maxLength={160} placeholder="e.g. make, model and year" />
               <label htmlFor="om17-details">Anything else we should know? (optional)</label>
               <textarea id="om17-details" name="details" rows={3} maxLength={800} placeholder="Share your preferred timing or question" />
