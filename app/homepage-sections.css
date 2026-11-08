@@ -2465,3 +2465,17 @@ body .om17-home .site-header-v2.luxury-header {
     padding: 20px 16px;
   }
 }
+
+
+/* Mobile-only OMCAR docking correction.
+   The old fixed 100px shift was not tied to the viewport or vehicle size. */
+@media (max-width: 760px) {
+  body .om17-home .om-car-showcase .om-car-showcase__platform {
+    transform: translateY(clamp(108px, 15vh, 140px)) !important;
+  }
+}
+@media (max-width: 390px) {
+  body .om17-home .om-car-showcase .om-car-showcase__platform {
+    transform: translateY(clamp(108px, 15vh, 140px)) !important;
+  }
+}

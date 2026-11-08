@@ -8,6 +8,7 @@ import { SiteEffects } from "@/components/site-effects";
 import { ScrollMotion } from "@/components/scroll-motion";
 import { CoachingInquiryForm } from "@/components/coaching-inquiry-form";
 import { TrainingCurriculum } from "@/components/training-curriculum";
+import { PdiTrainingHeroAnimation } from "@/components/pdi-training-hero-animation";
 
 const trainingDays = [
   ["DAY 01", "Inspection workflow and safety", "Car identity, scope, safe work habits and the order of checks."],
@@ -136,10 +137,14 @@ const DEFAULT_PAGE_HERO = {
               </aside>
             </div>
           </div>
-          <div className={"marketing-page-hero-photo" + (content.slug === "masterclass" ? " marketing-masterclass-banner" : "")} data-gsap-page-expand>
-            <img src={heroImage} alt={pageHero.alt} fetchPriority="high" />
-            <div className="marketing-page-photo-label"><span>{heroImageLabel}</span><b>{content.title}</b></div>
-          </div>
+          {isMasterclass ? (
+            <PdiTrainingHeroAnimation />
+          ) : (
+            <div className="marketing-page-hero-photo" data-gsap-page-expand>
+              <img src={heroImage} alt={pageHero.alt} fetchPriority="high" />
+              <div className="marketing-page-photo-label"><span>{heroImageLabel}</span><b>{content.title}</b></div>
+            </div>
+          )}
         </section>
 
         {isMasterclass && <section className="marketing-main-section" aria-labelledby="masterclass-schedule-heading">
