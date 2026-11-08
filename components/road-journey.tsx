@@ -121,7 +121,7 @@ export function RoadJourney() {
           <div className="road-sign-pole" />
           <div className="road-warning-board"><TriangleAlert size={21} /><b>CHECK AHEAD</b><small>NOT GUESSWORK</small></div>
         </div>
-        <img className="road-hero-car" src="/car-assets/08_blue_Tata_Nexon.png" alt="" />
+        <img className="road-hero-car" src="/car-assets/10_black_Toyota_Prado.png" alt="" />
         <span className="road-road-caption">SAFE ROUTE <i /> CLEAR EVIDENCE <i /> BETTER DECISIONS</span>
       </div>
 
