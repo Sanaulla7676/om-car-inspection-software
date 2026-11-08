@@ -2323,3 +2323,25 @@ body .om17-home .site-header-v2.luxury-header {
   -webkit-backdrop-filter: blur(10px) saturate(1.08) !important;
   backdrop-filter: blur(10px) saturate(1.08) !important;
 }
+
+
+/* Phone-only refinements: real portrait promo stage and a lower display plinth.
+   Desktop rules above remain unchanged. */
+@media (max-width: 640px) {
+  body .om17-home .om17-promo-animation {
+    width: min(100%, calc(100svh * 9 / 16));
+    aspect-ratio: 9 / 16;
+    min-height: 0;
+    margin-inline: auto;
+  }
+}
+@media (max-width: 760px) {
+  body .om17-home .om-car-showcase .om-car-showcase__platform {
+    transform: translateY(100px) !important;
+  }
+}
+@media (max-width: 390px) {
+  body .om17-home .om-car-showcase .om-car-showcase__platform {
+    transform: translateY(100px) !important;
+  }
+}
