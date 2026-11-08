@@ -114,38 +114,42 @@ const DEFAULT_PAGE_HERO = {
       <ScrollMotion />
       <SiteNavigation />
       <main>
-        <section className="marketing-hero">
-          <div className="marketing-hero-content">
-            <nav className="breadcrumbs" aria-label="Breadcrumb">
-              {breadcrumbs.map((crumb, index) => <span key={crumb.label} className="breadcrumb-item">{index > 0 && <ChevronRight size={12} />}<Link href={crumb.href as any}>{crumb.label}</Link></span>)}
-            </nav>
-            <div className="marketing-hero-grid">
-              <div>
-                <p className="eyebrow eyebrow-on-dark"><span className="eyebrow-live-dot" /> {isGuide ? "INSPECTION LEARNING GUIDE" : isMasterclass ? "PRACTICAL CAR TRAINING" : content.kind === "static" ? "OM CAR INSPECTION" : "CAR INSPECTION SERVICE"}</p>
-                <h1 className="marketing-hero-title">{content.title}</h1>
-                <p className="marketing-hero-tagline shiny-heading">{content.tagline}</p>
-                <p className="marketing-hero-intro">{content.intro}</p>
-                <div className="marketing-hero-actions">
-                  <Link href={(content.primaryHref || (isGuide ? "/services/used-car-inspection" : "/book-inspection")) as any} className="site-button-v2 button-bright">{content.primaryLabel || (isGuide ? "Explore inspection services" : "Request an inspection")} <ArrowRight size={15} /></Link>
-                  <Link href="/login" className="site-button-v2 button-glass"><ShieldCheck size={15} /> Team sign in</Link>
+        {isMasterclass ? (
+          <PdiTrainingHeroAnimation />
+        ) : (
+          <section className="marketing-hero">
+            <div className="marketing-hero-content">
+              <nav className="breadcrumbs" aria-label="Breadcrumb">
+                {breadcrumbs.map((crumb, index) => <span key={crumb.label} className="breadcrumb-item">{index > 0 && <ChevronRight size={12} />}<Link href={crumb.href as any}>{crumb.label}</Link></span>)}
+              </nav>
+              <div className="marketing-hero-grid">
+                <div>
+                  <p className="eyebrow eyebrow-on-dark"><span className="eyebrow-live-dot" /> {isGuide ? "INSPECTION LEARNING GUIDE" : isMasterclass ? "PRACTICAL CAR TRAINING" : content.kind === "static" ? "OM CAR INSPECTION" : "CAR INSPECTION SERVICE"}</p>
+                  <h1 className="marketing-hero-title">{content.title}</h1>
+                  <p className="marketing-hero-tagline shiny-heading">{content.tagline}</p>
+                  <p className="marketing-hero-intro">{content.intro}</p>
+                  <div className="marketing-hero-actions">
+                    <Link href={(content.primaryHref || (isGuide ? "/services/used-car-inspection" : "/book-inspection")) as any} className="site-button-v2 button-bright">{content.primaryLabel || (isGuide ? "Explore inspection services" : "Request an inspection")} <ArrowRight size={15} /></Link>
+                    <Link href="/login" className="site-button-v2 button-glass"><ShieldCheck size={15} /> Team sign in</Link>
+                  </div>
                 </div>
+                <aside className="marketing-hero-meta" data-gsap-reveal>
+                  <span className="meta-kicker">{isGuide ? "WHAT THIS PAGE COVERS" : "A CLEARER WORKFLOW"}</span>
+                  <strong>{isGuide ? "Learn the limits as well as the checks." : "Define scope before the inspection begins."}</strong>
+                  <p>{isGuide ? "Use the guide to ask better questions and identify when more evidence is needed." : "Access, test conditions and available evidence shape what an inspection can establish."}</p>
+                </aside>
               </div>
-              <aside className="marketing-hero-meta" data-gsap-reveal>
-                <span className="meta-kicker">{isGuide ? "WHAT THIS PAGE COVERS" : "A CLEARER WORKFLOW"}</span>
-                <strong>{isGuide ? "Learn the limits as well as the checks." : "Define scope before the inspection begins."}</strong>
-                <p>{isGuide ? "Use the guide to ask better questions and identify when more evidence is needed." : "Access, test conditions and available evidence shape what an inspection can establish."}</p>
-              </aside>
             </div>
-          </div>
-          {isMasterclass ? (
-            <PdiTrainingHeroAnimation />
-          ) : (
-            <div className="marketing-page-hero-photo" data-gsap-page-expand>
-              <img src={heroImage} alt={pageHero.alt} fetchPriority="high" />
-              <div className="marketing-page-photo-label"><span>{heroImageLabel}</span><b>{content.title}</b></div>
-            </div>
-          )}
-        </section>
+            {isMasterclass ? (
+              <PdiTrainingHeroAnimation />
+            ) : (
+              <div className="marketing-page-hero-photo" data-gsap-page-expand>
+                <img src={heroImage} alt={pageHero.alt} fetchPriority="high" />
+                <div className="marketing-page-photo-label"><span>{heroImageLabel}</span><b>{content.title}</b></div>
+              </div>
+            )}
+          </section>
+        )}
 
         {isMasterclass && <section className="marketing-main-section" aria-labelledby="masterclass-schedule-heading">
           <div className="site-container-v2">
