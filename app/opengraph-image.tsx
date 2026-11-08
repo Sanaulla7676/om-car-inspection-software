@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "OM Car Inspection — Inspect, learn and build with evidence-led vehicle checks";
+export const alt = "OM Car Inspection — Inspect, learn and build with evidence-led car checks";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -17,7 +17,7 @@ export default function OpenGraphImage() {
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 17, maxWidth: 960 }}>
-          <div style={{ fontSize: 19, color: "#ff967e", letterSpacing: 4, fontWeight: 700 }}>EVIDENCE-LED VEHICLE CHECKS</div>
+          <div style={{ fontSize: 19, color: "#ff967e", letterSpacing: 4, fontWeight: 700 }}>EVIDENCE-LED CAR CHECKS</div>
           <div style={{ fontSize: 70, lineHeight: 1.02, fontWeight: 800, letterSpacing: -3 }}>Inspect before you buy.</div>
           <div style={{ fontSize: 24, lineHeight: 1.45, color: "#d4dce5" }}>Used-car inspection · New-car PDI · Practical inspection learning</div>
         </div>
