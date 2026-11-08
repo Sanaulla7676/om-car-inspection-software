@@ -2345,3 +2345,123 @@ body .om17-home .site-header-v2.luxury-header {
     transform: translateY(100px) !important;
   }
 }
+
+
+/* Mobile-only layout finishing pass: contained grids, readable copy and thumb-friendly controls. */
+@media (max-width: 760px) {
+  body:has(.om17-home) {
+    overflow-x: clip;
+  }
+  .om17-home,
+  .om17-home main,
+  .om17-home main > section {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: clip;
+  }
+  .om17-home .om17-container {
+    width: 100%;
+    max-width: 100%;
+    padding-inline: clamp(16px, 4.5vw, 22px);
+  }
+  .om17-home .om17-section {
+    padding-block: 54px;
+  }
+  .om17-home .om17-section-heading,
+  .om17-home .om17-section-heading > p:not(.om17-kicker) {
+    max-width: 100%;
+  }
+  .om17-home .om17-heading-split {
+    align-items: flex-start;
+  }
+  .om17-home .om17-heading-split > p {
+    max-width: 100% !important;
+  }
+  .om17-home .om17-quote-cta {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .om17-home .om17-quote-cta .om17-button,
+  .om17-home .om17-final .om17-button {
+    width: 100%;
+  }
+  .om17-home .om17-centered-link {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 13px;
+  }
+  .om17-home .om17-button,
+  .om17-home .om17-pathway-card,
+  .om17-home .om17-contact-link {
+    min-height: 46px;
+  }
+  .om17-home .om17-text-link {
+    min-height: 44px;
+    align-items: center;
+  }
+  .om17-home .om17-faq-item summary {
+    min-height: 60px;
+    padding-block: 16px;
+  }
+  .om17-home .om17-enquiry-form input,
+  .om17-home .om17-enquiry-form select,
+  .om17-home .om17-enquiry-form textarea {
+    width: 100%;
+    max-width: 100%;
+    min-height: 46px;
+    font-size: 16px;
+  }
+  .om17-home .om17-service-card,
+  .om17-home .om17-report-preview,
+  .om17-home .om17-training-outline,
+  .om17-home .om17-testimonial-panel,
+  .om17-home .om17-case-grid article,
+  .om17-home .om17-price-grid article,
+  .om17-home .om17-resource-card {
+    min-width: 0;
+  }
+  .om17-home img,
+  .om17-home video,
+  .om17-home iframe {
+    max-width: 100%;
+  }
+  /* Reduce costly full-screen paint effects on phones while preserving the scene. */
+  .om17-home .om-car-showcase__grain {
+    display: none !important;
+  }
+  .om17-home .om-car-showcase__glow {
+    filter: blur(12px) !important;
+  }
+  body .om17-home .om-car-showcase .om-car-showcase__lava svg {
+    filter: blur(12px) saturate(1.05) !important;
+  }
+  .om17-home .om-car-showcase__car {
+    filter: drop-shadow(0 12px 16px rgb(0 0 0 / .28)) !important;
+  }
+  body .om17-home .om-car-showcase .om-car-showcase__platform {
+    filter: drop-shadow(0 10px 12px rgb(0 0 0 / .28)) !important;
+  }
+}
+@media (max-width: 390px) {
+  .om17-home .om17-container {
+    padding-inline: 16px;
+  }
+  .om17-home .om17-section {
+    padding-block: 48px;
+  }
+  .om17-home .om17-section-heading h2,
+  .om17-home .om17-final-copy h2 {
+    font-size: clamp(28px, 8.4vw, 34px);
+  }
+  .om17-home .om17-service-copy {
+    padding: 18px 16px 20px;
+  }
+  .om17-home .om17-report-preview {
+    padding: 16px;
+  }
+  .om17-home .om17-training-outline {
+    padding: 20px 16px;
+  }
+}

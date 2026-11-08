@@ -69,9 +69,11 @@ let IS_MOBILE_LAYOUT = window.matchMedia("(max-width: 640px)").matches;
 let W = IS_MOBILE_LAYOUT ? 1080 : 1920;
 let H = IS_MOBILE_LAYOUT ? 1920 : 1080;
 const canvas = document.getElementById('c');
-canvas.width = W;
-canvas.height = H;
+// Render mobile at 720x1280 (still 9:16) to cut canvas pixel work by about 55%.
+canvas.width = IS_MOBILE_LAYOUT ? 720 : 1920;
+canvas.height = IS_MOBILE_LAYOUT ? 1280 : 1080;
 const ctx = canvas.getContext('2d');
+if (IS_MOBILE_LAYOUT) ctx.scale(canvas.width / W, canvas.height / H);
 
 
 // ─── OMCAR BRAND ASSETS (logo + exactly three photographs) ───
@@ -1432,8 +1434,9 @@ function syncCanvasOrientation() {
   IS_MOBILE_LAYOUT = nextMobile;
   W = nextMobile ? 1080 : 1920;
   H = nextMobile ? 1920 : 1080;
-  canvas.width = W;
-  canvas.height = H;
+  canvas.width = nextMobile ? 720 : 1920;
+  canvas.height = nextMobile ? 1280 : 1080;
+  ctx.setTransform(canvas.width / W, 0, 0, canvas.height / H, 0, 0);
   if (!nextMobile) [imgLogo, imgPDI, imgUsed, imgTraining, imgCar].forEach(ensureAsset);
   window.seek(currentTime);
 }
