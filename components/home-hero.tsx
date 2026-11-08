@@ -53,11 +53,13 @@ export function HomeHero() {
   }, [outgoingIndex]);
 
   useEffect(() => {
-    cars.forEach((item) => {
-      const image = new Image();
-      image.src = item.image;
-    });
-  }, []);
+    const nextCar = cars[(activeIndex + 1) % cars.length];
+    const image = new Image();
+    image.decoding = "async";
+    image.fetchPriority = "low";
+    image.src = nextCar.image;
+    void image.decode().catch(() => undefined);
+  }, [activeIndex]);
 
   return (
     <section className="lux-car-image-hero lux-synchronized-hero om-car-showcase" aria-label="OMCAR car inspection hero" style={heroStyle}>

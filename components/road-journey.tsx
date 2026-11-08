@@ -4,11 +4,9 @@ import { useRef } from "react";
 import Link from "next/link";
 import { ArrowDownRight, ArrowRight, CarFront, Footprints, Gauge, ShieldCheck, TriangleAlert } from "lucide-react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import AnimatedContent from "@/components/AnimatedContent";
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+gsap.registerPlugin(useGSAP);
 
 export function RoadJourney() {
   const root = useRef<HTMLElement>(null);
@@ -17,77 +15,48 @@ export function RoadJourney() {
     const element = root.current;
     if (!element) return;
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      gsap.set(element.querySelectorAll(".road-sign, .road-crossing, .road-hero-car, .road-story-copy"), {
-        clearProps: "all",
-        autoAlpha: 1,
-      });
+    const animatedElements = element.querySelectorAll(".road-sign, .road-crossing, .road-hero-car, .road-story-copy");
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) {
+      gsap.set(animatedElements, { clearProps: "all", autoAlpha: 1 });
       return;
     }
 
     const signs = gsap.utils.toArray<HTMLElement>(".road-sign", element);
-    signs.forEach((sign, index) => {
-      gsap.fromTo(sign,
-        { y: 84 + index * 25, scale: .74, rotateY: index % 2 ? -8 : 8, autoAlpha: .15 },
-        {
-          y: -34 - index * 10,
-          scale: index % 2 ? 1.05 : 1,
-          rotateY: 0,
-          autoAlpha: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: element,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: .55,
-            invalidateOnRefresh: true,
-          },
-        },
-      );
-    });
+    const crossing = element.querySelector<HTMLElement>(".road-crossing");
+    const car = element.querySelector<HTMLElement>(".road-hero-car");
+    const copy = element.querySelector<HTMLElement>(".road-story-copy");
 
-    gsap.fromTo(".road-crossing",
-      { y: 110, scaleY: .64, autoAlpha: .25 },
-      {
-        y: -82,
-        scaleY: 1.06,
-        autoAlpha: 1,
-        ease: "none",
-        scrollTrigger: {
-          trigger: element,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: .5,
-          invalidateOnRefresh: true,
-        },
-      },
-    );
+    gsap.set(signs, { y: 28, scale: .96, rotateY: 0, autoAlpha: .45 });
+    if (crossing) gsap.set(crossing, { y: 24, scaleY: .94, autoAlpha: .55 });
+    if (car) gsap.set(car, { xPercent: -7, y: 18, scale: .95, rotate: -.5 });
+    if (copy) gsap.set(copy, { y: 22, autoAlpha: 0 });
 
-    gsap.fromTo(".road-hero-car",
-      { xPercent: -13, y: 42, scale: .78, rotate: -1.5 },
-      {
-        xPercent: 0,
-        y: -4,
-        scale: 1,
-        rotate: 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: element,
-          start: "top 85%",
-          end: "center 40%",
-          scrub: .6,
-          invalidateOnRefresh: true,
-        },
-      },
-    );
+    const entrance = gsap.timeline({ paused: true });
+    entrance.to(signs, {
+      y: 0, scale: 1, autoAlpha: 1, duration: .68, stagger: .08, ease: "power3.out"
+    }, 0);
+    if (crossing) entrance.to(crossing, {
+      y: 0, scaleY: 1, autoAlpha: 1, duration: .8, ease: "power3.out"
+    }, .05);
+    if (car) entrance.to(car, {
+      xPercent: 0, y: 0, scale: 1, rotate: 0, duration: .9, ease: "power3.out"
+    }, .08);
+    if (copy) entrance.to(copy, {
+      y: 0, autoAlpha: 1, duration: .7, ease: "power3.out"
+    }, .14);
 
-    gsap.fromTo(".road-story-copy",
-      { autoAlpha: 0, y: 34, filter: "blur(8px)" },
-      {
-        autoAlpha: 1, y: 0, filter: "blur(0px)", duration: .95, ease: "power3.out",
-        scrollTrigger: { trigger: element, start: "top 72%", once: true },
-      },
-    );
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        entrance.play(0);
+        observer.disconnect();
+      }
+    }, { threshold: .16, rootMargin: "0px 0px -8% 0px" });
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+      entrance.kill();
+    };
   }, { scope: root });
 
   return (
@@ -126,7 +95,7 @@ export function RoadJourney() {
       </div>
 
       <div className="road-story-copy">
-        <AnimatedContent className="road-copy-inner" distance={28} duration={.9} blur={4} wipe="up" threshold={.12}>
+        <div className="road-copy-inner">
           <p className="road-copy-eyebrow"><span /> THE INSPECTION JOURNEY</p>
           <h2 id="road-journey-heading">Slow down at the signs. Look closer before the turn.</h2>
           <p>From a new-car handover to a used-car purchase, every stop is a chance to record what you can see, ask what still needs checking and avoid treating a guess as a fact.</p>
@@ -136,7 +105,7 @@ export function RoadJourney() {
             <span><CarFront size={16} /> Evidence you can revisit</span>
           </div>
           <Link href="/guides/what-to-check-before-buying-used-car" className="road-copy-cta">Read the buyer checklist <ArrowRight size={16} /></Link>
-        </AnimatedContent>
+        </div>
       </div>
       <div className="road-journey-tail"><ArrowDownRight size={17} /><span>KEEP SCROLLING · THERE IS MORE TO CHECK</span></div>
     </section>

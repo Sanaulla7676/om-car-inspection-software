@@ -4,62 +4,72 @@ import { useEffect } from "react";
 
 export function SiteEffects() {
   useEffect(() => {
-    const root = document.documentElement;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const elements = Array.from(document.querySelectorAll("[data-reveal]"));
+    const elements = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
     let observer: IntersectionObserver | null = null;
 
-    if (reducedMotion || !("IntersectionObserver" in window)) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) {
       elements.forEach((element) => element.classList.add("reveal-in"));
     } else {
-      const activeObserver = new IntersectionObserver((entries) => {
+      observer = new IntersectionObserver((entries, activeObserver) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const element = entry.target as HTMLElement;
-            const rawDelay = element.dataset.revealDelay || "0";
-            element.style.setProperty("--reveal-delay", rawDelay + "ms");
-            element.classList.add("reveal-in");
-            activeObserver.unobserve(element);
-          }
+          if (!entry.isIntersecting) return;
+          const element = entry.target as HTMLElement;
+          const rawDelay = element.dataset.revealDelay || "0";
+          element.style.setProperty("--reveal-delay", rawDelay + "ms");
+          element.classList.add("reveal-in");
+          activeObserver.unobserve(element);
         });
       }, { rootMargin: "0px 0px -45px 0px", threshold: 0.08 });
-      observer = activeObserver;
-      elements.forEach((element) => activeObserver.observe(element));
+      elements.forEach((element) => observer?.observe(element));
     }
 
-    let ticking = false;
+    const progressBar = document.getElementById("site-scroll-progress-fill");
+    let maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    let frame = 0;
+
     const updateProgress = () => {
-      if (ticking) return;
-      ticking = true;
-      window.requestAnimationFrame(() => {
-        const max = document.documentElement.scrollHeight - window.innerHeight;
-        const ratio = max > 0 ? window.scrollY / max : 0;
-        root.style.setProperty("--site-scroll", String(Math.min(1, Math.max(0, ratio))));
-        const bar = document.getElementById("site-scroll-progress-fill");
-        if (bar) bar.style.transform = "scaleX(" + ratio + ")";
-        ticking = false;
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        const ratio = maxScroll > 0 ? Math.min(1, Math.max(0, window.scrollY / maxScroll)) : 0;
+        if (progressBar) progressBar.style.transform = "scaleX(" + ratio + ")";
       });
     };
-    updateProgress();
-    window.addEventListener("scroll", updateProgress, { passive: true });
-    window.addEventListener("resize", updateProgress);
 
-    const pointerCards = Array.from(document.querySelectorAll<HTMLElement>(".site-spotlight"));
-    const movePointer = (event: PointerEvent) => {
-      for (const card of pointerCards) {
-        const rect = card.getBoundingClientRect();
-        if (event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom) {
-          card.style.setProperty("--spot-x", (event.clientX - rect.left) + "px");
-          card.style.setProperty("--spot-y", (event.clientY - rect.top) + "px");
-        }
-      }
+    const measureScrollRange = () => {
+      maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      updateProgress();
     };
+
+    measureScrollRange();
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    window.addEventListener("resize", measureScrollRange, { passive: true });
+
+    const resizeObserver = typeof ResizeObserver !== "undefined"
+      ? new ResizeObserver(measureScrollRange)
+      : null;
+    resizeObserver?.observe(document.documentElement);
+    resizeObserver?.observe(document.body);
+
+    const movePointer = (event: PointerEvent) => {
+      const target = event.target instanceof Element
+        ? event.target.closest<HTMLElement>(".site-spotlight")
+        : null;
+      if (!target) return;
+      const rect = target.getBoundingClientRect();
+      target.style.setProperty("--spot-x", (event.clientX - rect.left) + "px");
+      target.style.setProperty("--spot-y", (event.clientY - rect.top) + "px");
+    };
+
     window.addEventListener("pointermove", movePointer, { passive: true });
+
     return () => {
       observer?.disconnect();
+      resizeObserver?.disconnect();
       window.removeEventListener("scroll", updateProgress);
-      window.removeEventListener("resize", updateProgress);
+      window.removeEventListener("resize", measureScrollRange);
       window.removeEventListener("pointermove", movePointer);
+      if (frame) window.cancelAnimationFrame(frame);
     };
   }, []);
 

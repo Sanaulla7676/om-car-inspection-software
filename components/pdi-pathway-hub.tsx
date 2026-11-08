@@ -4,11 +4,9 @@ import { useRef } from "react";
 import Link from "next/link";
 import { ArrowUpRight, CarFront, GraduationCap, ShieldCheck } from "lucide-react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import AnimatedContent from "@/components/AnimatedContent";
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+gsap.registerPlugin(useGSAP);
 
 const pathways = [
   {
@@ -46,11 +44,12 @@ export function PdiPathwayHub() {
   useGSAP(() => {
     const root = sectionRef.current;
     if (!root) return;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const cards = gsap.utils.toArray<HTMLElement>(".pdi-pathway-card", root);
     const cars = gsap.utils.toArray<HTMLElement>(".pdi-speed-car", root);
+    const signals = gsap.utils.toArray<HTMLElement>(".pdi-traffic-signal", root);
+    const streaks = gsap.utils.toArray<HTMLElement>(".pdi-speed-streak", root);
 
-    if (reduced) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) {
       gsap.set([...cards, ...cars], { clearProps: "all", autoAlpha: 1 });
       root.querySelectorAll<HTMLElement>(".pdi-signal-light").forEach((lamp) => {
         if (lamp.dataset.signalLight === "green") gsap.set(lamp, { autoAlpha: 1, scale: 1.06 });
@@ -58,48 +57,53 @@ export function PdiPathwayHub() {
       return;
     }
 
-    gsap.fromTo(
+    const cardReveal = gsap.fromTo(
       cards,
-      { autoAlpha: 0, y: 38, rotateX: 4, transformPerspective: 850 },
+      { autoAlpha: 0, y: 24, rotateX: 0 },
       {
         autoAlpha: 1,
         y: 0,
         rotateX: 0,
-        duration: 0.85,
-        stagger: 0.14,
+        duration: 0.68,
+        stagger: 0.11,
         ease: "power3.out",
-        scrollTrigger: { trigger: root, start: "top 88%", once: true },
+        paused: true,
       },
     );
 
-    root.querySelectorAll<HTMLElement>(".pdi-traffic-signal").forEach((signal, signalIndex) => {
+    const loops: gsap.core.Animation[] = [];
+
+    signals.forEach((signal, signalIndex) => {
       const lamps = gsap.utils.toArray<HTMLElement>(".pdi-signal-light", signal);
-      const activate = (index: number) => {
+      const colors = ["#ff4c57", "#ffb43d", "#4ee5a3"];
+      const activate = (index: number, animate = true) => {
         lamps.forEach((lamp) => gsap.set(lamp, { autoAlpha: 0.28, scale: 0.88, boxShadow: "none" }));
         const lamp = lamps[index];
         if (!lamp) return;
-        const colors = ["#ff4c57", "#ffb43d", "#4ee5a3"];
-        gsap.to(lamp, {
+        const glow = {
           autoAlpha: 1,
-          scale: 1.12,
-          duration: 0.2,
+          scale: 1.1,
+          duration: 0.18,
           ease: "back.out(2)",
-          boxShadow: "0 0 16px " + colors[index] + "85, 0 0 3px " + colors[index],
-          overwrite: true,
-        });
+          boxShadow: "0 0 12px " + colors[index] + "75, 0 0 3px " + colors[index],
+          overwrite: true as const,
+        };
+        if (animate) gsap.to(lamp, glow);
+        else gsap.set(lamp, { autoAlpha: 1, scale: 1.06 });
       };
 
-      activate((signalIndex + Math.floor(Math.random() * 3)) % 3);
-      gsap.to(signal, {
-        duration: 0.95 + Math.random() * 0.45,
+      activate((signalIndex + Math.floor(Math.random() * 3)) % 3, false);
+      loops.push(gsap.to(signal, {
+        duration: 1.05,
         repeat: -1,
-        repeatDelay: 0.15 + Math.random() * 0.55,
+        repeatDelay: 0.3,
+        paused: true,
         onRepeat: () => activate(Math.floor(Math.random() * 3)),
-      });
+      }));
     });
 
     cars.forEach((car, index) => {
-      gsap.fromTo(
+      loops.push(gsap.fromTo(
         car,
         { x: -270, autoAlpha: 0, scaleX: -0.86, scaleY: 0.86 },
         {
@@ -113,28 +117,60 @@ export function PdiPathwayHub() {
           repeatDelay: index === 0 ? 2.7 : 3.3,
           ease: "none",
           repeatRefresh: true,
+          paused: true,
         },
-      );
+      ));
     });
 
-    gsap.to(".pdi-speed-streak", {
-      xPercent: 145,
-      duration: 1.05,
-      ease: "none",
-      stagger: { each: 0.2, repeat: -1 },
-    });
+    if (streaks.length) {
+      loops.push(gsap.to(streaks, {
+        xPercent: 145,
+        duration: 1.05,
+        ease: "none",
+        stagger: { each: 0.2, repeat: -1 },
+        paused: true,
+      }));
+    }
+
+    let sectionVisible = false;
+    let cardsRevealed = false;
+    const syncPlayback = () => {
+      const shouldRun = sectionVisible && !document.hidden;
+      if (shouldRun && !cardsRevealed) {
+        cardsRevealed = true;
+        cardReveal.play(0);
+      }
+      loops.forEach((animation) => {
+        if (shouldRun) animation.play();
+        else animation.pause();
+      });
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      sectionVisible = Boolean(entries[0]?.isIntersecting);
+      syncPlayback();
+    }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
+    observer.observe(root);
+    document.addEventListener("visibilitychange", syncPlayback);
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", syncPlayback);
+      cardReveal.kill();
+      loops.forEach((animation) => animation.kill());
+    };
   }, { scope: sectionRef });
 
   return (
     <section ref={sectionRef} className="pdi-pathway-hub" aria-labelledby="pdi-pathways-heading">
       <div className="pdi-pathway-inner">
-        <AnimatedContent className="pdi-pathway-heading" distance={34} duration={0.85} blur={3} wipe="up" threshold={0.18}>
+        <div className="pdi-pathway-heading">
           <div>
             <p className="pdi-hub-eyebrow"><span /> YOUR NEXT MOVE</p>
             <h2 id="pdi-pathways-heading">Pick your inspection lane.</h2>
           </div>
           <p>Three clear paths. Start with the car or start learning the method.</p>
-        </AnimatedContent>
+        </div>
 
         <div className="pdi-speedway" aria-hidden="true">
           <div className="pdi-speedway-track" />
