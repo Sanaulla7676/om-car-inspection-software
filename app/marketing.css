@@ -3349,10 +3349,52 @@ button.lux-header-icon.omcar-search-toggle{font:inherit}
   letter-spacing: .16em;
 }
 .pdi-motion-edge-label i { display: inline-block;width: 3px;height: 3px;margin: 0 6px 1px;border-radius: 50%;background: var(--pdi-cyan); }
+
+/* Restored inspection animation layers from the earlier PDI motion system. */
+.pdi-motion-visual-halo { animation: pdiMotionGlow 5s ease-in-out infinite alternate; }
+.pdi-motion-visual-glow {
+  position: absolute; z-index: 1; left: 16%; right: 8%; bottom: 8%; height: 34%;
+  border-radius: 50%; background: rgba(34,191,208,.17); filter: blur(42px);
+  animation: pdiMotionGlow 5s ease-in-out infinite alternate; pointer-events: none;
+}
+.pdi-motion-radar {
+  position: absolute; z-index: 2; inset: 11% 0 4%; width: 100%; height: 86%;
+  overflow: visible; pointer-events: none;
+}
+.pdi-motion-radar-arc { transform-origin: 350px 250px; animation: pdiMotionRadarTurn 16s linear infinite; }
+.pdi-motion-hotspot {
+  position: absolute; z-index: 6; display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 9px; border: 1px solid rgba(159,211,228,.22); border-radius: 5px;
+  background: rgba(6,13,20,.78); color: rgba(225,241,249,.84);
+  box-shadow: 0 7px 18px rgba(0,0,0,.18); backdrop-filter: blur(9px);
+  font: 800 clamp(6px,.56vw,8px)/1 "DM Sans",Arial,sans-serif; letter-spacing: .13em; white-space: nowrap;
+}
+.pdi-motion-hotspot i {
+  width: 6px; height: 6px; flex: 0 0 auto; border-radius: 50%;
+  background: var(--pdi-cyan-light); box-shadow: 0 0 0 4px rgba(34,191,208,.12),0 0 12px rgba(34,191,208,.65);
+  animation: pdiMotionPulse 2s ease-in-out infinite;
+}
+.pdi-motion-hotspot--body { left: 7%; top: 35%; }
+.pdi-motion-hotspot--engine { right: 5%; top: 32%; animation-delay: .4s; }
+.pdi-motion-hotspot--cabin { right: 4%; bottom: 22%; animation-delay: .8s; }
+.pdi-motion-hotspot--tyres { left: 10%; bottom: 17%; animation-delay: 1.2s; }
+.pdi-motion-course-signal {
+  position: relative; display: inline-block; width: 7px; height: 7px; flex: 0 0 7px;
+  border: 1px solid rgba(34,191,208,.55); border-radius: 50%; background: transparent;
+  box-shadow: 0 0 0 3px rgba(34,191,208,.045); animation: pdiMotionMark 3.8s ease-in-out infinite;
+}
+.pdi-motion-course-step:nth-child(2) .pdi-motion-course-signal { animation-delay: .5s; }
+.pdi-motion-course-step:nth-child(3) .pdi-motion-course-signal { animation-delay: 1s; }
+.pdi-motion-course-step:nth-child(4) .pdi-motion-course-signal { animation-delay: 1.5s; }
+.pdi-motion-course-step:nth-child(5) .pdi-motion-course-signal { animation-delay: 2s; }
+.pdi-motion-course-step:nth-child(6) .pdi-motion-course-signal { animation-delay: 2.5s; }
 @keyframes pdiMotionPulse { 0%,100%{opacity:.55;transform:scale(.86)}50%{opacity:1;transform:scale(1.12)} }
 @keyframes pdiMotionScan { 0%{transform:translateX(-175px);opacity:0}15%{opacity:.9}85%{opacity:.9}100%{transform:translateX(245px);opacity:0} }
 @keyframes pdiMotionOrbit { from{transform:translate(-50%,-50%) scaleY(.37) rotate(0deg)}to{transform:translate(-50%,-50%) scaleY(.37) rotate(360deg)} }
 @keyframes pdiMotionCarFloat { 0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)} }
+@keyframes pdiMotionRadarTurn { to { transform: rotate(360deg); } }
+@keyframes pdiMotionGlow { from { opacity:.55; transform:scale(.92); } to { opacity:.95; transform:scale(1.08); } }
+@keyframes pdiMotionMark { 0%,60%,100% { background:transparent;box-shadow:0 0 0 3px rgba(34,191,208,.045); } 72% { background:rgba(34,191,208,.3);box-shadow:0 0 0 5px rgba(34,191,208,.13),0 0 13px rgba(34,191,208,.23); } }
 @media(max-width:760px) {
   .pdi-motion-hero {
     width: 100vw;
@@ -3404,6 +3446,17 @@ button.lux-header-icon.omcar-search-toggle{font:inherit}
   .pdi-motion-edge-label { display: none; }
 }
 @keyframes pdiMotionScanMobile { 0%{transform:translateX(-95px);opacity:0}15%{opacity:.9}85%{opacity:.9}100%{transform:translateX(95px);opacity:0} }
+@media(max-width:760px) {
+  .pdi-motion-visual-glow { left: 5%;right: 3%;bottom: 7%;height: 28%;filter: blur(30px); }
+  .pdi-motion-radar { inset: 16% -3% 4%;width: 106%;height: 82%; }
+  .pdi-motion-hotspot { gap: 4px;padding: 5px 6px;font-size: 5px;letter-spacing: .08em; }
+  .pdi-motion-hotspot i { width: 5px;height: 5px; }
+  .pdi-motion-hotspot--body { left: 4%;top: 34%; }
+  .pdi-motion-hotspot--engine { right: 3%;top: 31%; }
+  .pdi-motion-hotspot--cabin { right: 3%;bottom: 20%; }
+  .pdi-motion-hotspot--tyres { left: 5%;bottom: 15%; }
+  .pdi-motion-course-signal { width: 5px;height: 5px;flex-basis: 5px; }
+}
 @media(max-width:390px) {
   .pdi-motion-brand-mark { width: 28px; }
   .pdi-motion-top-meta { font-size: 5.5px; }
